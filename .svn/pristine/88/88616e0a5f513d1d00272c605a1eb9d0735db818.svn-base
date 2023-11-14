@@ -1,0 +1,40 @@
+package kr.or.ddit.nurse.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.nurse.NurseMapper;
+import kr.or.ddit.nurse.service.IRecordService;
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+
+@Service
+public class RecordServiceImpl implements IRecordService {
+
+	@Inject
+	private NurseMapper nurseMapper;
+	
+	@Override
+	public List<NurseRecordVO> selectRecordList(Map<String, String> map) {
+		return nurseMapper.selectRecordList(map);
+	}
+
+	@Override
+	public List<NurseRecordVO> selectTakeOverList(Map<String, String> map) {
+		return nurseMapper.selectTakeOverList(map);
+	}
+
+	@Override
+	public NurseRecordVO insertTakeOver(NurseRecordVO nurseRecordVO) {
+		return nurseMapper.insertTakeOver(nurseRecordVO);
+	}
+
+	@Override
+	public int selectTakeOverCount(NurseRecordVO nrsRcordCn) {
+		return nurseMapper.selectTakeOverCount(nrsRcordCn);
+	}
+
+}

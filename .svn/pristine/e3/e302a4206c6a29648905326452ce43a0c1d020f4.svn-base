@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper.patient;
+
+import java.util.List;
+
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface PatientMapper {
+
+	public List<PatientVO> selectPatientList();
+
+}

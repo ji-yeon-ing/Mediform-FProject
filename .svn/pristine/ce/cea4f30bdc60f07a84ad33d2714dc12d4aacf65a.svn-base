@@ -1,0 +1,19 @@
+package kr.or.ddit.common.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class SchedulerVO {
+	
+	private String schdlCd; //일정코드
+	private String schdlNm; //일정명
+	private String schdlCn; //일정내용
+	private Date pstgDt; //게시 일시
+	private String schdlBgngDt; //일정 시작 일시
+	private String schdlEndDt; //일정 종료 일시
+	private String schdlColor; //색깔
+	
+	
+}

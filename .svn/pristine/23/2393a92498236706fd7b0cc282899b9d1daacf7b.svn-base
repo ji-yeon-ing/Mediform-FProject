@@ -1,0 +1,12 @@
+package kr.or.ddit.administration.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class ReceiptServiceImpl implements IReceiptService {
+
+	
+	
+	
+	
+}

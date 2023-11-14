@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.calender.CalenderMapper">
+
+	<!-- 일정 조회 -->
+	<select id="calenderList" resultType="calenderVO">
+		SELECT
+			SCHDL_CD, SCHDL_NM, SCHDL_CN, PSTG_DT, SCHDL_BGNG_DT, SCHDL_END_DT, SCHDL_COLOR, SCHDL_ALLDAY, SCHDL_UPD_DT
+		FROM HOSPITAL_SCHEDULE
+	</select>
+	
+	<!-- 일정 등록 -->
+	<insert id="calenderInsert" parameterType="calenderVO" useGeneratedKeys="true" >
+		<selectKey keyProperty="schdlCd" resultType="String" order="BEFORE">
+			SELECT 'S' || SEQ_SCHEDULE.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		insert into HOSPITAL_SCHEDULE(
+			SCHDL_CD, SCHDL_NM, SCHDL_CN, PSTG_DT, SCHDL_BGNG_DT, SCHDL_END_DT, SCHDL_COLOR, SCHDL_ALLDAY
+		) values(
+			#{schdlCd}, #{schdlNm}, #{schdlCn}, SYSDATE, #{schdlBgngDt}, #{schdlEndDt}, #{schdlColor}, #{schdlAllDay}
+		)
+	</insert>
+	
+	<!-- 일정 수정 -->
+	<update id="calenderUpdate" parameterType="calenderVO">
+		UPDATE HOSPITAL_SCHEDULE
+		SET 
+			SCHDL_NM = #{schdlNm},
+			SCHDL_CN = #{schdlCn},
+			SCHDL_BGNG_DT = #{schdlBgngDt},
+			SCHDL_END_DT = #{schdlEndDt},
+			SCHDL_COLOR = #{schdlColor},
+			SCHDL_ALLDAY = #{schdlAllDay},
+			SCHDL_UPD_DT = SYSDATE
+		WHERE SCHDL_CD = #{schdlCd}
+	</update>
+	
+	<!-- 일정 삭제 -->
+	<delete id="calenderDelete" parameterType="String">
+		DELETE
+		FROM HOSPITAL_SCHEDULE
+		WHERE
+			SCHDL_CD = #{schdlCd}
+	</delete>
+	
+</mapper>

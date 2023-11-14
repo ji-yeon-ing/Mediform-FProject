@@ -1,0 +1,64 @@
+package kr.or.ddit.nurse.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.mapper.nurse.MedicineMapper;
+import kr.or.ddit.nurse.service.IMedicineService;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import kr.or.ddit.patient.vo.PatientVO;
+
+@Service
+public class MedicineServiceImpl implements IMedicineService{
+
+	@Inject
+	private MedicineMapper medicineMapper;
+
+	@Override
+	public List<MedicineVO> selectMedicineList(String name) {
+		return medicineMapper.selectMedicineList(name);
+	}
+
+	// 약품 리스트 ajax
+	@Override
+	public List<MedicineVO> medicineSearch(Map<String, String> map) {
+		return medicineMapper.medicineSearch(map);
+	}
+
+	// 약품 조회 ajax
+	@Override
+	public MedicineVO selectMedicine(Map<String, String> map) {
+		return medicineMapper.selectMedicine(map);
+	}
+
+	// 페이징 카운트
+	@Override
+	public int selectMedicineCount(PaginationInfoVO<MedicineVO> pagingVO) {
+		return medicineMapper.selectMedicineCount(pagingVO);
+	}
+
+	// 페이징 약품 list 조회
+	@Override
+	public List<MedicineVO> selectMedicinePagingList(PaginationInfoVO<MedicineVO> pagingVO) {
+		return medicineMapper.selectMedicinePagingList(pagingVO);
+	}
+
+
+	@Override
+	public MedicineVO selectMedicineOne(String medcinNm) {
+		return medicineMapper.selectMedicineOne(medcinNm);
+	}
+
+	@Override
+	public List<MedicineVO> selectOrderList() {
+		return medicineMapper.selectOrderList();
+	}
+
+
+	
+}

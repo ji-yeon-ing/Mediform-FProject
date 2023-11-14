@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.calender.VacationMapper">
+	
+	<resultMap type="VacationVO" id="vacationVO">
+		<id property="vcatnCd" column="VCATN_CD"/>
+		<result property="vcatnCl" column="VCATN_CL"/>
+		<result property="vcatnSelfEmpno" column="VCATN_SELF_EMPNO"/>
+		<result property="vcatnSelfEmpnm" column="VCATN_SELF_EMPNM"/>
+		<result property="vcatnSelfEmpse" column="VCATN_SELF_EMPSE"/>
+		<result property="vcatnSelfEmpclsf" column="VCATN_SELF_EMPCLSF"/>
+		<result property="vcatnRqstdt" column="VCATN_RQSTDT"/>
+		<result property="vcatnBgndt" column="VCATN_BGNDT"/>
+		<result property="vcatnEnddt" column="VCATN_ENDDT"/>
+		<result property="vcatnResn" column="VCATN_RESN"/>
+		<result property="vcatnConfmStep" column="VCATN_CONFM_STEP"/>
+		<result property="vcatnReprsntEmpno" column="VCATN_REPRSNT_EMPNO"/>
+		<result property="vcatnConfmDt1" column="VCATN_CONFM_DT1"/>
+		<result property="vcatnConfirmerEmpno" column="VCATN_CONFIRMER_EMPNO"/>
+		<result property="vcatnConfmDt2" column="VCATN_CONFM_DT2"/>
+		<result property="vcatnYrycCo" column="VCATN_YRYC_CO"/>
+		<result property="vcatnColor" column="VCATN_COLOR"/>
+		<result property="vcatnConfmAt" column="VCATN_CONFM_AT"/>
+		<result property="vcatnRjctEmpno" column="VCATN_RJCT_EMPNO"/>
+		<result property="vcatnRjctResn" column="VCATN_RJCT_RESN"/>
+		<result property="vcatnRjctDt" column="VCATN_RJCT_DT"/>
+		<result property="representativeName" column="REPRESENTATIVE_NAME"/>
+	    <result property="confirmerName" column="CONFIRMER_NAME"/>
+	    <result property="rejectorName" column="REJECTOR_NAME"/>
+		
+		<association property="employeeVO" javaType="EmployeeVO">
+			<id property="empNo" column="EMP_NO"/>	
+			<result property="empNm" column="EMP_NM"/>
+			<result property="empRrno1" column="EMP_RRNO1"/>
+			<result property="empRrno2" column="EMP_RRNO2"/>
+			<result property="empTelno" column="EMP_TELNO"/>
+			<result property="empSexdstn" column="EMP_SEXDSTN"/>
+			<result property="empEncpn" column="EMP_ENCPN"/>
+			<result property="empRetire" column="EMP_RETIRE"/>
+			<result property="empSe" column="EMP_SE"/>
+			<result property="empClsf" column="EMP_CLSF"/>
+			<result property="empYrycUse" column="EMP_YRYC_USE"/>
+			<result property="empYrycRemndr" column="EMP_YRYC_REMNDR"/>
+			<result property="empOffhodUse" column="EMP_OFFHOD_USE"/>
+			<result property="empOffhodRemndr" column="EMP_OFFHOD_REMNDR"/>
+			<result property="empSicknsUse" column="EMP_SICKNS_USE"/>
+			<result property="empSicknsRemndr" column="EMP_SICKNS_REMNDR"/>
+		</association>
+	</resultMap>
+	
+	<!-- 캘린더 리스트 조회 -->
+	<select id="vacationMapList" resultType="vacationVO">
+		select *
+		from VACATION
+		where VCATN_CONFM_AT = 'Y' 
+		order by VCATN_BGNDT
+	</select>
+
+	<!-- 휴가 신청 -->
+	<insert id="vacationInsert" parameterType="vacationVO" useGeneratedKeys="true" >
+		<selectKey keyProperty="vcatnCd" resultType="String" order="BEFORE">
+			SELECT 'V' || SEQ_VACATION.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		insert into VACATION(
+			VCATN_CD, VCATN_CL, VCATN_SELF_EMPNO, VCATN_SELF_EMPNM, VCATN_SELF_EMPSE, VCATN_SELF_EMPCLSF, 
+			VCATN_RQSTDT, VCATN_BGNDT, VCATN_ENDDT, VCATN_RESN, VCATN_CONFM_STEP, VCATN_YRYC_CO, VCATN_COLOR
+		) values(
+			#{vcatnCd}, #{vcatnCl}, #{vcatnSelfEmpno}, #{vcatnSelfEmpnm}, #{vcatnSelfEmpse}, #{vcatnSelfEmpclsf}, 
+			SYSDATE, #{vcatnBgndt}, #{vcatnEnddt}, #{vcatnResn}, 0, #{vcatnYrycCo}, #{vcatnColor}
+		)
+	</insert>
+
+	<!-- 직원 상세 -->
+	<select id="vacationDetailEmp" parameterType="String" resultMap="vacationVO">
+		select
+			EMP_NO, EMP_NM, EMP_RRNO1, EMP_RRNO2, EMP_TELNO, EMP_SEXDSTN, EMP_ENCPN, EMP_RETIRE, EMP_SE,
+			EMP_CLSF, EMP_YRYC_USE, EMP_YRYC_REMNDR, EMP_OFFHOD_USE, EMP_OFFHOD_REMNDR, EMP_SICKNS_USE,
+			EMP_SICKNS_REMNDR
+		from EMPLOYEE
+		where 1=1
+		<if test="searchEmpWord != null and searchEmpWord != ''">
+			AND (
+				EMP_NO like '%'|| #{searchEmpWord} ||'%'
+				OR EMP_NM like '%'|| #{searchEmpWord} ||'%'
+				)
+		</if>
+		order by EMP_NO
+	</select>
+	
+	<!-- 휴가 상세 조건 -->
+	<sql id="DetailSearch">
+		<if test="vcatnCd != null and vcatnCd != ''">
+			and (v.VCATN_CD = #{vcatnCd})
+		</if>
+		<if test="vcatnSelfEmpno != null and vcatnSelfEmpno != ''">
+			and (e.EMP_NO = #{vcatnSelfEmpno})
+		</if>
+	 </sql>
+	
+	<!-- 사번=이름 조건 -->
+<!-- 	<sql id="NoName"> -->
+<!-- 		<if test="vcatnCd != null and vcatnCd != ''"> -->
+<!-- 			and (v.VCATN_REPRSNT_EMPNO = e.EMP_NO}) -->
+<!-- 		</if> -->
+<!-- 		<if test="vcatnSelfEmpno != null and vcatnSelfEmpno != ''"> -->
+<!-- 			and (e.EMP_NO = #{vcatnSelfEmpno}) -->
+<!-- 		</if> -->
+<!-- 	 </sql> -->
+	
+	
+	<!-- 휴가 상세 -->
+	<select id="vacationDetail" parameterType="vacationVO" resultMap="vacationVO">
+		select
+			v.VCATN_CD, v.VCATN_CL, v.VCATN_SELF_EMPNO, v.VCATN_RQSTDT, v.VCATN_BGNDT, v.VCATN_ENDDT, v.VCATN_RESN,
+			v.VCATN_CONFM_STEP, v.VCATN_REPRSNT_EMPNO, v.VCATN_CONFM_DT1, v.VCATN_CONFIRMER_EMPNO, v.VCATN_CONFM_DT2,
+			v.VCATN_CONFM_AT, v.VCATN_RJCT_EMPNO, v.VCATN_RJCT_RESN, v.VCATN_RJCT_DT, v.VCATN_YRYC_CO, v.VCATN_COLOR,
+			v.VCATN_SELF_EMPNM, v.VCATN_SELF_EMPSE, v.VCATN_SELF_EMPCLSF,
+			e.EMP_NO, e.EMP_NM, e.EMP_RRNO1, e.EMP_RRNO2, e.EMP_TELNO, e.EMP_SEXDSTN, e.EMP_ENCPN, e.EMP_RETIRE, e.EMP_SE,
+			e.EMP_CLSF, e.EMP_YRYC_USE, e.EMP_YRYC_REMNDR, e.EMP_OFFHOD_USE, e.EMP_OFFHOD_REMNDR, e.EMP_SICKNS_USE,
+			e.EMP_SICKNS_REMNDR,
+			e1.EMP_NM AS REPRESENTATIVE_NAME,
+			e2.EMP_NM AS CONFIRMER_NAME,
+			e3.EMP_NM AS REJECTOR_NAME
+		from EMPLOYEE e
+		LEFT OUTER JOIN VACATION v ON v.VCATN_SELF_EMPNO = e.EMP_NO
+		LEFT OUTER JOIN EMPLOYEE e1 ON v.VCATN_REPRSNT_EMPNO = e1.EMP_NO
+		LEFT OUTER JOIN EMPLOYEE e2 ON v.VCATN_CONFIRMER_EMPNO = e2.EMP_NO
+		LEFT OUTER JOIN EMPLOYEE e3 ON v.VCATN_RJCT_EMPNO = e3.EMP_NO
+		where 1=1
+		<include refid="DetailSearch"/>
+		order by v.VCATN_RQSTDT desc
+	</select>
+	
+	<!-- 1차 승인 -->
+	<update id="vacationUpdate" parameterType="map">
+		UPDATE VACATION
+		SET
+			VCATN_CONFM_STEP = 1,
+			VCATN_REPRSNT_EMPNO = #{vcatnReprsntEmpno},
+			VCATN_CONFM_DT1 = SYSDATE
+		WHERE VCATN_CD = #{vcatnCd}
+	</update>
+	
+	<!-- 최종 승인 -->
+	<update id="vacationUpdateLast" parameterType="vacationVO">
+		UPDATE VACATION
+		SET
+			VCATN_CONFM_STEP = 2,
+			VCATN_CONFIRMER_EMPNO = #{vcatnConfirmerEmpno},
+			VCATN_CONFM_DT2 = SYSDATE,
+			VCATN_CONFM_AT = 'Y'
+		WHERE VCATN_CD = #{vcatnCd}
+	</update>
+	
+	<!-- 분류별 연차 사용 갯수 -->
+	<update id="updateYrycCount" parameterType="map">
+		UPDATE EMPLOYEE
+		SET
+			EMP_YRYC_USE = (EMP_YRYC_USE + #{vcatnYrycCo}),
+			EMP_YRYC_REMNDR = (EMP_YRYC_REMNDR - #{vcatnYrycCo})
+		WHERE EMP_NO = #{vcatnSelfEmpno}
+	</update>
+	
+	<!-- 분류별 공가 사용 갯수 -->
+	<update id="updateOffCount" parameterType="map">
+		UPDATE EMPLOYEE
+		SET
+			EMP_OFFHOD_USE = (EMP_OFFHOD_USE + #{vcatnYrycCo}),
+			EMP_OFFHOD_REMNDR = (EMP_OFFHOD_REMNDR - #{vcatnYrycCo})
+		WHERE EMP_NO = #{vcatnSelfEmpno}
+	</update>
+	
+	<!-- 분류별 병가 사용 갯수 -->
+	<update id="updateSickCount" parameterType="map">
+		UPDATE EMPLOYEE
+		SET
+			EMP_SICKNS_USE = (EMP_SICKNS_USE + #{vcatnYrycCo}),
+			EMP_SICKNS_REMNDR = (EMP_SICKNS_REMNDR - #{vcatnYrycCo})
+		WHERE EMP_NO = #{vcatnSelfEmpno}
+	</update>
+	
+	<!-- 휴가 반려 -->
+	<update id="vacationUpdateReject" parameterType="map">
+		UPDATE VACATION
+		SET 
+			VCATN_CONFM_STEP = 2,
+			VCATN_RJCT_EMPNO = #{vcatnRjctEmpno},
+			VCATN_RJCT_RESN = #{vcatnRjctResn},
+			VCATN_RJCT_DT = SYSDATE,
+			VCATN_CONFM_AT = 'N'
+		WHERE VCATN_CD = #{vcatnCd}
+	</update>
+		
+	<!-- 휴가 삭제 -->
+	<delete id="vacationDelete" parameterType="String">
+		DELETE
+		FROM VACATION
+		WHERE VCATN_CD = #{vcatnCd}
+	</delete>
+	
+	<!-- 시작-끝 날짜 필터링 -->
+	<sql id="vacStartEnd">
+		<if test="filterFlag == true 
+				and searchVacStart != null and searchVacStart != '' 
+				and	searchVacEnd != null and searchVacEnd != ''">
+			<![CDATA[
+			and (
+				(v.VCATN_BGNDT >= #{searchVacStart})
+				and
+				(v.VCATN_ENDDT <= #{searchVacEnd})
+			)
+			]]>
+		</if>
+		
+		and(
+			(TRUNC(SYSDATE,'MM') = TO_DATE(SUBSTR(v.VCATN_BGNDT,6,2),'MM'))
+			OR
+			(TRUNC(SYSDATE,'MM') = TO_DATE(SUBSTR(v.VCATN_ENDDT,6,2),'MM'))
+		)
+	</sql>
+	
+	<!-- 시작일/끝일 필터링 -->
+	<sql id="vacationSearch">
+		<if test="searchType != null and searchType == 'searchstart'">
+			and (v.VCATN_BGNDT like '%'|| #{searchWord} || '%') 
+		</if>
+		<if test="searchType != null and searchType == 'searchend'">
+			and (v.VCATN_ENDDT like '%'|| #{searchWord} || '%') 
+		</if>
+	</sql>
+
+	<!-- 부서 필터링 -->
+	<sql id="vacDepFilter">
+		<if test="filterFlag == true and searchDep != null and searchDep != ''">
+		    and v.VCATN_SELF_EMPSE = #{searchDep}
+		</if>
+	</sql>
+	
+	<sql id="loginEmpNo">
+		<if test="vcatnSelfEmpno != null and vcatnSelfEmpno != ''">
+			and v.VCATN_SELF_EMPNO = #{vcatnSelfEmpno}
+		</if>
+	</sql>
+	
+	<!-- 전체 리스트 조회 -->
+	<select id="selectVacationList" parameterType="vacationVO" resultMap="vacationVO">
+	 	select 
+			v.VCATN_CD, v.VCATN_CL, v.VCATN_SELF_EMPNO, v.VCATN_RQSTDT, v.VCATN_BGNDT, v.VCATN_ENDDT, v.VCATN_RESN,
+			v.VCATN_CONFM_STEP, v.VCATN_REPRSNT_EMPNO, v.VCATN_CONFM_DT1, v.VCATN_CONFIRMER_EMPNO, v.VCATN_CONFM_DT2,
+			v.VCATN_CONFM_AT, v.VCATN_RJCT_EMPNO, v.VCATN_RJCT_RESN, v.VCATN_RJCT_DT, v.VCATN_YRYC_CO, v.VCATN_COLOR,
+			v.VCATN_SELF_EMPNM, v.VCATN_SELF_EMPSE, v.VCATN_SELF_EMPCLSF,
+			e.EMP_NO, e.EMP_NM, e.EMP_RRNO1, e.EMP_RRNO2, e.EMP_TELNO, e.EMP_SEXDSTN, e.EMP_ENCPN, e.EMP_RETIRE, e.EMP_SE,
+			e.EMP_CLSF, e.EMP_YRYC_USE, e.EMP_YRYC_REMNDR, e.EMP_OFFHOD_USE, e.EMP_OFFHOD_REMNDR, e.EMP_SICKNS_USE,
+			e.EMP_SICKNS_REMNDR,
+			e.EMP_NO AS SELF_EMP_NO,
+			e.EMP_NM AS SELF_EMP_NM,
+			e1.EMP_NM AS REPRESENTATIVE_NAME,
+			e2.EMP_NM AS CONFIRMER_NAME,
+			e3.EMP_NM AS REJECTOR_NAME
+		from VACATION v
+		INNER JOIN EMPLOYEE e ON v.VCATN_SELF_EMPNO = e.EMP_NO
+		LEFT JOIN EMPLOYEE e1 ON v.VCATN_REPRSNT_EMPNO = e1.EMP_NO
+		LEFT JOIN EMPLOYEE e2 ON v.VCATN_CONFIRMER_EMPNO = e2.EMP_NO
+		LEFT JOIN EMPLOYEE e3 ON v.VCATN_RJCT_EMPNO = e3.EMP_NO
+		WHERE 1=1
+		<include refid="loginEmpNo"/>
+		<include refid="vacStartEnd"/>
+		<include refid="vacationSearch"/>
+		<include refid="vacDepFilter"/>
+		order by v.VCATN_RQSTDT
+	</select>
+
+	<!-- 신청 리스트 조회 -->
+	<select id="selectSignupList" parameterType="vacationVO" resultMap="vacationVO">
+	 	select 
+			v.VCATN_CD, v.VCATN_CL, v.VCATN_SELF_EMPNO, v.VCATN_RQSTDT, v.VCATN_BGNDT, v.VCATN_ENDDT, v.VCATN_RESN,
+			v.VCATN_CONFM_STEP, v.VCATN_REPRSNT_EMPNO, v.VCATN_CONFM_DT1, v.VCATN_CONFIRMER_EMPNO, v.VCATN_CONFM_DT2,
+			v.VCATN_CONFM_AT, v.VCATN_RJCT_EMPNO, v.VCATN_RJCT_RESN, v.VCATN_RJCT_DT, v.VCATN_YRYC_CO, v.VCATN_COLOR,
+			v.VCATN_SELF_EMPNM, v.VCATN_SELF_EMPSE, v.VCATN_SELF_EMPCLSF,
+			e.EMP_NO, e.EMP_NM, e.EMP_RRNO1, e.EMP_RRNO2, e.EMP_TELNO, e.EMP_SEXDSTN, e.EMP_ENCPN, e.EMP_RETIRE, e.EMP_SE,
+			e.EMP_CLSF, e.EMP_YRYC_USE, e.EMP_YRYC_REMNDR, e.EMP_OFFHOD_USE, e.EMP_OFFHOD_REMNDR, e.EMP_SICKNS_USE,
+			e.EMP_SICKNS_REMNDR,
+			e.EMP_NO AS SELF_EMP_NO,
+			e.EMP_NM AS SELF_EMP_NM,
+			e1.EMP_NM AS REPRESENTATIVE_NAME,
+			e2.EMP_NM AS CONFIRMER_NAME,
+			e3.EMP_NM AS REJECTOR_NAME
+		from VACATION v
+		INNER JOIN EMPLOYEE e ON v.VCATN_SELF_EMPNO = e.EMP_NO
+		LEFT JOIN EMPLOYEE e1 ON v.VCATN_REPRSNT_EMPNO = e1.EMP_NO
+		LEFT JOIN EMPLOYEE e2 ON v.VCATN_CONFIRMER_EMPNO = e2.EMP_NO
+		LEFT JOIN EMPLOYEE e3 ON v.VCATN_RJCT_EMPNO = e3.EMP_NO
+		where
+			(v.VCATN_CONFM_STEP = 0 or v.VCATN_CONFM_STEP = 1)
+			and
+			(v.VCATN_CONFM_AT IS NULL)
+		<include refid="loginEmpNo"/>
+		<include refid="vacStartEnd"/>
+		<include refid="vacationSearch"/>
+		<include refid="vacDepFilter"/>
+		order by v.VCATN_RQSTDT
+	</select>
+	
+	<!-- 승인 리스트 조회 -->
+	<select id="selectApprovalList" parameterType="vacationVO" resultMap="vacationVO">
+	 	select 
+			v.VCATN_CD, v.VCATN_CL, v.VCATN_SELF_EMPNO, v.VCATN_RQSTDT, v.VCATN_BGNDT, v.VCATN_ENDDT, v.VCATN_RESN,
+			v.VCATN_CONFM_STEP, v.VCATN_REPRSNT_EMPNO, v.VCATN_CONFM_DT1, v.VCATN_CONFIRMER_EMPNO, v.VCATN_CONFM_DT2,
+			v.VCATN_CONFM_AT, v.VCATN_RJCT_EMPNO, v.VCATN_RJCT_RESN, v.VCATN_RJCT_DT, v.VCATN_YRYC_CO, v.VCATN_COLOR,
+			v.VCATN_SELF_EMPNM, v.VCATN_SELF_EMPSE, v.VCATN_SELF_EMPCLSF,
+			e.EMP_NO, e.EMP_NM, e.EMP_RRNO1, e.EMP_RRNO2, e.EMP_TELNO, e.EMP_SEXDSTN, e.EMP_ENCPN, e.EMP_RETIRE, e.EMP_SE,
+			e.EMP_CLSF, e.EMP_YRYC_USE, e.EMP_YRYC_REMNDR, e.EMP_OFFHOD_USE, e.EMP_OFFHOD_REMNDR, e.EMP_SICKNS_USE,
+			e.EMP_SICKNS_REMNDR,
+			e.EMP_NO AS SELF_EMP_NO,
+			e.EMP_NM AS SELF_EMP_NM,
+			e1.EMP_NM AS REPRESENTATIVE_NAME,
+			e2.EMP_NM AS CONFIRMER_NAME,
+			e3.EMP_NM AS REJECTOR_NAME
+		from VACATION v
+		INNER JOIN EMPLOYEE e ON v.VCATN_SELF_EMPNO = e.EMP_NO
+		LEFT JOIN EMPLOYEE e1 ON v.VCATN_REPRSNT_EMPNO = e1.EMP_NO
+		LEFT JOIN EMPLOYEE e2 ON v.VCATN_CONFIRMER_EMPNO = e2.EMP_NO
+		LEFT JOIN EMPLOYEE e3 ON v.VCATN_RJCT_EMPNO = e3.EMP_NO
+		where v.VCATN_CONFM_AT = 'Y'
+		<include refid="loginEmpNo"/>
+		<include refid="vacStartEnd"/>
+		<include refid="vacationSearch"/>
+		<include refid="vacDepFilter"/>
+		order by v.VCATN_RQSTDT
+	</select>
+	
+	<!-- 반려 리스트 조회 -->
+	<select id="selectRejectList" parameterType="vacationVO" resultMap="vacationVO">
+	 	select 
+			v.VCATN_CD, v.VCATN_CL, v.VCATN_SELF_EMPNO, v.VCATN_RQSTDT, v.VCATN_BGNDT, v.VCATN_ENDDT, v.VCATN_RESN,
+			v.VCATN_CONFM_STEP, v.VCATN_REPRSNT_EMPNO, v.VCATN_CONFM_DT1, v.VCATN_CONFIRMER_EMPNO, v.VCATN_CONFM_DT2,
+			v.VCATN_CONFM_AT, v.VCATN_RJCT_EMPNO, v.VCATN_RJCT_RESN, v.VCATN_RJCT_DT, v.VCATN_YRYC_CO, v.VCATN_COLOR,
+			v.VCATN_SELF_EMPNM, v.VCATN_SELF_EMPSE, v.VCATN_SELF_EMPCLSF,
+			e.EMP_NO, e.EMP_NM, e.EMP_RRNO1, e.EMP_RRNO2, e.EMP_TELNO, e.EMP_SEXDSTN, e.EMP_ENCPN, e.EMP_RETIRE, e.EMP_SE,
+			e.EMP_CLSF, e.EMP_YRYC_USE, e.EMP_YRYC_REMNDR, e.EMP_OFFHOD_USE, e.EMP_OFFHOD_REMNDR, e.EMP_SICKNS_USE,
+			e.EMP_SICKNS_REMNDR,
+			e.EMP_NO AS SELF_EMP_NO,
+			e.EMP_NM AS SELF_EMP_NM,
+			e1.EMP_NM AS REPRESENTATIVE_NAME,
+			e2.EMP_NM AS CONFIRMER_NAME,
+			e3.EMP_NM AS REJECTOR_NAME
+		from VACATION v
+		INNER JOIN EMPLOYEE e ON v.VCATN_SELF_EMPNO = e.EMP_NO
+		LEFT JOIN EMPLOYEE e1 ON v.VCATN_REPRSNT_EMPNO = e1.EMP_NO
+		LEFT JOIN EMPLOYEE e2 ON v.VCATN_CONFIRMER_EMPNO = e2.EMP_NO
+		LEFT JOIN EMPLOYEE e3 ON v.VCATN_RJCT_EMPNO = e3.EMP_NO
+		where v.VCATN_CONFM_AT = 'N'
+		<include refid="loginEmpNo"/>
+		<include refid="vacStartEnd"/>
+		<include refid="vacationSearch"/>
+		<include refid="vacDepFilter"/>
+		order by v.VCATN_RQSTDT
+	</select>
+	
+</mapper>

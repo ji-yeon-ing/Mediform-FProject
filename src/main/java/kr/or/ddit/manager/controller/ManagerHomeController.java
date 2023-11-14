@@ -1,0 +1,29 @@
+package kr.or.ddit.manager.controller;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 관리자 홈 컨트롤러
+ * @author PC-20
+ *
+ */
+@Slf4j
+@Controller
+@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_DIRECTOR')")
+@RequestMapping(value="/mediform/manager")
+public class ManagerHomeController {
+	
+	// 관리자 메인 홈
+	@GetMapping(value="/home")
+	public String managerHome() {
+		
+//		log.info("managerHome() 실행");
+		return "manager/home";
+	}
+	
+}

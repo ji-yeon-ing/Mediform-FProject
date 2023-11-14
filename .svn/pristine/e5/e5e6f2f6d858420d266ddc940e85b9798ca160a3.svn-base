@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.calender.ManagerVacationMapper">
+
+	<!-- 휴가 조회 -->
+	<select id="vacationList" resultType="vacationVO">
+		SELECT
+			VCATN_CD, VCATN_CL, VCATN_SELF_EMPNO, VCATN_RQSTDT, VCATN_BGNDT, VCATN_ENDDT,
+			VCATN_RESN, VCATN_CONFM_STEP, VCATN_REPRSNT_EMPNO, VCATN_CONFM_DT1, VCATN_CONFIRMER_EMPNO,
+			VCATN_CONFM_DT2, VCATN_CONFM_AT, VCATN_RJCT_EMPNO, VCATN_RJCT_RESN, VCATN_RJCT_DT, VCATN_COLOR
+		FROM VACATION
+		WHERE VCATN_CD DESC
+	</select>
+	
+	<!-- 일반 사원 휴가 신청 -->
+	<insert id="vacationInsert" parameterType="vacationVO" useGeneratedKeys="true" >
+		<selectKey keyProperty="vcatnCd" resultType="String" order="BEFORE">
+			SELECT 'V' || SEQ_SCHEDULE.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		insert into VACATION(
+			VCATN_CD, VCATN_CL, VCATN_SELF_EMPNO, VCATN_RQSTDT, VCATN_BGNDT, VCATN_ENDDT, VCATN_RESN, VCATN_CONFM_STEP
+		) values(
+			#{vcatnCd}, #{vcatnCl}, #{vcatnSelfEmpno}, SYSDATE, #{vcatnBgndt}, #{vcatnEnddt}, #{vcatnResn}, 0
+		)
+	</insert>
+	
+	<!-- 1차 승인(부서 대표) -->
+	<update id="vacationUpdate1" parameterType="vacationVO">
+		UPDATE VACATION
+		SET
+			VCATN_CONFM_STEP = 1,
+			VCATN_REPRSNT_EMPNO = #{reprsntEmpno},
+			VCATN_CONFM_DT1 = SYSDATE
+		WHERE VCATN_CD = #{vcatnCd}
+	</update>
+	
+	<!-- 2차 승인(관리자) -->
+	<update id="vacationUpdate2" parameterType="vacationVO">
+		UPDATE VACATION
+		SET
+			VCATN_CONFM_STEP = 2,
+			VCATN_CONFIRMER_EMPNO = #{vcatnReprsntEmpno},
+			VCATN_CONFM_DT2 = SYSDATE,
+			VCATN_CONFM_AT = 'Y',
+			VCATN_COLOR = #{vcatnColor}
+		WHERE VCATN_CD = #{vcatnCd}
+	</update>
+	
+	<!-- 휴가 반려 -->
+	<update id="vacationReject" parameterType="vacationVO">
+		UPDATE VACATION
+		SET 
+			VCATN_RJCT_EMPNO = #{vcatnRjctEmpno},
+			VCATN_RJCT_RESN = #{vcatnRjctResn},
+			VCATN_RJCT_DT = SYSDATE
+		WHERE VCATN_CD = #{vcatnCd}
+	</update>
+	
+	<!-- 휴가 삭제 -->
+	<delete id="vacationDelete" parameterType="String">
+		DELETE
+		FROM VACATION
+		WHERE VCATN_CD = #{vcatnCd}
+	</delete>
+	
+</mapper>

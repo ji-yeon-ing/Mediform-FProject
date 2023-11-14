@@ -1,0 +1,266 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+		<title>진료 확인서</title>
+		<style>
+			.mtcTable {table-layout:fixed; margin-top:0pt; margin-bottom:0pt; width: 740px;}
+			.mtcFont {font-family:굴림체; color: black;}
+			.textCenter {text-align: center;}
+			.vaMiddle {vertical-align:middle}
+			.inline-block {display: inline-block;}
+		</style>
+	</head>
+	<body>
+			<table style="width:740px; border:1.5pt solid #000000; border-collapse:collapse">
+				<tr style="height:15.6pt">
+					<td rowspan="4" >
+						<p class="textCenter" style="font-size:18pt">
+							<strong><span class="mtcFont mtcTitle">진료 확인서</span></strong>
+						</p>
+					</td>
+					<td style="width:68.05pt; border:0.75pt solid #000000; background-color:#e5e5e5">
+						<p class="textCenter">
+							<span class="mtcFont">부 서 명</span>
+						</p>
+					</td>
+					<td style="width:67.95pt; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter">
+<!-- 부서명 입력 .mtcInsert -->
+							<span class="mtcFont mtcInsert">부</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:15.6pt">
+					<td style=" border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="textCenter">
+							<span class="mtcFont">작 성 자</span>
+						</p>
+					</td>
+					<td style=" border-top:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+<!-- 작성자 입력 .mtcInsert -->
+						<p class="textCenter mtcFont mtcInsert" >
+
+						</p>
+					</td>
+				</tr>
+				<tr style="height:15.6pt">
+					<td style=" border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="textCenter">
+							<span class="mtcFont">페이지번호</span>
+						</p>
+					</td>
+					<td style=" border-top:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter">
+							<span class="mtcFont">1/1페이지</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:15.6pt">
+					<td style=" border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="textCenter mtcFont">
+							작성일자
+						</p>
+					</td>
+					<td style=" border-top:0.75pt solid #000000; border-left:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+<!-- 작성 일자 입력 .mtcInsert-->
+						<p class="textCenter mtcFont mtcInsert">
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p >
+				&#xa0;
+			</p>
+			<p >
+				<span style="font-family:Wingdings;"></span>
+				<span style="color: black;">번 &#xa0; 호 : </span>
+			</p>
+			<table class="mtcTable" style=" border-collapse:collapse">
+				<tr style="height:41.5pt">
+					<td colspan="1" style="border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000;">
+						<p class="textCenter mtcFont">
+							성&#xa0; 명
+						</p>
+					</td>
+					<td colspan="2" style="border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+<!-- 0. 환자 이름 .mtcVal -->
+						<p class="textCenter mtcFont mtcVal">
+						</p>
+					</td>
+					<td style="border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+							성&#xa0; 별
+						</p>
+					</td>
+					<td style="width:80.75pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+<!-- 1. 환자 성별-->
+						<p class="textCenter mtcFont mtcVal">
+						</p>
+					</td>
+					<td style="width:43.8pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="mtcFont textCenter" >
+							연&#xa0; 령
+						</p>
+					</td>
+					<td style="width:80.55pt; border-top:1.5pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+							<span>만</span>
+ <!-- 2. 환자 나이(만)	 -->
+							<span class="mtcVal">28</span>
+							<span>세</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:38.65pt">
+					<td style="border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont" >
+							주&#xa0; 소
+						</p>
+					</td>
+					<td colspan="3" style="border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+<!-- 3. 환자 주소1 / 4. 우편번호 / 5. 상세주소 -->
+							<span class="mtcVal">첫번째 주소를 적으면 될 거 같고</span>(<span class="mtcVal">12345</span>)
+							<span class="mtcVal">상세주소</span>
+						</p>
+					</td>
+					<td style="border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+							주민등록번호
+						</p>
+					</td>
+					<td colspan="2" style=" border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+<!-- 6. 환자 주민등록번호 -->
+						<p class="textCenter mtcFont mtcVal">
+						</p>
+					</td>
+				</tr>
+				<tr style="height:106.8pt">
+					<td colspan="2" style="width:108.75pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+							상병부위 및
+						</p>
+						<p class="textCenter mtcFont">
+							상 병 명
+						</p>
+					</td>
+					<td colspan="5" style="width:336.05pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+<!-- 7. 환부 코드 -->
+						<p class="textCenter">
+							<div class="inline-block mtcVal mtcFont" style="margin-left: 10px;">
+							#환부코드 <br>
+							#환부코드2 <br>
+							#환부코드3 <br>
+							</div>
+<!-- 8. 상병명 -->
+							<div class="inline-block mtcVal mtcFont">
+							저렇게 나오나 <br>
+							저렇게 나오나 <br>
+							저렇게 나오나 <br>
+							</div>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:50pt">
+					<td colspan="2" style="width:108.75pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont" >
+							입원일
+						</p>
+					</td>
+					<td colspan="2" style="width:336.05pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+<!-- 9. 입원일 -->
+							<span class="mtcVal">2023년 08월 09일</span><span>부터</span>
+						</p>
+					</td>
+					<td style="width:54.75pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+							<span>퇴원일</span>
+						</p>
+					</td>
+					<td colspan="2" style="width:108.75pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000;border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="textCenter mtcFont">
+<!-- 10. 퇴원일 -->
+							<span class="mtcVal">2023년 09월 09일</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:175pt">
+					<td colspan="7" style=" border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="mtcFont">
+<!-- 진료일 / 진료 내용 테이블 .mtcClinicTable-->
+							<table class="mtcFont mtcClinicTable" style="margin-left: 10px;">
+							  <tr>
+							    <th class="textCenter mtcFont" style="background-color:#e5e5e5; margin-right: 10px; padding-right: 10px; border-right:0.75pt solid #000000; border-bottom:0.75pt solid #000000;" width="138px">진료날짜</th>
+							    <th class="textCenter mtcFont" style="background-color:#e5e5e5; margin-left: 10px; padding-left: 10px; border-bottom:0.75pt solid #000000;" width="566px">진료 내용</th>
+							  </tr>
+							  <tr>
+							    <td class="mtcFont" style="border-right:0.75pt solid #000000;">2023년 05월 05일 </td>
+							    <td>되게 길게 나올 수도 있고 아닐 수도 있는거지 뭐 그란저나 일단 길게 써볼까</td>
+							  </tr>
+							  <tr>
+							    <td class="mtcFont" style="border-right:0.75pt solid #000000;">2023년 05월 05일 </td>
+							    <td>되게 길게 나올 수도 있고 아닐 수도 있는거지 뭐 그란저나 일단 길게 써볼까</td>
+							  </tr>
+							  <tr>
+							    <td class="mtcFont" style="border-right:0.75pt solid #000000;">2023년 05월 05일 </td>
+							    <td>되게 길게 나올 수도 있고 아닐 수도 있는거지 뭐 그란저나 일단 길게 써볼까</td>
+							  </tr>
+							</table>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:139.25pt">
+					<td colspan="7" style="width:446pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:1.5pt solid #000000; border-bottom:1.5pt solid #000000; vertical-align:middle">
+						<p class="textCenter mtcFont" style="margin-right:5pt; margin-left:5pt;">
+<!-- 11. 발급일 -->
+							<span class="mtcVal">2023년 10월 16일</span>
+						</p>
+						<p class="" style="margin-right:5pt; margin-left:5pt">
+							&#xa0;
+						</p>
+						<p class="mtcFont" style="margin-right:5pt; margin-left:5pt">
+							<span>의료기관명 : 메디폼 재활전문 병원</span>
+						</p>
+						<p class="" style="margin-right:5pt; margin-left:5pt">
+							&#xa0;
+						</p>
+						<p class="mtcFont" style="margin-right:5pt; margin-left:5pt">
+							<span>담당의사 : 면허번호 제</span>
+<!-- 12. 전문의 면허번호 -->							
+							<span class="mtcVal"></span>
+							<span>호</span>
+						</p>
+						<p class="" style="margin-right:5pt; margin-left:5pt">
+							&#xa0;
+						</p>
+						<p class="mtcFont" style="margin-right:15pt; margin-left:5pt; text-align:right">
+							<span>의&#xa0; 사 : </span>
+<!-- 13. 담당의사 이름 -->
+							<span class="mtcVal"></span>
+							<span>(인)</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:0pt">
+					<td style="width:54.95pt">
+					</td>
+					<td style="width:55.15pt">
+					</td>
+					<td style="width:75.05pt">
+					</td>
+					<td style="width:53.5pt">
+					</td>
+					<td style="width:81.95pt">
+					</td>
+					<td style="width:45pt">
+					</td>
+					<td style="width:81.9pt">
+					</td>
+				</tr>
+			</table>
+			<p class="" style="text-align:center; line-height:123%; font-size:1pt">
+				&#xa0;
+			</p>
+	</body>
+</html>

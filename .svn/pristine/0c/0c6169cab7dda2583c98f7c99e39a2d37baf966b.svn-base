@@ -1,0 +1,60 @@
+package kr.or.ddit.doctor.service;
+
+import java.util.List;
+
+import kr.or.ddit.doctor.vo.DoctorRoundClinicVO;
+import kr.or.ddit.doctor.vo.DoctorRoundInpatientRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundNurseRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundOtptRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundPrescriptionOrderVO;
+import kr.or.ddit.doctor.vo.DoctorRoundSickAndWoundedVO;
+import kr.or.ddit.doctor.vo.DoctorRoundVO;
+
+public interface IDoctorRoundService {
+
+	/**
+	 * 회진 내역 날짜 List
+	 * @return
+	 */
+	public List<DoctorRoundInpatientRecordVO> getInpatientRecordDateList(DoctorRoundVO roundVO);
+
+	/**
+	 * 진료 내역 날짜 List
+	 * @return
+	 */
+	public List<DoctorRoundClinicVO> getClinicDateList(DoctorRoundVO roundVO);
+
+	/**
+	 * 치료기록지 날짜 List
+	 * @return
+	 */
+	public List<DoctorRoundOtptRecordVO> getOtptRecordDateList(DoctorRoundVO roundVO);
+
+	/**
+	 * 간호기록지 날짜 List
+	 * @return
+	 */
+	public List<DoctorRoundNurseRecordVO> getNurseRecordDateList(DoctorRoundVO roundVO);
+
+	/**
+	 * 진료 내역 상세 조회
+	 * @param clinicVO
+	 * @return
+	 */
+	public DoctorRoundClinicVO getClinicVO(DoctorRoundClinicVO clinicVO);
+
+	/**
+	 * 진료 내역 출력시 첨부할 상병 목록
+	 * @param clinicVO
+	 * @return
+	 */
+	public List<DoctorRoundSickAndWoundedVO> roundSickAndWoundedList(DoctorRoundClinicVO clinicVO);
+
+	/**
+	 * 진료 내역 출력시 첨부할 처방 오더
+	 * @param clinicVO
+	 * @return
+	 */
+	public List<DoctorRoundPrescriptionOrderVO> prescriptionOrderList(DoctorRoundClinicVO clinicVO);
+
+}

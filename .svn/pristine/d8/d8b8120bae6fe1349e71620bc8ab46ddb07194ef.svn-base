@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.OrderMapper">
+
+	<insert id="insertPurchaseOrder" parameterType="purchaseOrderVO"
+		useGeneratedKeys="true">
+		<selectKey keyProperty="porderCd" resultType="string"
+			order="BEFORE">
+			select 'PO' || seq_purchase_order.nextval from dual
+		</selectKey>
+		insert into purchase_order(
+		porder_cd, porder_ct, porder_date, porder_empno, porder_total, porder_confm
+		)values(
+		#{porderCd}, '발주서', sysdate, #{porderEmpNo}, #{porderTotal}, 'N'
+		)
+	</insert>
+
+	<insert id="insertOrderDetail" parameterType="orderDetailVO">
+		<selectKey keyProperty="podetailCd" resultType="string" order="BEFORE">
+			select 'PD' || seq_purchase_order.nextval from dual
+		</selectKey>
+		insert into purchase_order_detail(
+		PODETAIL_CD, PORDER_CD, PODETAIL_NM, PODETAIL_MFBIZ, PODETAIL_UNIT,
+		PODETAIL_AMOUNT, PODETAIL_TOTAL, PODETAIL_MEMO
+		)values(
+		seq_purchase_order_detail.nextval, #{porderCd}, #{podetailNm},
+		#{podetailMfbiz}, #{podetailUnit}, #{podetailAmount},
+		#{podetailTotal}, ''
+		)
+	</insert>
+
+	<select id="selectOrderList" resultType="purchaseOrderVO">
+		select
+		PORDER_CD, PORDER_CT, PORDER_DATE, PORDER_EMPNO, PORDER_TOTAL, PORDER_CONFM
+		from
+		purchase_order
+		order by PORDER_CD desc
+	</select>
+
+	<select id="selectPurchaseList" resultType="orderDetailVO">
+		select
+		PODETAIL_CD, PORDER_CD, PODETAIL_NM, PODETAIL_MFBIZ, PODETAIL_UNIT,
+		PODETAIL_AMOUNT, PODETAIL_TOTAL, PODETAIL_MEMO
+		from
+		purchase_order_detail
+		order by PODETAIL_CD desc
+	</select>
+
+	<select id="selectOrderDetailList" resultType="orderDetailVO" parameterType="string">
+		select
+		PODETAIL_CD, PORDER_CD, PODETAIL_NM, PODETAIL_MFBIZ, PODETAIL_UNIT,
+		PODETAIL_AMOUNT, PODETAIL_TOTAL, PODETAIL_MEMO
+		from purchase_order_detail
+		where PORDER_CD = #{porderCd}
+		order by PODETAIL_CD desc
+	</select>
+
+
+
+
+
+
+
+</mapper>

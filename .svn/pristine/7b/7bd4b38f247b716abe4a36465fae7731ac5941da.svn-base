@@ -1,0 +1,26 @@
+package kr.or.ddit.administration.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class ReceiptController {
+
+	
+	
+	@RequestMapping(value="/receipt/list", method=RequestMethod.GET)
+	public String receiptMain() {
+	
+		log.info("receiptMain() 실행!!!");
+		
+		return "admin/receiptMain";
+	}
+	
+	
+	
+}

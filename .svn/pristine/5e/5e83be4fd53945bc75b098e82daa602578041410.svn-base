@@ -1,0 +1,33 @@
+package kr.or.ddit.mapper.administration;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.vo.SickbedVO;
+
+public interface HoslitalizationMapper {
+
+	List<SickbedVO> selectSickbedList();
+
+	int hospitalizationInsert(Map<String, Object> map);
+
+	void sickBedUpdate(Map<String, Object> map);
+
+	SickbedVO hospitalizationSelect(Map<String, String> map);
+
+	int hospitalizationUpdate(Map<String, Object> map);
+
+	void hospitalizationBedUpdate(Map<String, Object> map);
+
+	void patientUpdate(Map<String, Object> map);
+
+	void patientOutUpdate(Map<String, Object> map);
+
+	void receiveDetailUpdate(Map<String, Object> map);
+
+	void receiveDetailUpdate2(Map<String, Object> map);
+
+	String hospitalizationCheck(Map<String, Object> map);
+
+
+}

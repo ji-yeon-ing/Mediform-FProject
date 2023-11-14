@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.calender.SchedulerMapper">
+	
+	<resultMap type="SchedulerVO" id="schedulerVO">
+		<id property="schdlCd" column="SCHDL_CD"/>
+		<result property="schdlNm" column="SCHDL_NM"/>
+		<result property="schdlCn" column="SCHDL_CN"/>
+		<result property="pstgDt" column="PSTG_DT"/>
+		<result property="schdlBgngDt" column="SCHDL_BGNG_DT"/>
+		<result property="schdlEndDt" column="SCHDL_END_DT"/>
+		<result property="schdlColor" column="SCHDL_COLOR"/>
+		<result property="schdlAllDay" column="SCHDL_ALLDAY"/>
+		<result property="schdlUpdDt" column="SCHDL_UPD_DT"/>
+		<result property="schdlEmpNo" column="SCHDL_EMP_NO"/>
+		<result property="schdlDep" column="SCHDL_DEP"/>
+		<result property="schedulerEmpName" column="EMP_NM"/>
+	</resultMap>
+	
+	<!-- 최근 1개월 기간 필터 -->
+	<sql id="schedulerMonthSearch">
+		and(
+			(TRUNC(SYSDATE,'MM') = TO_DATE(SUBSTR(SCHDL_BGNG_DT,6,2),'MM'))
+			OR
+			(TRUNC(SYSDATE,'MM') = TO_DATE(SUBSTR(SCHDL_END_DT,6,2),'MM'))
+		)
+	</sql>
+	
+	<!-- calender 일정 조회 -->
+	<select id="schedulerMapList" resultType="schedulerVO">
+		SELECT
+		    SCHDL_CD, SCHDL_NM, SCHDL_CN, PSTG_DT, SCHDL_BGNG_DT, SCHDL_END_DT, SCHDL_COLOR,
+		    SCHDL_ALLDAY, SCHDL_UPD_DT, SCHDL_EMP_NO, SCHDL_DEP
+		FROM HOSPITAL_SCHEDULE
+		WHERE
+		<![CDATA[
+			SCHDL_DEP <> 'my'
+		]]>
+		<include refid="schedulerMonthSearch"/>
+		order by SCHDL_BGNG_DT
+	</select>
+
+	<!-- calender 부서 필터링 -->
+	<sql id="schedulerMapDepSearch">
+		<if test="department != null">
+	 		<if test="department == 'all'">
+		        and (s.SCHDL_DEP != 'my')
+		    </if>
+		    <if test="department != 'all'">
+		        and (s.SCHDL_DEP = #{department})
+		    </if>
+		    <if test="department == 'my'">
+		        and (s.SCHDL_EMP_NO = #{emp})
+		    </if>
+		</if>
+	 </sql>
+	
+	<!-- 시작-끝 날짜 필터링 -->
+	<sql id="schedulerMapStartEnd">
+		<if test="startDt != null and endDt != null">
+			<![CDATA[
+			and (
+				(SCHDL_BGNG_DT >= #{startDt})
+				and
+				(SCHDL_END_DT <= #{endDt})
+			)
+			]]>
+		</if>
+	</sql>
+
+	<!-- 시작일/끝일 필터링 -->
+	<sql id="schedulerSearch">
+	 	<if test="searchType != null and searchType == 'searchSchStart'">
+	 		and (SCHDL_BGNG_DT like '%'|| #{searchWord} || '%') 
+	 	</if>
+	 	<if test="searchType != null and searchType == 'searchSchEnd'">
+	 		and (SCHDL_END_DT like '%'|| #{searchWord} || '%') 
+	 	</if>
+	 </sql>
+	
+	<!-- calender 필터링 조회 -->
+	<select id="schedulerMapFilterList" parameterType="String" resultMap="schedulerVO">
+		SELECT
+			s.SCHDL_CD, s.SCHDL_NM, s.SCHDL_CN, s.PSTG_DT, s.SCHDL_BGNG_DT, s.SCHDL_END_DT, s.SCHDL_COLOR,
+			s.SCHDL_ALLDAY, s.SCHDL_UPD_DT, s.SCHDL_EMP_NO, s.SCHDL_DEP, e.EMP_NM
+		FROM HOSPITAL_SCHEDULE s
+		LEFT JOIN employee e ON s.SCHDL_EMP_NO = e.emp_no
+		WHERE 1=1
+		<include refid="schedulerMapDepSearch"/>
+		<include refid="schedulerMapStartEnd"/>
+		<include refid="schedulerSearch"/>
+		order by SCHDL_BGNG_DT
+	</select>
+	
+	<!-- 일정 등록 -->
+	<insert id="schedulerInsert" parameterType="schedulerVO" useGeneratedKeys="true" >
+		<selectKey keyProperty="schdlCd" resultType="String" order="BEFORE">
+			SELECT 'S' || SEQ_SCHEDULE.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		insert into HOSPITAL_SCHEDULE(
+			SCHDL_CD, SCHDL_DEP, SCHDL_NM, SCHDL_CN, PSTG_DT, SCHDL_BGNG_DT, SCHDL_END_DT, SCHDL_COLOR, SCHDL_ALLDAY, SCHDL_EMP_NO
+		) values(
+			#{schdlCd}, #{schdlDep}, #{schdlNm}, #{schdlCn}, SYSDATE, #{schdlBgngDt}, #{schdlEndDt}, #{schdlColor}, #{schdlAllDay}, #{schdlEmpNo}
+		)
+	</insert>
+	
+	<!-- 일정 수정 -->
+	<update id="schedulerUpdate" parameterType="schedulerVO">
+		UPDATE HOSPITAL_SCHEDULE
+		SET 
+			SCHDL_NM = #{schdlNm},
+			SCHDL_CN = #{schdlCn},
+			SCHDL_BGNG_DT = #{schdlBgngDt},
+			SCHDL_END_DT = #{schdlEndDt},
+			SCHDL_COLOR = #{schdlColor},
+			SCHDL_ALLDAY = #{schdlAllDay},
+			SCHDL_UPD_DT = SYSDATE
+		WHERE SCHDL_CD = #{schdlCd}
+	</update>
+	
+	<!-- 일정 삭제 -->
+	<delete id="schedulerDelete" parameterType="String">
+		DELETE
+		FROM HOSPITAL_SCHEDULE
+		WHERE
+			SCHDL_CD = #{schdlCd}
+	</delete>
+
+	 <!-- 부서 필터링 -->
+	<sql id="schedulerFilter">
+		<if test="searchVO != null and searchVO.schdlDep != null">
+		    <if test="searchVO.schdlDep == 'all'">
+		        and (SCHDL_DEP != 'my')
+		    </if>
+		    <if test="searchVO.schdlDep != 'all'">
+		        and (SCHDL_DEP = #{searchVO.schdlDep})
+		    </if>
+		    <if test="searchVO.schdlDep == 'my'">
+		        and (SCHDL_EMP_NO = #{searchVO.schdlEmpNo})
+		    </if>
+		</if>
+	</sql>	
+	
+	<!-- 검색 날짜 필터링 -->
+	<sql id="schedulerMonth">
+		<choose>
+			<when test="searchVO != null 
+				and searchVO.searchFilterSchStart != null
+				and searchVO.searchFilterSchEnd != null">
+				<![CDATA[
+				and (
+					(SCHDL_BGNG_DT >= #{searchVO.searchFilterSchStart})
+					and
+					(SCHDL_END_DT <= #{searchVO.searchFilterSchEnd})
+				)
+				]]>
+			</when>
+			<otherwise>
+				and(
+				(TRUNC(SYSDATE,'MM') = TO_DATE(SUBSTR(SCHDL_BGNG_DT,6,2),'MM'))
+				OR
+				(TRUNC(SYSDATE,'MM') = TO_DATE(SUBSTR(SCHDL_END_DT,6,2),'MM'))
+				)
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<!-- count 조회 -->
+	<select id="selectSchedulerCount" parameterType="pagingVO" resultType="int">
+		select count(SCHDL_CD)
+		from HOSPITAL_SCHEDULE 
+		where
+		<![CDATA[
+			SCHDL_DEP <> 'my'
+		]]>
+		<include refid="schedulerMonthSearch"/>
+	</select>
+	
+	<!-- 필터된 count 조회 -->
+	<select id="selectSchedulerFilterCount" parameterType="pagingVO" resultType="int">
+		select count(SCHDL_CD)
+		from HOSPITAL_SCHEDULE 
+		where 1=1 
+		<include refid="schedulerFilter"/>
+	 	<include refid="schedulerSearch"/>
+	 	<include refid="schedulerMonth"/>
+	</select>
+	
+	<!-- 리스트 조회 -->
+	<select id="selectSchedulerList" parameterType="pagingVO" resultMap="schedulerVO">
+		select
+		 	b.*, e.EMP_NM
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.SCHDL_BGNG_DT) rnum
+			 from (	
+			 	select * from HOSPITAL_SCHEDULE
+			 	where
+			 	<![CDATA[
+					SCHDL_DEP <> 'my'
+				]]>
+			 	<include refid="schedulerMonthSearch"/>
+			 ) a
+		) b
+		LEFT JOIN employee e ON b.SCHDL_EMP_NO = e.emp_no
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<!-- 필터 리스트 조회 -->
+	<select id="selectSchedulerFilterList" parameterType="pagingVO" resultMap="schedulerVO">
+		select
+		 	b.*, e.EMP_NM
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.SCHDL_BGNG_DT) rnum
+			 from (	
+			 	select * from HOSPITAL_SCHEDULE
+			 	where 1=1 
+			 	<include refid="schedulerFilter"/>
+			 	<include refid="schedulerSearch"/>
+			 	<include refid="schedulerMonth"/>
+			 	order by SCHDL_BGNG_DT
+			 ) a
+		) b
+		LEFT JOIN employee e ON b.SCHDL_EMP_NO = e.emp_no
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	
+</mapper>

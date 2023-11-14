@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.doctor.DoctorRoundMapper">
+<select id="getInpatientRecordDateList" parameterType="doctorRoundVO" resultType="doctorRoundInpatientRecordVO">
+	SELECT
+	    IR.INPTNT_NO
+	  , IR.INPTNT_DE
+	FROM
+	    INPATIENT_RECORD IR 
+	    JOIN HOSPITALIZATION H ON IR.HSPTLZ_CD =  H.HSPTLZ_CD 
+	WHERE 
+	    H.PATNT_NO = #{patntNo}
+	ORDER BY 
+    	IR.INPTNT_DE DESC
+
+</select>
+
+<select id="getClinicDateList" parameterType="doctorRoundVO" resultType="doctorRoundClinicVO">
+	SELECT
+	    clnic_no
+	  , clnic_time
+	FROM
+	    clinic
+	WHERE 
+	    patnt_no = #{patntNo}
+	ORDER BY 
+		clnic_time DESC
+	
+
+</select>
+
+<select id="getOtptRecordDateList" parameterType="doctorRoundVO" resultType="doctorRoundOtptRecordVO">
+	SELECT
+	    OTPT_CD
+	  , MDLRT_DT
+	FROM
+	    OTPT_RECORD
+	WHERE 
+	    patnt_no = #{patntNo}
+	ORDER BY 
+		MDLRT_DT DESC	    
+</select>
+
+<select id="getNurseRecordDateList" parameterType="doctorRoundVO" resultType="doctorRoundNurseRecordVO">
+	SELECT
+	    NRS_RCORD_CD
+	  , NRS_RCORD_DE
+	FROM
+	    NURSE_RECORD
+	WHERE 
+	    PATNT_NO = #{patntNo}
+	ORDER BY 
+		NRS_RCORD_DE DESC		    
+</select>
+
+<select id="getClinicVO" parameterType="doctorRoundClinicVO" resultType="doctorRoundClinicVO">
+	SELECT
+	    C.clnic_no
+	  , C.rcept_no
+	  , C.patnt_no
+	  , C.emp_no
+	  , C.clnic_time
+	  , C.clnic_cn
+	  , C.clnic_at
+	  , C.before_clnic_no
+	  , C.hsptlz_at
+	  , C.clnic_memo
+	  , C.atfss_dt
+	  , C.clnic_fe
+	  , H.hsptlz_cd
+	  , H.hsptlz_sckrm
+	  , H.hsptlz_sckbd
+	  , H.hsptlz_de
+	  , H.prarnde_lhstl
+	  , H.real_lhstl
+	  , P.patnt_nm 
+  	  , P.patnt_sexdstn
+  	  , P.PATNT_AGE
+  	  , E.EMP_NM
+	FROM
+	    clinic C 
+	JOIN hospitalization H ON C.clnic_no = H.clnic_no 
+	JOIN PATIENT P ON P.PATNT_NO = C.PATNT_NO
+	JOIN EMPLOYEE E ON E.EMP_NO = C.EMP_NO 
+	WHERE C.CLNIC_NO = #{clnicNo}
+</select>
+
+<select id="roundSickAndWoundedList" parameterType="doctorRoundClinicVO" resultType="doctorRoundSickAndWoundedVO">
+	SELECT
+	    sckwnd_cd
+	  , clnic_no
+	  , rcept_no
+	  , patnt_no
+	  , sckwnd_kr
+	  , sckwnd_en
+	  , body_cd
+	  , kcd
+	  , sckwnd_se
+	FROM
+	    sick_and_wounded
+	WHERE CLNIC_NO = #{clnicNo}
+</select>
+
+<select id="prescriptionOrderList" parameterType="doctorRoundClinicVO" resultType="doctorRoundPrescriptionOrderVO">
+	SELECT
+	    clnic_no
+	  , rcept_no
+	  , medcin_cd
+	  , prscrptn_nm
+	  , mdctn_cpcty
+	  , mdctn_unit
+	  , mdctn_co
+	  , mdctn_pd
+	  , mdctn_cours_usage
+	  , prscrptn_cd
+	FROM
+	    prescription_order
+	WHERE CLNIC_NO = #{clnicNo}
+</select>
+
+
+
+</mapper>

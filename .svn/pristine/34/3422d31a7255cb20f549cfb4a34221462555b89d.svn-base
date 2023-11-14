@@ -1,0 +1,11 @@
+package kr.or.ddit.administration.service;
+
+import java.util.Map;
+
+import kr.or.ddit.administration.ServiceResult;
+
+public interface IReceiptService {
+
+	ServiceResult receiptInsert(Map<String, String> map);
+
+}

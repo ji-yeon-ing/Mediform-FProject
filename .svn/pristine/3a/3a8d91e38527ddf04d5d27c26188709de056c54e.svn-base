@@ -1,0 +1,15 @@
+package kr.or.ddit.common.vo;
+
+import lombok.Data;
+
+// 치료 VO
+@Data
+public class MedicalTreatmentVO {
+	
+	private String mdlrtCd;  // 치료 코드(기본키)
+	private String mdlrtNm;	 // 치료명(NotNull)
+	private int mdlrtAmount; // 치료 금액(NotNull)
+	private String mllwncAt; // 급여 유무(NotNull)('N')
+	private String mdlrtCl;	 // 물리/작업 구분(NotNull)
+	
+}

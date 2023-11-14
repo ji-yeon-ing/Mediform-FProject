@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.BoardMapper">
+
+	<resultMap type="noticeBoardVO" id="noticeMap">
+		<id property="ntbdNo" column="ntbd_no"/>
+		<result property="ntbdNo" column="ntbd_no"/>
+		<result property="empNm" column="emp_nm"/>
+		<result property="ntbdSj" column="ntbd_sj"/>
+		<result property="ntbdWriter" column="ntbd_writer"/>
+		<result property="ntbdDay" column="ntbd_day"/>
+		<result property="ntbdCn" column="ntbd_cn"/>
+		<result property="ntbdAtchmnfl" column="ntbd_atchmnfl"/>
+		<result property="ntbdRdcnt" column="ntbd_rdcnt"/>
+		<result property="ntbdIpcrAt" column="ntbd_ipcr_at"/>
+		<result property="ntbdUpdde" column="ntbd_updde"/>
+		<collection property="fileList" resultMap="fileMap"/>	
+	</resultMap>
+
+	<resultMap type="fileVO" id="fileMap">
+		<id property="fileNo" column="file_no"/>
+		<result property="fileNo" column="file_no"/>
+		<result property="fileOrgin" column="file_orgin"/>
+		<result property="filePriort" column="file_priort"/>
+		<result property="fileNm" column="file_nm"/>
+		<result property="fileExtsn" column="file_extsn"/>
+		<result property="fileFlpth" column="file_flpth"/>
+	</resultMap>
+
+
+	<insert id="insertBoard" parameterType="noticeBoardVO">
+		
+		insert into notice_board (
+			NTBD_NO, NTBD_SJ, NTBD_WRITER, NTBD_DAY, NTBD_CN, 
+			NTBD_RDCNT, NTBD_IPCR_AT
+		) values (
+			seq_noticeBoard.nextval, #{ntbdSj}, #{ntbdWriter}, sysdate, #{ntbdCn},
+			 0, #{ntbdIpcrAt}
+		)
+				
+	</insert>
+
+	<insert id="insertNoticeFile" parameterType="fileVO">
+		insert into filemaster(
+			FILE_NO, FILE_ORIGIN, FILE_NM, FILE_EXTSN, FILE_FLPTH
+		) values (
+			seq_file_no.nextval
+			, seq_noticeBoard.currval
+			, #{fileNm}
+			, #{fileExtsn}
+			, #{fileFlpth}
+		)
+		
+		
+	
+	</insert>
+
+
+	<sql id="boardSearch">
+ 		<if test="searchType != null and searchType == 'title'">
+ 			and (NTBD_SJ like '%'||#{searchWord}||'%')
+ 		</if>
+ 		<if test="searchType != null and searchType == 'writer'">
+ 			and (NTBD_WRITER like '%'||#{searchWord}||'%')
+ 		</if>
+ 		<if test="searchType != null and searchType == 'both'">
+ 			and (NTBD_SJ like '%'||#{searchWord}||'%')
+ 			or (NTBD_WRITER like '%'||#{searchWord}||'%')
+ 		</if>
+ 	</sql>
+
+
+	<select id="selectBoardCount" parameterType="pagingVO" resultType="int">
+ 		select count(NTBD_NO)
+ 		from notice_board
+ 		where 1=1
+ 		<include refid="boardSearch"/>
+ 	</select>
+
+
+	<select id="selectBoardList" parameterType="pagingVO" resultType="noticeBoardVO">
+		 select
+		 	b.*
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.NTBD_NO desc) rnum
+			 from (	
+			 	select
+			 		NTBD_NO, NTBD_SJ, NTBD_CN, NTBD_WRITER,
+			 		NTBD_DAY, NTBD_RDCNT, EMP_NM
+			 	from notice_board, employee
+			 	where NTBD_WRITER = EMP_NO
+			 	<include refid="boardSearch"/>
+			 	order by NTBD_NO desc
+			 ) a
+		) b
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+ 	</select>
+
+
+	<update id="incrementHit" parameterType="String">
+	
+		update notice_board
+		set
+			NTBD_RDCNT = NTBD_RDCNT + 1
+		where NTBD_NO = #{NTBD_NO}
+	
+	</update>
+	
+	
+	<select id="selectBoard" parameterType="String" resultMap="noticeMap">
+	
+	
+		select
+			NTBD_NO, NTBD_SJ, NTBD_CN, NTBD_WRITER,
+			NTBD_DAY, NTBD_RDCNT, n.NTBD_IPCR_AT, NTBD_UPDDE, e.EMP_NM,
+			FILE_NO, FILE_ORIGIN, FILE_PRIORT, FILE_NM, FILE_EXTSN, FILE_FLPTH
+		from notice_board n
+			 left outer join filemaster f on (n.ntbd_no = f.file_origin)
+			 left outer join employee e on (n.NTBD_WRITER = e.EMP_NO)
+		where NTBD_NO = #{NTBD_NO}
+		
+	</select>
+	
+	
+	<select id="download" parameterType="String" resultType="fileVO">
+	
+		select
+			FILE_NO, FILE_ORIGIN, FILE_PRIORT, FILE_NM, FILE_EXTSN, FILE_FLPTH
+		from filemaster
+		where FILE_NO = #{fileNo}
+	
+	
+	</select>
+
+	<delete id="deleteNoticeFileByBoNo" parameterType="String">
+		delete from filemaster
+		where file_origin = #{ntbdNo}
+	
+	</delete>
+
+	<delete id="deleteNotice" parameterType="String">
+ 		delete from notice_board
+ 		where ntbd_no = #{ntbdNo}
+ 	</delete>
+
+</mapper>

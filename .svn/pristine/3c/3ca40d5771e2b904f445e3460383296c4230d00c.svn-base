@@ -1,0 +1,24 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.VoiceOutputVO;
+import kr.or.ddit.mapper.administration.VoiceMapper;
+
+@Service
+public class VoiceOutServiceImpl implements IVoiceOutService {
+
+	@Inject
+	private VoiceMapper voiceMapper;
+	
+	@Override
+	public List<VoiceOutputVO> voiceList() {
+		
+		return voiceMapper.voiceList();
+	}
+
+}

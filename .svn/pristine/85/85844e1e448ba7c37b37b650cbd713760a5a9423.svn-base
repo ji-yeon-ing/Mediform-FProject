@@ -1,0 +1,40 @@
+package kr.or.ddit.mapper.manager;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.vo.AuthorityVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+
+public interface ManagerEmployeeMapper {
+
+	public List<EmployeeVO> ApplicationList();
+
+	public EmployeeVO getEmployee(String empNo);
+
+	public int rejectUpdate(EmployeeVO empVO);
+
+	public int agreeEmployee(EmployeeVO empVO);
+
+	public List<EmployeeVO> EmployeeList();
+
+	public int insertAuth(AuthorityVO auth);
+
+	public int deleteAuth(EmployeeVO empVO);
+
+	public int updateEmp(EmployeeVO empVO);
+
+	public int retireEmp(EmployeeVO empVO);
+
+	public int selectEmpCount(PaginationInfoVO<EmployeeVO> empPagingVO);
+
+	public List<EmployeeVO> selectEmpList(PaginationInfoVO<EmployeeVO> empPagingVO);
+
+	public List<EmployeeVO> ogzChart();
+
+	public int clsfCheck(EmployeeVO empVO);
+
+	public Map<String, Integer> allCnt();
+
+}

@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.vo.ReservationVO;
+
+public interface ReservationMapper {
+
+	List<ReservationVO> selectList(Map<String, String> map);
+
+}

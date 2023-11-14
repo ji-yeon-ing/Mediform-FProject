@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.BoardMapper">
+
+
+	<insert id="insertBoard" parameterType="noticeBoardVO">
+		
+		<selectKey keyProperty="ntbdNo" resultType="int" order="BEFORE">
+			select seq_noticeBoard.nextval from dual
+		</selectKey>
+	
+		insert into notice_board (
+			NTBD_NO, NTBD_SJ, NTBD_WRITER, NTBD_DAY, NTBD_CN, 
+			NTBD_RDCNT, NTBD_IPCR_AT
+		) values (
+			#{ntbdNo}, #{ntbdSj}, #{ntbdWriter}, sysdate, #{ntbdCn},
+			 0, #{ntbdIpcrAt}
+		)		
+		<!-- #{ntbdAtchmnfl}, -->
+	</insert>
+
+
+	<sql id="boardSearch">
+ 		<if test="searchType != null and searchType == 'title'">
+ 			and (NTBD_SJ like '%'||#{searchWord}||'%')
+ 		</if>
+ 		<if test="searchType != null and searchType == 'writer'">
+ 			and (NTBD_WRITER like '%'||#{searchWord}||'%')
+ 		</if>
+ 		<if test="searchType != null and searchType == 'both'">
+ 			and (NTBD_SJ like '%'||#{searchWord}||'%')
+ 			or (NTBD_WRITER like '%'||#{searchWord}||'%')
+ 		</if>
+ 	</sql>
+
+
+	<select id="selectBoardCount" parameterType="pagingVO" resultType="int">
+ 		select count(NTBD_NO)
+ 		from notice_board
+ 		where 1=1
+ 		<include refid="boardSearch"/>
+ 	</select>
+
+
+	<select id="selectBoardList" parameterType="pagingVO" resultType="noticeBoardVO">
+		 select
+		 	b.*
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.NTBD_NO desc) rnum
+			 from (	
+			 	select
+			 		NTBD_NO, NTBD_SJ, NTBD_CN, NTBD_WRITER,
+			 		NTBD_DAY, NTBD_RDCNT, EMP_NM
+			 	from notice_board, employee
+			 	where NTBD_WRITER = EMP_NO
+			 	<include refid="boardSearch"/>
+			 	order by NTBD_NO desc
+			 ) a
+		) b
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+ 	</select>
+
+
+	<update id="incrementHit" parameterType="int">
+	
+		update notice_board
+		set
+			NTBD_RDCNT = NTBD_RDCNT + 1
+		where NTBD_NO = #{NTBD_NO}
+	
+	</update>
+	
+	
+	<select id="selectBoard" parameterType="int" resultType="noticeBoardVO">
+	
+	
+		select
+			NTBD_NO, NTBD_SJ, NTBD_CN, NTBD_WRITER,
+			NTBD_DAY, NTBD_RDCNT, NTBD_IPCR_AT, NTBD_UPDDE, EMP_NM
+		from notice_board, employee
+		where NTBD_WRITER = EMP_NO and NTBD_NO = #{NTBD_NO}
+		
+		<!-- #{ntbdAtchmnfl}, -->
+	
+	</select>
+
+
+
+</mapper>

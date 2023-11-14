@@ -1,0 +1,78 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.administration.vo.SmsWordVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.administration.SmsMapper;
+
+@Service
+public class SmsServiceImpl implements ISmsService {
+
+	@Inject
+	private SmsMapper smsMapper;
+
+	@Override
+	public List<SmsWordVO> smsWordList() {
+		return smsMapper.smsWordList();
+	}
+
+	@Override
+	public ServiceResult smsWordInsert(Map<String, String> map) {
+		
+		ServiceResult result = null;
+		
+		int status = smsMapper.smsWordInsert(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public SmsWordVO smsSelect(Map<String, String> map) {
+		return smsMapper.smsSelect(map);
+	}
+
+	@Override
+	public ServiceResult smsUpdate(Map<String, String> map) {
+		ServiceResult result = null;
+		
+		int status = smsMapper.smsUpdate(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult smsDelete(Map<String, String> map) {
+		
+		ServiceResult result = null;
+		
+		int status = smsMapper.smsDelete(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	
+	
+	
+	
+}

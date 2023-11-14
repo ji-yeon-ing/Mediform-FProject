@@ -1,0 +1,89 @@
+package kr.or.ddit.nurse.service.Impl;
+
+
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.HospitalizationVO;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.mapper.nurse.RoomMapper;
+import kr.or.ddit.nurse.service.IRoomservice;
+import kr.or.ddit.nurse.vo.IoVO;
+import kr.or.ddit.nurse.vo.MealVO;
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+import kr.or.ddit.nurse.vo.NurseTreatmentOrderVO;
+
+
+@Service
+public class RoomServiceImpl implements IRoomservice{
+
+	@Inject
+	private RoomMapper roomMapper;
+
+	@Override
+	public HospitalizationVO patientHospitaldetail(String clnicNo) {
+		return roomMapper.patientHospitaldetail(clnicNo);
+	}
+
+	@Override
+	public List<NurseRecordVO> selectTakeOverList(Map<String, String> map) {
+		return roomMapper.selectTakeOverList(map);
+	}
+
+	@Override
+	public int takeOverinsert(NurseRecordVO nurseRecord) {
+		return roomMapper.takeOverinsert(nurseRecord);
+	}
+
+	@Override
+	public List<MealVO> mealList(Map<String, String> map) {
+		return roomMapper.selectmealList(map);
+	}
+
+	@Override
+	public List<IoVO> IoList(Map<String, String> map) {
+		return roomMapper.selectIoList(map);
+	}
+
+	@Override
+	public int mealInsert(MealVO meal) {
+		return roomMapper.mealInsert(meal);
+	}
+
+	@Override
+	public int ioInsert(IoVO io) {
+		return roomMapper.ioInsert(io);
+	}
+
+	@Override
+	public List<ClinicVO> patntClnicList(Map<String, String> map) {
+		return roomMapper.patntClnicList(map);
+	}
+
+	@Override
+	public List<NurseTreatmentOrderVO> selectTreatmentList(Map<String, String> map) {
+		return roomMapper.selectTreatmentList(map);
+	}
+
+	@Override
+	public List<NurseTreatmentOrderVO> detailTreatmentList(Map<String, Object> map) {
+//		String date= (String) map.get("rceptDt");
+//		String dateformat = date.replace("-", "/");
+//		map.put("dateformat", dateformat);
+		return roomMapper.detailTreatmentList(map);
+	} 
+
+//	// 인수인계 갯수
+//	@ResponseBody
+//	@PostMapping("/takeOver/count")
+//	public int recordCount(@RequestBody NurseRecordVO nrsRcordCn) {
+//		log.info("recordCount() 실행...!");
+//		return recordService.selectTakeOverCount(nrsRcordCn);
+//	}
+}

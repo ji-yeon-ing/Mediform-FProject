@@ -1,0 +1,47 @@
+package kr.or.ddit.patient.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.patient.ServiceResult;
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface IPatientService {
+
+	// 환자 list 조회
+	public List<PatientVO> selectPatientList();
+	
+	// 환자 list ajax
+	public List<PatientVO> patientSearch(Map<String, String> map);
+	
+	// 환자 list ajax
+	public List<PatientVO> patientHsptlzListSearch(Map<String, String> map);
+	
+	// 입원환자 list ajax
+	public List<PatientVO> selectHsptlzList();
+
+	// 환자 조회 ajax
+	public PatientVO selectPatient(Map<String, String> map);
+	
+	// 신규환자 등록
+	public ServiceResult patientInsert(PatientVO patientVO);
+	
+	// 환자 번호로 환자 정보 조회
+	public PatientVO selectPatientOne(String patntNo);
+	
+	// 환자 정보 수정
+	public ServiceResult patientUpdate(PatientVO patientVO);
+
+	// 페이징 카운트
+	public int selectPatientCount(PaginationInfoVO<PatientVO> pagingVO);
+	
+	// 페이징 환자 list 조회
+	public List<PatientVO> selectPatientPagingList(PaginationInfoVO<PatientVO> pagingVO);
+
+	// 페이징 환자 list 조회, 필터링
+	public List<PatientVO> selectPatientPagingList(PaginationInfoVO<PatientVO> pagingVO, List<String> checkFilter);
+
+	public PatientVO clnicPatientList(Map<String, String> map);
+
+}

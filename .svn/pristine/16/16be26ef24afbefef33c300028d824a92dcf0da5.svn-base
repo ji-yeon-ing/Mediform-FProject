@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.MedicineMapper">
+	
+	<resultMap type="medicineVO" id="medicineMap">
+		<id property="medcinCd" column="MEDCIN_CD"/>
+		<result property="medcinNm" column="MEDCIN_NM"/>
+		<result property="medcinInvntry" column="MEDCIN_INVNTRY"/>
+		<result property="medcinUsage" column="MEDCIN_USAGE"/>
+		<result property="medcinMdctnCo" column="MEDCIN_MDCTN_CO"/>
+		<result property="medcinActing" column="MEDCIN_ACTNG"/>
+		<result property="medcinCont" column="MEDCIN_CONT"/>
+		<result property="medcinCd1" column="MEDCIN_CD1"/>
+		<result property="medcinCd2" column="MEDCIN_CD2"/>
+		<result property="medcinCd3" column="MEDCIN_CD3"/>
+		<result property="medcinCl1" column="MEDCIN_CL1"/>
+		<result property="medcinCl2" column="MEDCIN_CL2"/>
+		<result property="medcinCl2" column="MDCTN_COURS"/>
+		<result property="medcinPc" column="MEDCIN_PC"/>
+	</resultMap>
+	
+	<!-- 약품 list 조회 -->
+	<select id="selectMedicineList" resultType="medicineVO">
+		select
+		   	MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_USAGE, MEDCIN_MDCTN_CO, MEDCIN_ACTNG, MEDCIN_CONT, MEDCIN_CD1,
+		   	MEDCIN_CD2, MEDCIN_CD3, MEDCIN_CL1, MEDCIN_CL2, MDCTN_COURS, MEDCIN_PC
+		from medicine_inventory
+		order by MEDCIN_CD desc
+	</select>
+	
+	<!-- 약품 검색 & 페이징 list 조회 -->
+	<select id=""></select>
+
+	<select id="medicineSearch" parameterType="Map" resultType="medicineVO">
+		select
+    		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_PC
+		from medicine_inventory
+		where MEDCIN_CD like '%'||#{keyword}||'%' or MEDCIN_CD like '%'||#{keyword}||'%'
+		order by MEDCIN_CD asc
+	</select>
+
+	<select id="selectMedicine" parameterType="Map" resultType="medicineVO">
+		select
+    		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_USAGE, MEDCIN_MDCTN_CO, MEDCIN_ACTNG, MEDCIN_CONT, MEDCIN_CD1,
+		   	MEDCIN_CD2, MEDCIN_CD3, MEDCIN_CL1, MEDCIN_CL2, MDCTN_COURS, MEDCIN_PC
+		from medicine_inventory
+		where MEDCIN_CD = #{medcinCd}
+	</select>
+	
+
+	<!-- 환자정보 조회 -->
+	<select id="selectMedicineOne" parameterType="String" resultType="medicineVO">
+		select
+			MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_USAGE, MEDCIN_MDCTN_CO, MEDCIN_ACTNG, MEDCIN_CONT, MEDCIN_CD1,
+		   	MEDCIN_CD2, MEDCIN_CD3, MEDCIN_CL1, MEDCIN_CL2, MDCTN_COURS, MEDCIN_PC
+		from medicine_inventory
+		where MEDCIN_CD = #{medcinCd}
+	</select>
+
+
+
+</mapper>

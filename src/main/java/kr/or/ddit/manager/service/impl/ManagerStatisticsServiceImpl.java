@@ -1,0 +1,133 @@
+package kr.or.ddit.manager.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.PatientStatisticsVO;
+import kr.or.ddit.manager.service.IManagerStatisticsService;
+import kr.or.ddit.manager.vo.StatisticsVO;
+import kr.or.ddit.mapper.manager.ManagerStatisticsMapper;
+
+/**
+ * 매니저 통계 관련 서비스
+ * @author PC-20
+ *
+ */
+@Service
+public class ManagerStatisticsServiceImpl implements IManagerStatisticsService{
+
+	@Inject
+	private ManagerStatisticsMapper statisticsMapper;
+
+	// =================== 감사 통계 ===================
+	// 일, 주, 월, 연도별 top5
+	@Override
+	public List<StatisticsVO> dayAuditList() {
+		return statisticsMapper.dayAuditList();
+	}
+
+	@Override
+	public List<StatisticsVO> weekAuditList() {
+		return statisticsMapper.weekAuditList();
+	}
+
+	@Override
+	public List<StatisticsVO> monthAuditList() {
+		return statisticsMapper.monthAuditList();
+	}
+
+	@Override
+	public List<StatisticsVO> yearAuditList() {
+		return statisticsMapper.yearAuditList();
+	}
+	
+	/**
+	 * 과별 접속률
+	 */
+	@Override
+	public List<StatisticsVO> accessAuditList() {
+		return statisticsMapper.accessAuditList();
+	}
+	// =================== 감사 통계 ===================
+
+	
+	// =================== 환자 통계 ===================
+	
+	@Override
+	public List<StatisticsVO> genderSumList() {
+		return statisticsMapper.genderSumList();
+	}
+
+	@Override
+	public List<StatisticsVO> ageSumList() {
+		return statisticsMapper.ageSumList();
+	}
+
+	@Override
+	public List<StatisticsVO> addrList() {
+		return statisticsMapper.addrList();
+	}
+
+	@Override
+	public List<StatisticsVO> timeList() {
+		return statisticsMapper.timeList();
+	}
+
+	@Override
+	public List<StatisticsVO> revisitList() {
+		return statisticsMapper.revisitList();
+	}
+
+	@Override
+	public List<StatisticsVO> doctorStatisticsList() {
+		return statisticsMapper.doctorStatisticsList();
+	}
+
+	// =================== 환자 통계 ===================
+	
+	
+	// =================== 매출 통계 ===================
+	@Override
+	public List<StatisticsVO> dayReceiveList() {
+		return statisticsMapper.dayReceiveList();
+	}
+	
+	@Override
+	public List<StatisticsVO> weekReceiveList() {
+		return statisticsMapper.weekReceiveList();
+	}
+	
+	@Override
+	public List<StatisticsVO> monthReceiveList() {
+		return statisticsMapper.monthReceiveList();
+	}
+	
+	@Override
+	public List<StatisticsVO> yearReceiveList() {
+		return statisticsMapper.yearReceiveList();
+	}
+	
+	@Override
+	public List<StatisticsVO> avgDayList() {
+		return statisticsMapper.avgDayList();
+	}
+	// =================== 매출 통계 ===================
+
+	@Override
+	public List<StatisticsVO> sickStatisticsList() {
+		return statisticsMapper.sickStatisticsList();
+	}
+
+	@Override
+	public PatientStatisticsVO getPatientStatistics() {
+		return statisticsMapper.getPatientStatistics();
+	}
+
+	
+
+
+
+}

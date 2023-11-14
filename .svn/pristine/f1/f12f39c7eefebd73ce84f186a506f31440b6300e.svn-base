@@ -1,0 +1,77 @@
+package kr.or.ddit.common.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.common.service.ILoginService;
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform")
+public class LoginController {
+
+	@Inject
+	private ILoginService loginService;
+	
+	@GetMapping(value="/login")
+	public String loginForm() {
+		log.info("loginForm() 시작");
+		return "common/loginForm";
+	}
+	
+	@GetMapping(value="/main")
+	public String main() {
+		
+		
+		
+		
+		
+		return null;
+		
+		
+	}
+	
+	
+//	@PostMapping(value="/main")
+//	public String login(HttpServletRequest req, EmployeeVO employee, Model model) {
+//		log.info("login()post 메소드 실행!!!!!!!!!!!");
+//		String goPage = "";
+//		Map<String, String> errors = new HashMap<String, String>();
+//		
+//		EmployeeVO employeeVO = loginService.loginCheck(employee);
+//		if(employeeVO != null) { // 로그인 성공
+//				
+//			log.info("%%%%%%%%%%%%%%%%%%로그인 성공!!!!!!!!!!!!!!!!!");
+//				
+//			HttpSession session =  req.getSession();
+//			session.setAttribute("SessionInfo", employeeVO);
+//			goPage = "/mediform/admin/employee/insert";
+//				
+//		}else {
+//			model.addAttribute("message", "서버에러, 로그인 정보를 정확하게 입력해주세요");
+//			model.addAttribute("member", employee);
+//			model.addAttribute("bodyText", "login-page");
+//			log.info("%%%%%%%%%%%%%%%%%%SQL오류!!!!!!!!!!!!!!!!!");
+//			goPage = "common/loginForm";
+//		}
+//		
+//		
+//		return goPage;
+//	}
+	
+	
+	@GetMapping(value="logout")
+	public String logout() {
+		log.info("logout() 시작");
+		return "common/logout";
+	}
+}

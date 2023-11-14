@@ -1,0 +1,326 @@
+package kr.or.ddit.manager.controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.manager.service.IManagerSanctionService;
+import kr.or.ddit.manager.vo.ManagerReceiveVO;
+import kr.or.ddit.manager.vo.ManagerSanctionDetailVO;
+import kr.or.ddit.manager.vo.ManagerSanctionVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 결재 관련 컨트롤러
+ * @author PC-20
+ *
+ */
+@Slf4j
+@Controller
+@PreAuthorize("hasRole('ROLE_MANAGER')")
+@RequestMapping(value="/mediform/manager/sanction")
+public class ManagerSanctionController {
+
+	@Inject
+	private IManagerSanctionService sanctionService;
+	
+	
+	/**
+	 * 결재 메인 페이지
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value="/list/select")
+	public String sanctionList(Model model) {
+		Date endDate = new Date(); 
+	   
+	    model.addAttribute("endDate", endDate);
+	    
+		return "manager/sanctionMain";
+	}
+	
+	/**
+	 * 결재 신청 내역 ajax 페이징 컨트롤러
+	 * @param map
+	 * @return
+	 * @throws ParseException
+	 */
+	@ResponseBody
+	@RequestMapping(value="/list/select")
+	public ResponseEntity<PaginationInfoVO<ManagerSanctionVO>> sanctionListAjax(@RequestBody Map<String, String> map) throws ParseException{
+		
+		log.info("sanctionListAjax ... ");
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date startDate = null;
+		Date endDate = null;
+
+		String startDateString = (String) map.get("startDate");
+		String endDateString = (String) map.get("endDate");
+
+		try {
+		    if (startDateString != null && !startDateString.isEmpty()) {
+		        startDate = dateFormat.parse(startDateString);
+		    }
+		} catch (ParseException e) {
+		    // 날짜 파싱 오류 처리
+		    e.printStackTrace(); // 혹은 로그에 날짜 파싱 오류를 남길 수 있음
+		}
+
+		try {
+		    if (endDateString != null && !endDateString.isEmpty()) {
+		        endDate = dateFormat.parse(endDateString);
+		    }
+		} catch (ParseException e) {
+		    // 날짜 파싱 오류 처리
+		    e.printStackTrace(); // 혹은 로그에 날짜 파싱 오류를 남길 수 있음
+		}
+
+		String searchWord = (String) map.get("searchWord");
+		
+		int currentPage = Integer.parseInt((String) map.get("page"));
+		log.info("currentPage: " + currentPage);
+		if (currentPage <= 0) {
+		    currentPage = 1;
+		}
+
+
+		// 시작 날짜 없으면 설정
+		if (startDate == null) {
+		    Calendar calendar = Calendar.getInstance();
+		    calendar.set(Calendar.YEAR, 0);
+		    calendar.set(Calendar.MONTH, 0);
+		    calendar.set(Calendar.DAY_OF_MONTH, 0);
+		    calendar.set(Calendar.HOUR_OF_DAY, 0);
+		    calendar.set(Calendar.MINUTE, 0);
+		    calendar.set(Calendar.SECOND, 0);
+		    calendar.set(Calendar.MILLISECOND, 0);
+		    startDate = calendar.getTime();
+		}
+
+		// 종료 날짜 없으면 설정
+		if (endDate == null) {
+		    endDate = new Date(); 
+		}
+
+		
+		PaginationInfoVO<ManagerSanctionVO> pagingVO = new PaginationInfoVO<ManagerSanctionVO>();		
+		ManagerSanctionVO sanctionVO = new ManagerSanctionVO();
+		
+		pagingVO.setSearchWord(searchWord);
+		pagingVO.setStartDate(startDate);
+		pagingVO.setEndDate(endDate);
+		pagingVO.setSearchVO(sanctionVO);
+		pagingVO.setCurrentPage(currentPage);
+		
+		int totalRecord = sanctionService.sanctionCount(pagingVO);
+		List<ManagerSanctionVO> dataList = sanctionService.sanctionList(pagingVO);
+
+		pagingVO.setTotalRecord(totalRecord);
+		pagingVO.setDataList(dataList);
+		
+		return new ResponseEntity<PaginationInfoVO<ManagerSanctionVO>>(pagingVO, HttpStatus.OK);
+	}
+	
+	/**
+	 * 처리 내역 ajax 페이징
+	 * @param map
+	 * @return
+	 * @throws ParseException
+	 */
+	@ResponseBody
+	@RequestMapping(value="/completion/list/select")
+	public ResponseEntity<PaginationInfoVO<ManagerSanctionVO>> sanctionCompleteAjax(@RequestBody Map<String, String> map) throws ParseException{
+		
+		log.info("sanctionCompleteAjax ... ");
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date startDate = null;
+		Date endDate = null;
+		
+		String startDateString = (String) map.get("startDate");
+		String endDateString = (String) map.get("endDate");
+		
+		try {
+			if (startDateString != null && !startDateString.isEmpty()) {
+				startDate = dateFormat.parse(startDateString);
+			}
+		} catch (ParseException e) {
+			// 날짜 파싱 오류 처리
+			e.printStackTrace(); // 혹은 로그에 날짜 파싱 오류를 남길 수 있음
+		}
+		
+		try {
+			if (endDateString != null && !endDateString.isEmpty()) {
+				endDate = dateFormat.parse(endDateString);
+			}
+		} catch (ParseException e) {
+			// 날짜 파싱 오류 처리
+			e.printStackTrace(); // 혹은 로그에 날짜 파싱 오류를 남길 수 있음
+		}
+		
+		String searchWord = (String) map.get("searchWord");
+		String searchType = (String) map.get("searchType");
+		if(searchType == null || searchType.equals("")) {
+			searchType = "ALL";
+		}
+		
+		int currentPage = Integer.parseInt((String) map.get("page"));
+		log.info("currentPage: " + currentPage);
+		if (currentPage <= 0) {
+			currentPage = 1;
+		}
+		
+		// 시작 날짜 없으면 설정
+		if (startDate == null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, 0);
+			calendar.set(Calendar.MONTH, 0);
+			calendar.set(Calendar.DAY_OF_MONTH, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			startDate = calendar.getTime();
+		}
+		
+		// 종료 날짜 없으면 설정
+		if (endDate == null) {
+			endDate = new Date(); 
+		}
+		
+		PaginationInfoVO<ManagerSanctionVO> pagingVO = new PaginationInfoVO<ManagerSanctionVO>();		
+		ManagerSanctionVO sanctionVO = new ManagerSanctionVO();
+		
+		pagingVO.setSearchType(searchType);
+		pagingVO.setSearchWord(searchWord);
+		pagingVO.setStartDate(startDate);
+		pagingVO.setEndDate(endDate);
+		pagingVO.setSearchVO(sanctionVO);
+		pagingVO.setCurrentPage(currentPage);
+		
+		int totalRecord = sanctionService.sanctionCompletionCount(pagingVO);
+		List<ManagerSanctionVO> dataList = sanctionService.sanctionCompletionList(pagingVO);
+		
+		pagingVO.setTotalRecord(totalRecord);
+		pagingVO.setDataList(dataList);
+		
+		return new ResponseEntity<PaginationInfoVO<ManagerSanctionVO>>(pagingVO, HttpStatus.OK);
+	}
+	
+	/**
+	 * 처리 내역 상세 조회
+	 * @param map
+	 * @return
+	 */
+	@PostMapping(value="/completeList/detail/select")
+	public ResponseEntity<ManagerSanctionVO> completeDetail(@RequestBody Map<String, String> map){
+		
+		String porderCd = map.get("porderCd");
+		
+		ManagerSanctionVO sanctionVO = sanctionService.sanctionDetail(porderCd);
+		List<ManagerSanctionDetailVO> sanctionDetailList = sanctionService.sanctionDetailList(porderCd);
+		
+		sanctionVO.setSanctionDetailList(sanctionDetailList);
+		
+		return new ResponseEntity<ManagerSanctionVO>(sanctionVO, HttpStatus.OK);
+	}
+	
+	/**
+	 * 신청 내역 상세 조회
+	 * @param map
+	 * @return
+	 */
+	@PostMapping(value="/detail/select")
+	public ResponseEntity<ManagerSanctionVO> sanctionDetail(@RequestBody Map<String, String> map){
+		
+		String porderCd = map.get("porderCd");
+		
+		ManagerSanctionVO sanctionVO = sanctionService.sanctionDetail(porderCd);
+		List<ManagerSanctionDetailVO> sanctionDetailList = sanctionService.sanctionDetailList(porderCd);
+		
+		sanctionVO.setSanctionDetailList(sanctionDetailList);
+		
+		return new ResponseEntity<ManagerSanctionVO>(sanctionVO, HttpStatus.OK);
+	}
+	
+	/**
+	 * 결재 승인 처리
+	 * @return
+	 */
+	@PostMapping(value="/approval")
+	public String sanctionAgree(ManagerSanctionVO sanctionVO, RedirectAttributes ra) {
+		
+//		log.info("getPorderCd : " + sanctionVO.getPorderCd());
+//		log.info("getPorderAuth2 : " + sanctionVO.getPorderAuth2());
+//		log.info("getPorderConfm : " + sanctionVO.getPorderConfm());
+		
+		String msg = "";
+		int cnt = sanctionService.sanctionAgree(sanctionVO);
+		if(cnt != 0 && cnt > 0) {
+			msg = "y";
+		}else {
+			msg = "n";
+		}
+		
+		ra.addFlashAttribute("msg", msg);
+		
+		Date endDate = new Date(); 
+		ra.addFlashAttribute("endDate", endDate);
+	    
+		return "redirect:/mediform/manager/sanction/list/select";
+	}
+	
+	/**
+	 * 결재 반려 처리
+	 * @return
+	 */
+	@PostMapping(value="/reject")
+	public String sanctionReject(ManagerSanctionVO sanctionVO, RedirectAttributes ra) {
+		
+//		log.info("getPorderCd : " + sanctionVO.getPorderCd());
+//		log.info("getPorderAuth2 : " + sanctionVO.getPorderAuth2());
+//		log.info("getPorderConfm : " + sanctionVO.getPorderConfm());
+		
+		String msg = "";
+		int cnt = sanctionService.sanctionReject(sanctionVO);
+		if(cnt != 0 && cnt > 0) {
+			msg = "y";
+		}else {
+			msg = "n";
+		}
+		
+		ra.addFlashAttribute("msg", msg);
+		
+		Date endDate = new Date(); 
+		ra.addFlashAttribute("endDate", endDate);
+		
+		return "redirect:/mediform/manager/sanction/list/select";
+	}
+	
+	
+	
+	
+}

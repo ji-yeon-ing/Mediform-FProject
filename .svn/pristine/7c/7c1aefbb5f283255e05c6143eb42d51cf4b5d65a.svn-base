@@ -1,0 +1,104 @@
+package kr.or.ddit.nurse.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.nurse.service.IMedicineService;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/nurse")
+public class MedicineController {
+	
+	@Inject
+	private IMedicineService medicineService;
+	
+	// 약품재고현황조회 
+	@RequestMapping(value = "/medicine/main")
+	public String medicineMain(
+		@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+		@RequestParam(required = false, defaultValue = "medcinnm") String searchType,
+		@RequestParam(required = false) String searchWord,
+		MedicineVO medicineVO,
+		Model model) {
+		
+		log.info("medicineList() 실행...!");
+
+		// 약품재고현황조회 
+        PaginationInfoVO<MedicineVO> pagingVO = new PaginationInfoVO<MedicineVO>();
+        
+        if(StringUtils.isNotBlank(searchWord)) {
+            pagingVO.setSearchType(searchType);
+            pagingVO.setSearchWord(searchWord);
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchWord", searchWord);
+        }
+        
+        pagingVO.setCurrentPage(currentPage);
+        int totalRecord = medicineService.selectMedicineCount(pagingVO);
+        
+        pagingVO.setTotalRecord(totalRecord);
+        
+        List<MedicineVO> medicineList = medicineService.selectMedicinePagingList(pagingVO);
+        pagingVO.setDataList(medicineList);
+        
+        model.addAttribute("pagingVO", pagingVO);
+
+//        // 발주서 조회
+//        List<MedicineVO> orderList = medicineService.selectOrderList();
+//        model.addAttribute("orderList", orderList);
+        
+        return "nurse/medicine";
+    }
+
+	// 약품 검색(ajax)
+	@ResponseBody
+	@PostMapping("/search")
+	public List<MedicineVO> medicineSearch(@RequestBody Map<String, String> map) {
+		
+		List<MedicineVO> medicineList = medicineService.medicineSearch(map);
+		
+		log.info("medicineList : "+ medicineList);
+		return medicineList;
+	}
+	
+	
+	// 약품 정보 조회(ajax)
+	@ResponseBody
+	@PostMapping("/info")
+	public MedicineVO medicineInfo(@RequestBody Map<String, String> map) {
+		
+		MedicineVO medicineInfo = medicineService.selectMedicine(map);
+		
+		log.info("medicineInfo : "+ medicineInfo);
+		return medicineInfo;
+	}
+	
+	
+	// 약품 전체 정보 조회(ajax)
+	@ResponseBody
+	@PostMapping("/searchList")
+	public List<MedicineVO> medicineSearchList(@RequestBody MedicineVO madicineVO) {
+		
+		List<MedicineVO> medicineList = medicineService.selectMedicineList(madicineVO.getMedcinNm());
+		
+		log.info("medicineList : "+ medicineList);
+		return medicineList;
+	}
+	
+	
+}

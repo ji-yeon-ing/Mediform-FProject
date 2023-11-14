@@ -1,0 +1,43 @@
+package kr.or.ddit.calender.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.calender.service.IModuleCanlenderService;
+import kr.or.ddit.calender.vo.ModuleCalenderVO;
+import kr.or.ddit.mapper.calender.ModuleCalenderMapper;
+
+@Service
+public class ModuleCalenderServiceImpl implements IModuleCanlenderService{
+
+	@Inject
+	private ModuleCalenderMapper moduleCalenderMapper;
+	
+	// 입력
+	@Override
+	public int moduleCalenderInsert(ModuleCalenderVO moduleCalenderVO) {
+		return this.moduleCalenderMapper.moduleCalenderInsert(moduleCalenderVO);
+	}
+
+	@Override
+	public List<ModuleCalenderVO> moduleCalenderList() {
+		
+		return this.moduleCalenderMapper.moduleCalenderList();
+	}
+
+	@Override
+	public int moduleCalenderDelete(String startDate) {
+		
+		return this.moduleCalenderMapper.moduleCalenderDelete(startDate);
+	}
+
+	@Override
+	public int moduleCalenderUpdate(ModuleCalenderVO moduleCalenderVO) {
+		
+		return this.moduleCalenderMapper.moduleCalenderUpdate(moduleCalenderVO);
+	}
+
+}

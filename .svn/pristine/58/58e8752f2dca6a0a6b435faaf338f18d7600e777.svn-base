@@ -1,0 +1,24 @@
+package kr.or.ddit.manager.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping(value="/mediform/manager/statistics")
+public class ManagerStatisticsController {
+
+	@GetMapping(value="/patient/select")
+	public String statisticsPatient(Model model) {
+		List<String> testList = new ArrayList<String>();
+		model.addAttribute("testList", testList);
+		return "manager/patientStatistics";
+	}
+}

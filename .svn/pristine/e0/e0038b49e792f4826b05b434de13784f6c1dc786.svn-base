@@ -1,0 +1,18 @@
+package kr.or.ddit.common.vo;
+
+import lombok.Data;
+
+@Data
+public class SickbedVO {
+
+	private String sckbdNo; // 병상번호 - 기본키
+	private String sckrmNo; // 병실호수 - 외래키 - 복합키
+	private String patntNo; // 환자번호 
+	private String patntNm; // 환자이름
+	private String sckbdSttus; // 병상 상태, 기본 값 N / 입원 중이면 Y
+	private String empNo; // 담당 간호사
+	private String empNm; // 담당 간호사 이름
+	private String sckrmCnt; // 인실
+	private String sckrmPrice; // 병실 가격
+	
+}

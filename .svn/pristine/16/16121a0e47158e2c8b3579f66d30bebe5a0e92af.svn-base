@@ -1,0 +1,2487 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<c:set var="customUser" value="${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal}" />
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="generator" content="PhpSpreadsheet, https://github.com/PHPOffice/PhpSpreadsheet">
+      <meta name="author" content="HIRA" />
+    <style type="text/css">
+      html { font-family:Calibri, Arial, Helvetica, sans-serif; font-size:11pt; background-color:white }
+      a.comment-indicator:hover + div.comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em }
+      a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em }
+      div.comment { display:none }
+      table { border-collapse:collapse; page-break-after:always }
+      .gridlines td { border:1px dotted black }
+      .gridlines th { border:1px dotted black }
+      .b { text-align:center }
+      .e { text-align:center }
+      .f { text-align:right }
+      .inlineStr { text-align:left }
+      .n { text-align:right }
+      .s { text-align:left }
+      td.style0 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      th.style0 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      td.style1 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style1 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style2 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style2 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style3 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style3 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style4 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style4 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style5 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style5 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style6 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style6 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style7 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style7 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style8 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style8 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style9 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style9 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style10 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; font-weight:bold; color:#000000; font-family:'맑은 고딕'; font-size:20pt; background-color:white }
+      th.style10 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; font-weight:bold; color:#000000; font-family:'맑은 고딕'; font-size:20pt; background-color:white }
+      td.style11 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      th.style11 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      td.style12 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style12 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style13 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style13 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style14 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style14 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style15 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style15 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style16 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style16 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style17 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style17 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style18 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style18 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style19 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style19 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style20 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style20 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style21 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style21 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style22 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style22 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style23 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style23 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style24 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style24 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style25 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style25 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style26 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style26 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style27 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style27 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style28 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style28 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style29 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style29 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style30 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style30 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style31 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style31 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style32 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style32 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style33 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style33 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style34 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style34 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style35 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style35 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style36 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style36 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style37 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style37 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style38 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style38 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style39 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style39 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style40 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style40 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style41 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style41 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style42 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style42 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style43 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style43 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style44 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style44 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style45 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style45 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style46 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style46 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style47 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style47 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style48 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style48 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style49 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style49 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style50 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style50 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style51 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style51 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style52 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style52 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style53 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style53 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style54 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style54 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style55 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style55 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style56 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style56 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style57 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style57 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style58 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style58 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style59 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style59 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style60 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style60 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style61 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style61 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style62 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style62 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style63 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style63 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style64 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style64 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style65 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style65 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style66 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style66 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style67 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style67 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style68 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style68 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style69 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style69 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style70 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style70 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style71 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style71 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style72 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style72 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style73 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style73 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style74 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style74 { vertical-align:middle; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style75 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style75 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style76 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style76 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style77 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style77 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style78 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style78 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style79 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style79 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style80 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style80 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style81 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style81 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style82 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style82 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style83 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style83 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style84 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style84 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style85 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style85 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style86 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style86 { vertical-align:middle; text-align:justify; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style87 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style87 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style88 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style88 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style89 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style89 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style90 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style90 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style91 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style91 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style92 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style92 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style93 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style93 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style94 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style94 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style95 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style95 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style96 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style96 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style97 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style97 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style98 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style98 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style99 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style99 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style100 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style100 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style101 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style101 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style102 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style102 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style103 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style103 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style104 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style104 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style105 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style105 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style106 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style106 { vertical-align:middle; text-align:justify; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style107 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style107 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style108 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style108 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style109 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style109 { vertical-align:middle; text-align:center; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style110 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style110 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style111 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style111 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style112 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style112 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style113 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style113 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style114 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style114 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style115 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style115 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style116 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style116 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style117 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style117 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style118 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style118 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style119 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style119 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style120 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style120 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style121 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style121 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style122 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style122 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style123 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style123 { vertical-align:middle; text-align:center; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style124 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style124 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style125 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style125 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style126 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style126 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style127 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style127 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style128 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style128 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style129 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style129 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:none #000000; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style130 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style130 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style131 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style131 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style132 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style132 { vertical-align:top; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style133 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style133 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style134 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style134 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style135 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style135 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style136 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style136 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style137 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style137 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style138 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style138 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style139 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style139 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style140 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style140 { vertical-align:middle; text-align:center; border-bottom:3px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style141 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      th.style141 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      td.style142 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      th.style142 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      td.style143 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      th.style143 { vertical-align:middle; border-bottom:1px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:11pt; background-color:white }
+      td.style144 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style144 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style145 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style145 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style146 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style146 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style147 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style147 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style148 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style148 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style149 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style149 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:1px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style150 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style150 { vertical-align:middle; text-align:justify; border-bottom:3px solid #5D5D5D !important; border-top:3px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style151 { vertical-align:middle; text-align:center; border-bottom:3px solid #595959 !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style151 { vertical-align:middle; text-align:center; border-bottom:3px solid #595959 !important; border-top:1px solid #5D5D5D !important; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style152 { vertical-align:middle; text-align:center; border-bottom:3px solid #595959 !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style152 { vertical-align:middle; text-align:center; border-bottom:3px solid #595959 !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style153 { vertical-align:middle; text-align:center; border-bottom:3px solid #595959 !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style153 { vertical-align:middle; text-align:center; border-bottom:3px solid #595959 !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style154 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:none #000000; border-left:3px solid #595959 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style154 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:none #000000; border-left:3px solid #595959 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style155 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:none #000000; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style155 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:none #000000; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style156 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:none #000000; border-left:1px solid #000000 !important; border-right:3px solid #595959 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style156 { vertical-align:middle; text-align:center; border-bottom:1px solid #000000 !important; border-top:none #000000; border-left:1px solid #000000 !important; border-right:3px solid #595959 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style157 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:3px solid #595959 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style157 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:3px solid #595959 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style158 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style158 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:1px solid #000000 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style159 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:3px solid #595959 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style159 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:1px solid #000000 !important; border-top:1px solid #000000 !important; border-left:1px solid #000000 !important; border-right:3px solid #595959 !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style160 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #595959 !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style160 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #595959 !important; border-top:none #000000; border-left:3px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style161 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #595959 !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style161 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #595959 !important; border-top:none #000000; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style162 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #595959 !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style162 { vertical-align:middle; text-align:left; padding-left:0px; border-bottom:3px solid #595959 !important; border-top:none #000000; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style163 { vertical-align:middle; text-align:right; padding-right:0px; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style163 { vertical-align:middle; text-align:right; padding-right:0px; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:1px solid #5D5D5D !important; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style164 { vertical-align:middle; text-align:right; padding-right:0px; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style164 { vertical-align:middle; text-align:right; padding-right:0px; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:none #000000; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      td.style165 { vertical-align:middle; text-align:right; padding-right:0px; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      th.style165 { vertical-align:middle; text-align:right; padding-right:0px; border-bottom:1px solid #5D5D5D !important; border-top:1px solid #5D5D5D !important; border-left:none #000000; border-right:3px solid #5D5D5D !important; color:#000000; font-family:'맑은 고딕'; font-size:10pt; background-color:white }
+      table.sheet0 col.col0 { width:35.92222181pt }
+      table.sheet0 col.col1 { width:35.92222181pt }
+      table.sheet0 col.col2 { width:42.69999951pt }
+      table.sheet0 col.col3 { width:45.41111059pt }
+      table.sheet0 col.col4 { width:45.41111059pt }
+      table.sheet0 col.col5 { width:45.41111059pt }
+      table.sheet0 col.col6 { width:18.97777756pt }
+      table.sheet0 col.col7 { width:27.78888857pt }
+      table.sheet0 col.col8 { width:18.97777756pt }
+      table.sheet0 col.col9 { width:27.1111108pt }
+      table.sheet0 col.col10 { width:29.82222188pt }
+      table.sheet0 col.col11 { width:59.64444376pt }
+      table.sheet0 col.col12 { width:12.19999986pt }
+      table.sheet0 col.col13 { width:10.84444432pt }
+      table.sheet0 col.col14 { width:10.84444432pt }
+      table.sheet0 col.col15 { width:16.94444425pt }
+      table.sheet0 col.col16 { width:20.3333331pt }
+      table.sheet0 col.col17 { width:6.09999993pt }
+      table.sheet0 col.col18 { width:27.1111108pt }
+      table.sheet0 col.col19 { width:59.64444376pt }
+      table.sheet0 .column13 { visibility:collapse; display:none }
+      table.sheet0 tr { height:15pt }
+      table.sheet0 tr.row0 { height:30pt }
+      table.sheet0 tr.row1 { height:17.25pt }
+      table.sheet0 tr.row2 { height:17.5pt }
+      table.sheet0 tr.row3 { height:36pt }
+      table.sheet0 tr.row4 { height:17.5pt }
+      table.sheet0 tr.row5 { height:17.5pt }
+      table.sheet0 tr.row6 { height:18pt }
+      table.sheet0 tr.row7 { height:16.5pt }
+      table.sheet0 tr.row8 { height:16.5pt }
+      table.sheet0 tr.row9 { height:17.5pt }
+      table.sheet0 tr.row12 { height:32.25pt }
+      table.sheet0 tr.row14 { height:17.5pt }
+      table.sheet0 tr.row15 { height:17.5pt }
+      table.sheet0 tr.row16 { height:17.5pt }
+      table.sheet0 tr.row17 { height:17.5pt }
+      table.sheet0 tr.row19 { height:17.5pt }
+      table.sheet0 tr.row20 { height:18pt }
+      table.sheet0 tr.row21 { height:18pt }
+      table.sheet0 tr.row22 { height:17.5pt }
+      table.sheet0 tr.row23 { height:16.5pt }
+      table.sheet0 tr.row24 { height:16.5pt }
+      table.sheet0 tr.row25 { height:16.5pt }
+      table.sheet0 tr.row26 { height:16.5pt }
+      table.sheet0 tr.row27 { height:16.5pt }
+      table.sheet0 tr.row28 { height:16.5pt }
+      table.sheet0 tr.row29 { height:16.5pt }
+      table.sheet0 tr.row30 { height:16.5pt }
+      table.sheet0 tr.row31 { height:16.5pt }
+      table.sheet0 tr.row32 { height:16.5pt }
+      table.sheet0 tr.row33 { height:28.5pt }
+      table.sheet0 tr.row34 { height:16.5pt }
+      table.sheet0 tr.row35 { height:16.5pt }
+      table.sheet0 tr.row36 { height:16.5pt }
+      table.sheet0 tr.row37 { height:17.5pt }
+      table.sheet0 tr.row38 { height:18pt }
+      table.sheet0 tr.row39 { height:18pt }
+      table.sheet0 tr.row40 { height:17.5pt }
+      table.sheet0 tr.row43 { height:17.5pt }
+      table.sheet0 tr.row44 { height:16.5pt }
+      table.sheet0 tr.row45 { height:291.75pt }
+      table.sheet0 tr.row46 { height:17.5pt }
+      table.sheet0 tr.row47 { height:17.5pt }
+    </style>
+<style>
+.table thead {
+	position: sticky;
+	top: 0;
+	z-index: 1; /* 다른 콘텐츠 위로 표시하기 위해 z-index를 설정합니다. */
+}
+
+.table .totalPayAmountTr{
+	position: sticky;
+	top: 0;
+	z-index: 1; /* 다른 콘텐츠 위로 표시하기 위해 z-index를 설정합니다. */
+
+}
+
+@media print {
+
+ html, body {
+    height:100%; 
+    overflow: hidden;
+  }
+  
+.modal-footer, .btn-close {
+  display: none;
+}
+
+body, .modal-content {
+  margin: 0;
+  padding: 0;
+  overflow: visible;  
+	}
+
+}
+
+</style>
+
+<div class="row">
+	
+
+	
+	<!--  상세조회 종료 -->
+	<!-- list (실상 영수증 list) -->
+	<div class="col-lg-12">
+		<div class="card" style="height: 730px;">
+			<div class="card-header border-bottom"
+				style="background-color: midnightblue">
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h5 class="mb-0 text-white fw-semi-bold" id="header">
+							수납
+						</h5>
+					</div>
+					<div class="col-auto ms-auto"></div>
+				</div>
+			</div>
+			<div class="card-body pt-0">
+				<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+					<form action="/mediform/admin/receive/list" method="post"
+						id="searchForm" style="display: flex;">
+						<div style="display: flex; margin-left: 50px;">
+							<input type="hidden" name="page" id="page" /> 
+							<select
+								class="form-select form-select-sm"
+								aria-label=".form-select-sm example" id="searchType"
+								name="searchType" style="width: initial;">
+								<option value="all"
+									<c:if test="${searchType eq 'all'}">selected</c:if>>전체</option>
+								<option value="com"
+									<c:if test="${searchType eq 'com'}">selected</c:if>>수납완료</option>
+								<option value="part"
+									<c:if test="${searchType eq 'part'}">selected</c:if>>부분수납</option>
+								<option value="unpaid"
+									<c:if test="${searchType eq 'unpaid'}">selected</c:if>>미수납</option>
+							</select>
+							<div class="search-box" id="patientSearchBox" style="display: flex;">
+								<input
+									class="searchInput form-control search-input fuzzy-search"
+									type="search" placeholder="수진자명을 입력해 주세요." aria-label="Search"
+									id="searchWordBox" value="${searchWord }" name="searchWord" />
+								<span class="fas fa-search search-box-icon"></span>
+								<div
+									class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none"
+									data-bs-dismiss="search">
+									<button class="btn btn-link btn-close-falcon p-0"
+										aria-label="Close"></button>
+								</div>
+							</div>
+						</div>
+						&nbsp;
+						<div style="display: flex; justify-content: flex-end;">
+							<input type="date" id="selectDate1" name="startDate"
+								value="<fmt:formatDate value='${startDate }' pattern='yyyy-MM-dd'/>">
+							<span id="spanCss">&nbsp;&nbsp;~&nbsp;&nbsp;</span> <input
+								type="date" id="selectDate2" name="endDate"
+								value="<fmt:formatDate value='${endDate }' pattern='yyyy-MM-dd'/>">
+							&nbsp;
+							<button class="btn btn-outline-secondary me-1 mb-1" type="button"
+								id="searchBtn">검색</button>
+						</div>
+						<sec:csrfInput />
+					</form>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane preview-tab-pane active">
+						<div class="table-responsive scrollbar">
+							<table class="table table-hover table-striped overflow-hidden">
+								<thead>
+									<tr>
+										<th class=" text-center" scope="col">수납여부</th>
+										<th class=" text-center" scope="col">수진자명</th>
+										<th class=" text-center" scope="col">생년월일</th>
+										<th class=" text-center" scope="col">전화번호</th>
+										<th class=" text-center" scope="col">진료일자</th>
+										<th class=" text-center" scope="col">미수금액</th>
+										<th class=" text-center" scope="col">납부액</th>
+										<th class=" text-center" scope="col">납부총액</th>
+										<th class=" text-center" scope="col">수납총액</th>
+									</tr>
+								</thead>
+								<tbody>
+								
+								<c:set value="${pagingVO.dataList }" var="receiveList"/>
+								
+								<c:choose>
+									<c:when test="${empty pagingVO.dataList }">
+										<td class="text-nowrap text-center" colspan="9" scope="col">해당 내역이 존재하지 않습니다.</td>
+									</c:when>
+									<c:otherwise>
+										<c:forEach items="${receiveList }" var="receive">
+											<tr class="oneRecieve align-middle" id="${receive.rcivNo }" style="cursor: pointer;">
+												<td class="text-nowrap text-center">
+													<c:choose>
+														<c:when test="${receive.rcivAt eq 0 }">
+															<span class="badge rounded-pill badge-subtle-danger">미수납</span>
+														</c:when>
+														<c:when test="${receive.rcivAt eq 1 }">
+															<span class="badge rounded-pill bg-primary">수납</span>
+														</c:when>
+														<c:otherwise>
+															<span class="badge rounded-pill bg-warning">부분수납</span>
+														</c:otherwise>
+													</c:choose>
+												</td>
+												<td class="text-nowrap text-center">${receive.patntNm }</td>
+												<td class="text-nowrap text-center">${receive.patntRrno1 }</td>
+												<td class="text-nowrap text-center">${receive.patntTelno }</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatDate value="${receive.clnicTime }" pattern="yyyy.MM.dd HH:mm"/>
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.prearngeAmount - receive.rcivAmount}" pattern="#,##0" />
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.rcivAmount }" pattern="#,##0" />
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.prearngeAmount }" pattern="#,##0" />
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.recivTotamt }" pattern="#,##0" />
+												</td>
+											</tr>
+									
+										</c:forEach>
+								
+									</c:otherwise>
+								</c:choose>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row clearfix align-items-center text-center" id="pagingArea">
+				    <div class="col-5"></div>
+				    <div class="col-2 align-self-center text-center">${pagingVO.pagingHTML}</div>
+				    <div class="col-5"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 모달 -->
+
+
+<div class="modal fade" id="receiveDtModal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="width: 1400; max-width: 1400px;">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form method="post" id="reservationUpdateForm" action="/mediform/admin/reservation/update">
+				<div class="modal-body p-0">
+					<div class="rounded-top-3 py-3 ps-4 pe-6"
+						style="background-color: midnightblue">
+						<h4 class="mb-1 text-white" id="modalExampleDemoLabel">수납 정보</h4>
+					</div>
+					<div class="p-4 pb-0">
+					
+						<div>
+							<h4 class=""><span class="fw-semi-bold" id="patientNmHeader"></span><span> 환자</span></h4>
+						</div>
+					
+						<div class="row">
+
+							<!-- 좌측 -->
+							<div class="col-7">
+							
+								<br>
+								<div class="row">
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+												id="" name="" type="text" value="이름" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white" id="patntNmDt"
+													name="patntNm" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="성별" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white"
+													id="patntSexdstnDt" name="patntSexdstn" type="text" value=""
+													disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="col-5">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="생년월일" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white"
+													id="patntRrno1Dt" name="patntRrno1" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+
+								<br>
+								<div class="row">
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-4 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="전화번호" disabled />
+											<div class="col-8 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white"
+													id="patntTelnoDt" name="patntTelno" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="나이" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white"
+													id="patntAgeDt" name="patntAge" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-9 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="건강보험" disabled />
+											<div class="col-3 input-group-append p-0 m-0">
+												<input
+													class="text-black text-center form-control px-0 bg-white"
+													id="patntHlthinsAtDt" name="patntHlthinsAt" type="text"
+													value="" disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+<!-- 								<br> -->
+<!-- 								<div class="row"> -->
+<!-- 									<div class="col-12"> -->
+<!-- 										<div class="row input-group"> -->
+<!-- 											<input -->
+<!-- 												class="fw-semi-bold col-2 bg-secondary-subtitle text-black text-center form-control" -->
+<!-- 												id="" name="" type="text" value="주소" disabled /> -->
+<!-- 											<div class="col-10 input-group-append p-0 m-0"> -->
+<!-- 												<input class="text-black form-control bg-white" -->
+<!-- 													id="patntAdres1Dt" name="patntAdres1" type="text" value="" -->
+<!-- 													disabled /> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 									<div class="col-12"> -->
+<!-- 										<div class="row input-group"> -->
+<!-- 											<div class="col-2"></div> -->
+<!-- 											<div class="col-10 input-group-append p-0 m-0"> -->
+<!-- 												<input class="text-black form-control bg-white" -->
+<!-- 													id="patntAdres2Dt" name="patntAdres2" type="text" value="" -->
+<!-- 													disabled /> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+								<br><br>
+								<div class="row">
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+												id="" name="" type="text" value="담당의" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white" id="empNmDt"
+													name="empNm" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="진료일자" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-center text-black form-control bg-white"
+													id="clnicTimeDt" name="clnicTime" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+												id="" name="" type="text" value="병실" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white text-center" id="hsptlzSckrmDt" placeholder="-"
+													name="hsptlzSckrm" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="병상" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white text-center"
+													id="hsptlzSckbdDt" name="hsptlzSckbd" type="text" value="" placeholder="-"
+													disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="인실" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white text-center" 
+													id="sckrmCntDt" name="sckrmCnt" type="text" value="" placeholder="-"
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+							
+								<br>
+								<div class="row">
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="입원일" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="form-control bg-white text-center" id="hsptlzDeDt"
+													name="hsptlzDe" type="text" placeholder="-" disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="퇴원일" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="form-control bg-white text-center" id="realLhstlDt"
+													name="realLhstl" type="text" placeholder="-" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<!-- 납부 상세 -->
+								<br>
+								<div class="table-container"
+									style="overflow-y: auto; max-height: 250px;">
+									<table class="table table-sm"
+										style="height: 220px;">
+										<thead>
+											<tr id="" class="bg-light">
+												<th class="col-5 text-center" scope="col">처치명</th>
+												<th class="col-7 text-center" scope="col">가격</th>
+											</tr>
+										</thead>
+										<tbody style="overflow-y: auto; max-height: 220px;"
+											id="receiveDetailTable">
+
+										</tbody>
+									</table>
+								</div>
+								<!-- 납부 상세 끝 -->
+								
+								<br>
+
+							</div>
+							<!-- 좌측 끝 -->
+							
+							
+		
+							
+							<!-- 우측 -->
+							<div class="col-5">
+								
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="납부상태" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="rcivAtDt"
+													name="rcivAt" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="미수금액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="rcivNotDt"
+													name="rcivNot" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="납부액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="rcivAmountDt"
+													name="rcivAmount" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="납부총액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="prearngeAmountDt"
+													name="prearngeAmount" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="수납총액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="recivTotamtDt"
+													name="recivTotamt" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="수납메모" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control" id="recivMemoDt"
+													name="recivMemo" type="text" />
+											</div>
+										</div>
+									</div>
+								</div>
+								
+							
+								<br>
+								
+								
+								<!-- 납부 기록 가져오기 -->
+								<div>
+									<div class="row">
+										<div class="table-container"
+											style="overflow-y: auto; max-height: 200px;">
+											<table class="table table-sm"
+												style="height: 180px;">
+												<thead>
+													<tr id="" class="bg-light">
+														<th class="col-3 text-center" scope="col">영수증번호</th>
+														<th class="col-4 text-center" scope="col">납부일시</th>
+														<th class="col-3 text-center" scope="col">수납금액</th>
+														<th class="col-2 text-center" scope="col">수납방법</th>
+													</tr>
+												</thead>
+												<tbody style="overflow-y: auto; max-height: 180px;" id="receiptListTable">
+													
+		
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<!-- 납부 기록 가져오기 끝 -->
+							
+							
+							</div>
+							<!-- 우측 끝 -->
+
+
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="modal-footer">
+				<button class="btn btn-primary" id="receiveBtn" type="button">수납</button>
+				<button class="btn btn-secondary" id="closeBtn" type="button">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 모달  끝 -->
+
+
+<!-- 수납 모달 -->
+<div class="modal fade" id="receiveModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+    <div class="modal-content position-relative">
+      <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+        <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="rounded-top-3 py-3 ps-4 pe-6" style="background-color: midnightblue">
+          <h4 class="mb-1 text-white" id="modalExampleDemoLabel">수납</h4>
+        </div>
+        <div class="p-4 pb-0">
+          <form>
+            <div class="mb-3">
+              <label class="col-form-label" for="recipient-name">수납할 금액</label>
+              <input class="form-control text-end bg-white" id="noReceive" value="10000" type="text" disabled/>
+            </div>
+            <div class="mb-3">
+              <label class="col-form-label" for="message-text">수납 금액</label>
+              <input class="form-control text-end" id="receivePayAmount" type="text" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <input type="hidden" id="rcivNoHidden" value=""/>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="receivePayBtn" type="button">수납</button>
+        <button class="btn btn-secondary" type="button">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 수납 모달 끝 -->
+
+
+<!-- 영수증 모달 -->
+<div class="modal fade" id="receiptModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 800px">
+    <div class="modal-content position-relative">
+      <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+        <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="rounded-top-3 py-3 ps-4 pe-6" style="background-color: midnightblue">
+          <h4 class="mb-1 text-white" id="modalExampleDemoLabel">영수증</h4>
+        </div>
+        <div id="printArea" class="pdfArea" class="p-4 pb-0">
+        <div>
+          <table border="0" cellpadding="0" cellspacing="0" id="sheet0" class="sheet0 gridlines">
+	        <col class="col0">
+	        <col class="col1">
+	        <col class="col2">
+	        <col class="col3">
+	        <col class="col4">
+	        <col class="col5">
+	        <col class="col6">
+	        <col class="col7">
+	        <col class="col8">
+	        <col class="col9">
+	        <col class="col10">
+	        <col class="col11">
+	        <col class="col12">
+	        <col class="col13">
+	        <col class="col14">
+	        <col class="col15">
+	        <col class="col16">
+	        <col class="col17">
+	        <col class="col18">
+	        <col class="col19">
+	        <tbody>
+	          <tr class="row0">
+	            <td class="column0 style10 s style10" colspan="20"><span style="font-weight:bold; color:#000000; font-family:'맑은 고딕'; font-size:18pt">외래</span><span style="font-weight:bold; color:#000000; font-family:'맑은 고딕'; font-size:20pt">, 입원 진료비 계산서ㆍ영수증</span></td>
+	          </tr>
+	          <tr class="row1">
+	            <td class="column0 style11 null style11" colspan="20"></td>
+	          </tr>
+	          <tr class="row2">
+	            <td class="column0 style12 s style14" colspan="3">환자등록번호</td>
+	            <td class="column3 style15 s style14" colspan="3">환자 성명</td>
+	            <td class="column6 style15 s style14" colspan="11">진료일</td>
+	            <td class="column17 style15 s style16" colspan="3">야간(공휴일)진료</td>
+	          </tr>
+	          <tr class="row3">
+	            <td class="column0 style17 null style19" colspan="3" id="patientNoRC"></td>
+	            <td class="column3 style20 null style19" colspan="3" id="patientNmRc"></td>
+	            <td class="column6 style20 null style19" colspan="11" id="clnicDateRc"></td>
+	            <td class="column17 style20 s style21" colspan="3">[  ] 야간   [  ] 공휴일<br />[  ] 야간+공휴일</td>
+	          </tr>
+	          <tr class="row4">
+	            <td class="column0 style12 s style14" colspan="3">진료과목</td>
+	            <td class="column3 style15 s style14" colspan="3">질병군(DRG)번호</td>
+	            <td class="column6 style15 s style13" colspan="5">병실</td>
+	            <td class="column11 style15 s style14" colspan="3">환자구분</td>
+	            <td class="column14 style15 s style16" colspan="6">영수증번호(연월-일련번호)</td>
+	          </tr>
+	          <tr class="row5">
+	            <td class="column0 style22 null style24" colspan="3"></td>
+	            <td class="column3 style25 null style24" colspan="3"></td>
+	            <td class="column6 style26 s style27" colspan="5" id="hospitalizationBedRc"></td>
+	            <td class="column11 style26 null style28" colspan="3"></td>
+	            <td class="column14 style26 s style29" colspan="6" id="receiptNORc"></td>
+	          </tr>
+	          <tr class="row6">
+	            <td class="column0 style30 s style38" colspan="3" rowspan="3">항목</td>
+	            <td class="column3 style15 s style14" colspan="3">급여</td>
+	            <td class="column6 style15 s style16" colspan="5">비급여</td>
+	            <td class="column11 style39 s style41" colspan="9">금액산정내용</td>
+	          </tr>
+	          <tr class="row7">
+	            <td class="column3 style42 s style43" colspan="2">일부 본인부담</td>
+	            <td class="column5 style60 s style61" rowspan="2">전액<br />본인부담</td>
+	            <td class="column6 style20 s style38" colspan="3" rowspan="2">선택진료료</td>
+	            <td class="column9 style44 s style64" colspan="2" rowspan="2">선택진료료 외</td>
+	            <td class="column11 style30 s style32" colspan="7">⑦ 진료비 총액 </td>
+	            <td class="column18 style65 null style68" colspan="2" rowspan="2" id="toAmt"></td>
+	          </tr>
+	          <tr class="row8">
+	            <td class="column3 style1 s">본인부담금</td>
+	            <td class="column4 style1 s">공단부담금</td>
+	            <td class="column11 style69 s style71" colspan="7">(①+②+③+④+⑤)</td>
+	          </tr>
+	          <tr class="row9">
+	            <td class="column0 style78 s style80" rowspan="18">기본항목</td>
+	            <td class="column1 style81 s style82" colspan="2">진 찰 료</td>
+	            <td class="column3 style3 null" id="clnicPay4"></td>
+	            <td class="column4 style3 null" id="clnicPay6"></td>
+	            <td class="column5 style3 null"></td>
+	            <td class="column6 style83 null style85" colspan="3"></td>
+	            <td class="column9 style83 null style86" colspan="2"></td>
+	            <td class="column11 style87 s style89" colspan="7">⑧ 환자부담 총액</td>
+	            <td class="column18 style44 null style49" colspan="2" rowspan="4" id="payTot"></td>
+	          </tr>
+	          <tr class="row10">
+	            <td class="column1 style50 s style52" rowspan="3">입 원 료</td>
+	            <td class="column2 style4 s">1인실</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style57 s style59" colspan="7">(①-⑥)+③+④+⑤</td>
+	          </tr>
+	          <tr class="row11">
+	            <td class="column2 style4 s">2·3인실</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style72 null style74" colspan="7"></td>
+	          </tr>
+	          <tr class="row12">
+	            <td class="column2 style2 s">4인실 이상</td>
+	            <td class="column3 style5 null" id="hospitalizationRc4"></td>
+	            <td class="column4 style5 null" id="hospitalizationRc6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style75 null style77" colspan="7"></td>
+	          </tr>
+	          <tr class="row13">
+	            <td class="column1 style90 s style91" colspan="2">식대</td>
+	            <td class="column3 style5 null" id="io4"></td>
+	            <td class="column4 style5 null" id="io6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style87 s style94" colspan="7" rowspan="2">⑨ 이미 납부한 금액 </td>
+	            <td class="column18 style95 null style98" colspan="2" rowspan="2" id="paid"></td>
+	          </tr>
+	          <tr class="row14">
+	            <td class="column1 style50 s style52" rowspan="2">투약 및 조제료</td>
+	            <td class="column2 style4 s">행위료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row15">
+	            <td class="column2 style4 s">약품비</td>
+	            <td class="column3 style5 null" id="medicine4"></td>
+	            <td class="column4 style5 null" id="medicine6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style102 s style104" colspan="7">⑩ 납부할 금액 </td>
+	            <td class="column18 style105 null style98" colspan="2" rowspan="2" id="doPay"></td>
+	          </tr>
+	          <tr class="row16">
+	            <td class="column1 style50 s style52" rowspan="2">주사료</td>
+	            <td class="column2 style4 s">행위료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style92 s style64" colspan="7">(⑧-⑨)</td>
+	          </tr>
+	          <tr class="row17">
+	            <td class="column2 style4 s">약품비</td>
+	            <td class="column3 style5 null" id="inject4"></td>
+	            <td class="column4 style5 null" id="inject6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style108 s style110" rowspan="4">⑪ 납부한 금액</td>
+	            <td class="column12 style111 s style82" colspan="6">카드</td>
+	            <td class="column18 style83 null style86" colspan="2" id="cardPay"></td>
+	          </tr>
+	          <tr class="row18">
+	            <td class="column1 style90 s style91" colspan="2">마취료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column12 style99 s style91" colspan="6">현금영수증</td>
+	            <td class="column18 style90 null style101" colspan="2"></td>
+	          </tr>
+	          <tr class="row19">
+	            <td class="column1 style90 s style91" colspan="2">처치 및 수술료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column12 style113 s style115" colspan="6">현금</td>
+	            <td class="column18 style116 null style117" colspan="2"></td>
+	          </tr>
+	          <tr class="row20">
+	            <td class="column1 style90 s style91" colspan="2">검사료</td>
+	            <td class="column3 style5 null" id="check4"></td>
+	            <td class="column4 style5 null" id="check6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column12 style118 s style120" colspan="6">합계</td>
+	            <td class="column18 style118 null style120" colspan="2"></td>
+	          </tr>
+	          <tr class="row21">
+	            <td class="column1 style90 s style91" colspan="2">영상진단료</td>
+	            <td class="column3 style5 null" id="xray4"></td>
+	            <td class="column4 style5 null" id="xray6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style118 s style121" colspan="7">납부하지 않은 금액 (⑩-⑪)</td>
+	            <td class="column18 style122 null style120" colspan="2" id="unPaid"></td>
+	          </tr>
+	          <tr class="row22">
+	            <td class="column1 style90 s style91" colspan="2">방사선치료료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style111 s style123" colspan="9">현금영수증(                      )</td>
+	          </tr>
+	          <tr class="row23">
+	            <td class="column1 style90 s style91" colspan="2">치료재료대</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style99 s style91" colspan="7">신분확인번호</td>
+	            <td class="column18 style90 null style101" colspan="2"></td>
+	          </tr>
+	          <tr class="row24">
+	            <td class="column1 style90 s style91" colspan="2">재활 및 물리치료료</td>
+	            <td class="column3 style5 null" id="terp4"></td>
+	            <td class="column4 style5 null" id="terp6"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3" id="terp0"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style99 s style91" colspan="7">현금영수증 승인번호</td>
+	            <td class="column18 style90 null style101" colspan="2"></td>
+	          </tr>
+	          <tr class="row25">
+	            <td class="column1 style90 s style91" colspan="2">정신요법료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	            <td class="column11 style124 s style132" colspan="9" rowspan="14">&nbsp;* 요양기관 임의활용공간</td>
+	          </tr>
+	          <tr class="row26">
+	            <td class="column1 style133 s style134" colspan="2">전혈 및 혈액성분제제료</td>
+	            <td class="column3 style6 null"></td>
+	            <td class="column4 style6 null"></td>
+	            <td class="column5 style6 null"></td>
+	            <td class="column6 style135 null style137" colspan="3"></td>
+	            <td class="column9 style135 null style138" colspan="2"></td>
+	          </tr>
+	          <tr class="row27">
+	            <td class="column0 style78 s style79" rowspan="6">선택항목</td>
+	            <td class="column1 style81 s style82" colspan="2">CT 진단료</td>
+	            <td class="column3 style3 null"></td>
+	            <td class="column4 style3 null"></td>
+	            <td class="column5 style3 null"></td>
+	            <td class="column6 style83 null style85" colspan="3"></td>
+	            <td class="column9 style83 null style86" colspan="2"></td>
+	          </tr>
+	          <tr class="row28">
+	            <td class="column1 style90 s style91" colspan="2">MRI 진단료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row29">
+	            <td class="column1 style90 s style91" colspan="2">PET 진단료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row30">
+	            <td class="column1 style90 s style91" colspan="2">초음파 진단료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row31">
+	            <td class="column1 style90 s style91" colspan="2">보철ㆍ교정료</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style90 null style91" colspan="3"></td>
+	            <td class="column9 style90 null style101" colspan="2"></td>
+	          </tr>
+	          <tr class="row32">
+	            <td class="column1 style139 s style140" colspan="2">기타</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row33">
+	            <td class="column0 style111 s style142" colspan="3">「국민건강보험법」 제41조의4에따른 요양급여</td>
+	            <td class="column3 style3 null"></td>
+	            <td class="column4 style3 null"></td>
+	            <td class="column5 style3 null"></td>
+	            <td class="column6 style83 null style142" colspan="3"></td>
+	            <td class="column9 style83 null style143" colspan="2"></td>
+	          </tr>
+	          <tr class="row34">
+	            <td class="column0 style99 s style91" colspan="3">65세 이상 등 정액</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row35">
+	            <td class="column0 style99 s style91" colspan="3">정액수가(요양병원)</td>
+	            <td class="column3 style5 null"></td>
+	            <td class="column4 style5 null"></td>
+	            <td class="column5 style5 null"></td>
+	            <td class="column6 style53 null style55" colspan="3"></td>
+	            <td class="column9 style53 null style56" colspan="2"></td>
+	          </tr>
+	          <tr class="row36">
+	            <td class="column0 style99 s style91" colspan="3">정액수가(완화의료)</td>
+	            <td class="column3 style7 null"></td>
+	            <td class="column4 style7 null"></td>
+	            <td class="column5 style7 null"></td>
+	            <td class="column6 style90 null style91" colspan="3"></td>
+	            <td class="column9 style90 null style101" colspan="2"></td>
+	          </tr>
+	          <tr class="row37">
+	            <td class="column0 style113 s style115" colspan="3">질병군 포괄수가</td>
+	            <td class="column3 style6 null"></td>
+	            <td class="column4 style6 null"></td>
+	            <td class="column5 style6 null"></td>
+	            <td class="column6 style135 null style137" colspan="3"></td>
+	            <td class="column9 style135 null style138" colspan="2"></td>
+	          </tr>
+	          <tr class="row38">
+	            <td class="column0 style118 s style121" colspan="3">합계</td>
+	            <td class="column3 style8 s">①<span id="payTotal4"></span></td>
+	            <td class="column4 style8 s">②<span id="payTotal6"></span></td>
+	            <td class="column5 style8 s">③</td>
+	            <td class="column6 style147 s style149" colspan="3">④<span id="terp02"></td>
+	            <td class="column9 style147 s style150" colspan="2">⑤</td>
+	          </tr>
+	          
+	          <tr class="row40">
+	            <td class="column0 style111 s style82" colspan="3">요양기관 종류</td>
+	            <td class="column3 style81 s style123" colspan="17">[  ] 의원급·보건기관 [ O ] 병원급 [  ] 종합병원 [  ] 상급종합병원</td>
+	          </tr>
+	          <tr class="row41">
+	            <td class="column0 style99 s style91" colspan="3">사업자등록번호</td>
+	            <td class="column3 style90 null style91" colspan="4">106468-549848</td>
+	            <td class="column7 style4 s">상호</td>
+	            <td class="column8 style90 null style91" colspan="5">메디폼 재활병원</td>
+	            <td class="column13 style90 s style91" colspan="6">전화번호</td>
+	            <td class="column19 style9 null" colspan="7">042-222-8202</td>
+	          </tr>
+	          <tr class="row42">
+	            <td class="column0 style99 s style91" colspan="3">사업장 소재지</td>
+	            <td class="column3 style53 null style55" colspan="8">대전광역시 중구 계룡로 846, 3-4층</td>
+	            <td class="column11 style90 s style91" colspan="4">대표자</td>
+	            <td class="column15 style163 s style165" colspan="5">나 병 원  (인)</td>
+	          </tr>
+	          <tr class="row43">
+	            <td class="column0 style151 s style153" colspan="20" id="today"></td>
+	          </tr>
+<!-- 	          <tr class="row44"> -->
+<!-- 	            <td class="column0 style154 s style155" colspan="12">항목별 설명</td> -->
+<!-- 	            <td class="column12 style155 s style156" colspan="8">일반사항 안내</td> -->
+<!-- 	          </tr> -->
+<!-- 	          <tr class="row45"> -->
+<!-- 	            <td class="column0 style157 s style158" colspan="12">1. 일부 본인부담: 일반적으로 다음과 같이 본인부담률을 적용하나, 요양기관 지역, 요양기관의 종별, 환자 자격, 「국민건강보험법」제41조의4에 따른 요양급여 여부, 병실종류 등에 따라 달라질 수 있습니다.<br /> -->
+<!-- 	&nbsp;&nbsp;- 외래 본인부담률: 요양기관 종별에 따라 30% ~ 60%(의료급여는 수급권자 종별 및 의료급여기관 유형 등에 따라 0원 ~ 2500원, 0% ~ 15%) 등<br /> -->
+<!-- 	&nbsp;&nbsp;- 입원 본인부담률: 20%(의료급여는 수급권자 종별 및 의료급여기관 유형 등에 따라 0% ~ 10%) 등<br /> -->
+<!-- 	&nbsp;&nbsp;※ 식대: 50%(의료급여는 20%)<br /> -->
+<!-- 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CTㆍMRIㆍPET: 외래 본인부담률(의료급여는 입원 본인부담률과 동일)<br /> -->
+<!-- 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;「국민건강보험법」 제41조의4에 따른 요양급여(선별급여): 보건복지부장관이 고시한 항목별 본인부담률 <br /> -->
+<!-- 	&nbsp;&nbsp;※ 상급종합병원 입원료: 2인실 50%, 3인실 40%, 4인실 30% / 치과병원을 제외한 병원급 의료기관 입원료: 2인실 40%, 3인실 30%<br /> -->
+<!-- 	2. 전액 본인부담: 「국민건강보험법 시행규칙」 별표 6 또는 「의료급여법 시행규칙」 별표 1의2에 따라 적용되는 항목으로 건강보험(의료급여)에서 금액을 정하고 있으나 진료비 전액을 환자 본인이 부담합니다.<br /> -->
+<!-- 	3. 상한액 초과금: 본인부담액 상한제에 따라 같은 의료기관에서 연간 500만원(2015년부터는 「국민건강보험법 시행령」 별표 3 제2호에 따라 산정한 본인부담상한액의 최고 금액, 환자가 내는 보험료 등에 따라 다를 수 있음) 이상 본인부담금이 발생한 경우 공단이 부담하는 초과분 중 사전 정산하는 금액을 말합니다.<br /> -->
+<!-- 	&nbsp;&nbsp;※ 전액 본인부담 및 「국민건강보험법」제41조의4에 따른 요양급여의 본인부담금 등은 본인부담상한액 산정시 제외합니다.<br /> -->
+<!-- 	4. &quot;질병군 포괄수가&quot;란 「국민건강보험법 시행령」 제21조제3항제2호 및 「국민건강보험 요양급여의 기준에 관한 규칙」 제8조제3항에 따라 보건복지부장관이 고시한 질병군 입원진료에 대하여 해당 입원진료와 관련되는 여러 의료행위를 하나의 행위로 정하여 요양급여비용을 결정한 것을 말합니다. 다만, 해당 질병군의 입원진료와 관련되는 의료행위라도 비급여대상이나 이송처치료 등 포괄수가에서 제외되는 항목은 위 표의 기본항목 및 선택항목란에 합산하여 표기됩니다.</td> -->
+<!-- 	            <td class="column12 style158 s style159" colspan="8">1. 이 계산서ㆍ영수증에 대한 세부내용은 요양기관에 요구하여 제공받을 수 있습니다.<br /> -->
+<!-- 	2. 「국민건강보험법」 제48조 또는 「의료급여법」 제11조의3에 따라 환자가 전액 부담한 비용과 비급여로 부담한 비용의 타당성 여부를 건강보험심사평가원(☏1644-2000, 홈페이지: www.hira.or.kr)에 확인 요청하실 수 있습니다.<br /> -->
+<!-- 	3. 계산서ㆍ영수증은 「소득세법」에 따른 의료비 공제신청 또는 「조세특례제한법」에 따른 현금영수증 공제신청(현금영수증 승인번호가 적힌 경우만 해당합니다)에 사용할 수 있습니다. 다만, 지출증빙용으로 발급된 &quot;현금영수증(지출증빙)&quot;은 공제신청에 사용할 수 없습니다.(현금영수증 문의 126 인터넷 홈페이지: http://현금영수증.kr)</td> -->
+<!-- 	          </tr> -->
+<!-- 	          <tr class="row46"> -->
+<!-- 	            <td class="column0 style160 s style162" colspan="20">&nbsp;주(註): 진료항목 중 선택항목은 요양기관의 특성에 따라 추가 또는 생략할 수 있으며, 야간(공휴일)진료 시 진료비가 가산될 수 있습니다.</td> -->
+<!-- 	          </tr> -->
+	          
+	        </tbody>
+	    </table>
+		</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="printBtn" type="button" onclick="return window.print()">출력</button>
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 영수증 모달 끝 -->
+
+
+<script type="text/javascript">
+
+$(function(){
+	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content")
+
+	
+	var printBtn = $("#printBtn");
+    
+    
+    
+	
+	printBtn.on("click", function(){
+		var modalContent = document.querySelector("#printArea");
+	    var printWindow = window.open('', '', 'width=600,height=600');
+	    printWindow.document.open();
+	    printWindow.document.close();
+	    printWindow.document.write('<html><head>');
+	    printWindow.document.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+	    printWindow.document.write('<meta name="generator" content="PhpSpreadsheet, https://github.com/PHPOffice/PhpSpreadsheet">');
+	    printWindow.document.write('<meta name="author" content="HIRA" />');
+	    printWindow.document.write('<link rel="stylesheet" href="/MediForm/src/main/webapp/resources/css/print.css"></head><body>');
+	    printWindow.document.write(modalContent.innerHTML);
+	    printWindow.document.write('</body></html>');
+	    printWindow.print();
+	    printWindow.close();
+	}); 
+	
+	
+	
+	var searchForm = $("#searchForm");
+	var pagingArea = $("#pagingArea");
+	
+	var searchBtn = $('#searchBtn');
+	searchBtn.on('click', function(){
+		searchForm.submit();
+	});
+	
+	// 해당 검색창에서 엔터 누르면 이벤트 발생
+	$("#searchWordBox").on("keydown", function(e) {
+	    if (e.key === "Enter") { 
+	    	searchForm.submit();
+	    }
+	});
+	
+	pagingArea.on("click", "a", function(event){
+		
+		event.preventDefault();
+		var pageNo = $(this).data("page")
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+	
+	// 검색 x버튼 누르면 검색창 초기화 
+	var searchXbtn = $('.btn-close-falcon-container');
+	searchXbtn.on('click', function(){
+		event.preventDefault();
+		$('.fuzzy-search').val("");
+	});
+	// 검색 x버튼 누르면 검색창 초기화  끝
+	
+	// 날짜 유효성 검사
+	$('#selectDate1').on('change', function() {
+        var date1 = new Date($(this).val());
+        var date2 = new Date($('#selectDate2').val());
+
+        if (date1 > date2) {
+        	Swal.fire({
+			      icon: 'error',
+			      title: 'error',
+			      html: '입력한 날짜 범위가 올바르지 않습니다. <br> 시작 날짜는 종료 날짜보다 이전이어야 합니다.',
+			      confirmButtonColor: 'blue'
+			    });
+            $(this).val(''); // 값을 변경하지 않음
+        }
+    });
+	// 날짜 유효성 검사 끝
+	
+	// selectDate2 값 변경 감지
+    $('#selectDate2').on('change', function() {
+        var date1 = new Date($('#selectDate1').val());
+        var date2 = new Date($(this).val());
+
+        if (date2 < date1) {
+        	Swal.fire({
+			      icon: 'error',
+			      title: 'error',
+			      html: '입력한 날짜 범위가 올바르지 않습니다. <br> 종료 날짜는 시작 날짜보다 이후여야 합니다.',
+			      confirmButtonColor: 'blue'
+			    });
+            $(this).val(''); // 값을 변경하지 않음
+        }
+    });	
+ 	// selectDate2 값 변경 감지 끝
+	
+	// 날짜 형식 바꾸어주는 함수
+	function formatDateNoTime(timeStamp){
+	    var date = new Date(timeStamp);
+	    
+	    var year = date.getFullYear();
+	    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고, 문자열로 변환하여 두 자리로 만듭니다.
+	    var day = date.getDate().toString().padStart(2, '0'); // 일도 마찬가지로 두 자리로 만듭니다.
+	    
+	    var formattedDate = year + '.' + month + '.' + day;
+	    
+	    return formattedDate;
+	}
+	// 날짜 형식 바꾸어주는 함수 끝
+	
+	
+	
+	// 금액 형식 바꾸어주는 함수
+	function formatWonNumber(number){
+		var formatNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		return formatNumber;
+	}
+	// 금액 형식 바꾸어주는 함수 끝
+	
+	
+	var oneRecieve = $(".oneRecieve");
+	
+	var receiveDtModal = $("#receiveDtModal");
+	
+	
+	// 모달창 시작
+	oneRecieve.on("click", function(){
+		
+		console.log("수납 클릭 이벤트!!!")
+		
+		$("#receiveBtn").show();
+		receiveDtModal.modal("show");
+		var rcivNo = $(this).attr("id");
+		
+		var rcivNoHidden = $("#rcivNoHidden");
+		
+		rcivNoHidden.val(rcivNo);
+		
+		var closeBtn = $("#closeBtn");
+	    
+		closeBtn.on("click", function(){
+	    	console.log("모달 닫기!!!1")
+	    	location.reload();
+	    	console.log("모달 닫기!!!1")
+	    	receiveDtModal.modal("hide");
+	    });
+		
+		console.log("수납 코드 >>>>> " + rcivNo);
+		
+		// 모달창 내
+		var patientNmHeader = $("#patientNmHeader");
+		var patntNm = $("#patntNmDt"); // 환자이름
+		var patntSexdstn = $("#patntSexdstnDt"); // 성별
+		var patntRrno1 = $("#patntRrno1Dt"); // 생년월일
+		var patntTelno = $("#patntTelnoDt"); // 전화번호
+		var patntAge = $("#patntAgeDt"); // 나이
+		var patntHlthinsAt = $("#patntHlthinsAtDt"); // 보험여부
+		var patntAdres1 = $("#patntAdres1Dt"); // 주소1
+		var patntAdres2 = $("#patntAdres2Dt"); // 주소2
+		var empNm = $("#empNmDt"); // 담당의이름
+		var clnicTime = $("#clnicTimeDt"); // 진료시간
+		var hsptlzSckrm = $("#hsptlzSckrmDt"); // 병실
+		var hsptlzSckbd = $("#hsptlzSckbdDt"); // 병상
+		var sckrmCnt = $("#sckrmCntDt"); // 인실
+		var hsptlzDe = $("#hsptlzDeDt"); // 입원일자
+		var realLhstl = $("#realLhstlDt"); // 실제퇴원일
+		var rcivAt = $("#rcivAtDt"); // 납부상태
+		var rcivNot = $("#rcivNotDt"); // 미수금액
+		var rcivAmount = $("#rcivAmountDt"); // 납부액(납부한금액)
+		var prearngeAmount = $("#prearngeAmountDt"); // 납부총액(보험O)
+		var recivTotamt = $("#recivTotamtDt"); // 수납총액(보험X)
+		var recivMemo = $("#recivMemoDt"); // 수납메모
+		var noReceive = $("#noReceive");
+		var receivePayAmountArea = $("#receivePayAmount");
+		patntSexdstn.val("");
+		patntRrno1.val("");
+		patntTelno.val("");
+		patntAge.val("");
+		patntHlthinsAt.val("");
+		patntAdres1.val("");
+		patntAdres2.val("");
+		empNm.val("");
+		clnicTime.val("");
+		hsptlzSckrm.val("");
+		hsptlzSckbd.val("");
+		sckrmCnt.val("");
+		hsptlzDe.val("-");
+		realLhstl.val("-");
+		rcivAt.val("");
+		rcivNot.val("");
+		rcivAmount.val("");
+		prearngeAmount.val("");
+		recivTotamt.val("");
+		recivMemo.val("");
+		noReceive.val("");	
+		receivePayAmountArea.val("");
+		// 모달창 끝
+		
+		// 영수증
+		var patientNoRC = $("#patientNoRC"); // 환자번호
+		var patientNmRc = $("#patientNmRc"); // 환자이름
+		var clnicDateRc = $("#clnicDateRc"); // 진료일
+		var hospitalizationBedRc = $("#hospitalizationBedRc"); // 병실 + 병상
+		var receiptNORc = $("#receiptNORc"); // 영수증번호(연월-일련번호)
+		var clnicPay4 = $("#clnicPay4"); // 진찰료(0.4)
+		var clnicPay6 = $("#clnicPay6"); // 진찰료(0.6)
+		var hospitalizationRc4 = $("#hospitalizationRc4"); // 입원비4
+		var hospitalizationRc6 = $("#hospitalizationRc6"); // 입원비6
+		var io4 = $("#io4"); // 식대4
+		var io6 = $("#io6"); // 식대6
+		var medicine4 = $("#medicine4"); // 약4
+		var medicine6 = $("#medicine6"); // 약6
+		var inject4 = $("#inject4"); // 주사4
+		var inject6 = $("#inject6"); // 주사6
+		var check4 = $("#check4"); // 검사료4
+		var check6 = $("#check6"); // 검사료6
+		var xray4 = $("#xray4"); // 엑스레이4
+		var xray6 = $("#xray6"); // 엑스레이6
+		var terp4 = $("#terp4"); // 치료4
+		var terp6 = $("#terp6"); // 치료6
+		var terp0 = $("#terp0"); // 도수치료
+		var payTotal4 = $("#payTotal4"); // 수납해야할총금액
+		var payTotal6 = $("#payTotal6"); // 보험공단에서 지급하는 금액
+		var terp02 = $("#terp02"); // 도수치료
+		var today = $("#today"); // 오늘 날짜 (2023년 10월 26일)
+		var toAmt = $("#toAmt"); // 보험적용안됨 총금액
+		var payTot = $("#payTot"); // 환자가 실제 납부해야되는 금액
+		var paid = $("#paid"); // 이미납부한금액
+		var cardPay = $("#cardPay"); // 카드로 납부한 금액
+		var unPaid = $("#unPaid"); // 납부해야될 금액
+		var doPay = $("#doPay");
+		
+		patientNoRC.html("");
+		patientNmRc.html("");
+		clnicDateRc.html("");
+		hospitalizationBedRc.html("");
+		receiptNORc.html("");
+		clnicPay4.html("");
+		clnicPay6.html("");
+		hospitalizationRc4.html("");
+		hospitalizationRc6.html("");
+		io4.html("");
+		io6.html("");
+		medicine4.html("");
+		medicine6.html("");
+		inject4.html("");
+		inject6.html("");
+		check4.html("");
+		check6.html("");
+		xray4.html("");
+		xray6.html("");
+		terp4.html("");
+		terp6.html("");
+		terp0.html("");
+		payTotal4.html("");
+		payTotal6.html("");
+		terp02.html("");
+		today.html("");
+		toAmt.html("");
+		payTot.html("");
+		paid.html("");
+		cardPay.html("");
+		unPaid.html("");
+		doPay.html("");
+		// 영수증 끝
+		
+		
+		
+		
+		
+		recieve(rcivNo);
+		
+		function recieve(rcivNo){
+		
+			receiveSelectObj = {
+					rcivNo : rcivNo
+				};
+			
+			$.ajax({
+		 		type : "post",
+				url : "/mediform/admin/receive/select",
+				data : JSON.stringify(receiveSelectObj),
+		 		contentType : "application/json; charset=utf-8",
+		 		async: false,
+		        beforeSend : function(xhr){            
+		            xhr.setRequestHeader(header,token);
+		        },
+		 		success : function(res) {
+		 			
+					console.log("성공");
+					
+					patientNoRC.html(res.patntNo);
+					console.log("환자 이름 : " + res.patntNm);
+					patientNmHeader.html(res.patntNm);
+					patntNm.val(res.patntNm);
+					patientNmRc.html(res.patntNm);
+					var gender = "";
+					if(res.patntSexdstn === "M"){
+						gender = "남";
+					}else if(res.patntSexdstn === "F"){
+						gender = "여";
+					}
+					patntSexdstn.val(gender);
+					patntRrno1.val(res.patntRrno1);
+					patntTelno.val(res.patntTelno);
+					patntAge.val(res.patntAge);
+					var patntHlthinsYN = "";
+					if(res.patntHlthinsAt === "Y"){
+						patntHlthinsYN = "O";
+					}else if(res.patntHlthinsAt === "N"){
+						patntHlthinsYN = "X";
+					}	
+					patntHlthinsAt.val(patntHlthinsYN);
+					patntAdres1.val(res.patntAdres1);
+					patntAdres2.val(res.patntAdres2);
+					empNm.val(res.empNm);
+					clnicTime.val(formatDateNoTime(res.clnicTime));
+					clnicDateRc.html(formatDateNoTime(res.clnicTime));
+					hsptlzSckrm.val(res.hsptlzSckrm);
+					hsptlzSckbd.val(res.hsptlzSckbd);
+					if(res.hsptlzSckrm != null){
+						hospitalizationBedRc.html(res.hsptlzSckrm + " - " + res.hsptlzSckbd);
+					}
+					console.log("영수증 병상" + res.hsptlzSckrm + " - " + res.hsptlzSckbd);
+					var sckrmCntStr = "";
+					if(res.hsptlzSckrm != null){
+						var sckrmCntSplit = (res.hsptlzSckrm).charAt(0);
+						console.log(sckrmCntSplit);
+						if(sckrmCntSplit === '5'){
+							sckrmCntStr = "6";
+				 		}else if(sckrmCntSplit === '6'){
+				 			sckrmCntStr = "4";
+				 		}
+					}
+					
+					sckrmCnt.val(sckrmCntStr);
+					
+					if(res.hsptlzDe != null){
+						hsptlzDe.val(formatDateNoTime(res.hsptlzDe));
+					}else{
+						hsptlzDe.val("");
+					}
+					if(res.hsptlzDe != null){
+						realLhstl.val(formatDateNoTime(res.realLhstl));
+					}else{
+						realLhstl.val("");
+					}
+					
+					var rcivAtYn = "";
+					if(res.rcivAt === "0"){
+						rcivAtYn = "미수납";
+					}else if(res.rcivAt === "1"){
+						rcivAtYn = "수납완료";
+						$("#receiveBtn").hide();
+					}else if(res.rcivAt === "2"){
+						rcivAtYn = "부분수납";
+					}
+					rcivAt.val(rcivAtYn);
+					
+					if(res.rcivAmount != null){
+						rcivNot.val(formatWonNumber(res.prearngeAmount - res.rcivAmount));
+					}else{
+						rcivNot.val(res.prearngeAmount - res.rcivAmount);
+					}
+					if(res.rcivAmount != null){
+						rcivAmount.val(formatWonNumber(res.rcivAmount));
+					}else{
+						rcivAmount.val(res.rcivAmount);
+					}
+					if(res.prearngeAmount != null){
+						prearngeAmount.val(formatWonNumber(res.prearngeAmount));
+						// 8번
+						payTot.html(formatWonNumber(res.prearngeAmount));
+					}else{
+						prearngeAmount.val(res.prearngeAmount);
+					}
+					if(res.recivTotamt != null){
+						recivTotamt.val(formatWonNumber(res.recivTotamt));
+						toAmt.html(formatWonNumber(res.recivTotamt));
+					}else{
+						recivTotamt.val(res.recivTotamt);
+					}
+					if(res.rcivAmount != null){
+						noReceive.val(formatWonNumber(res.prearngeAmount - res.rcivAmount));
+						
+					}else{
+						noReceive.val(formatWonNumber(res.prearngeAmount - res.rcivAmount));
+					}
+					
+					
+					
+					
+					console.log("수납 총액 >>> " + res.recivTotamt);
+					recivMemo.val(res.recivMemo);
+					
+		 		}
+		 	});
+			
+			
+			var receiptListTable = $("#receiptListTable");
+			
+			var receiptListHTML = "";
+			
+			$.ajax({
+		 		type : "post",
+				url : "/mediform/admin/receipt/list",
+				data : JSON.stringify(receiveSelectObj),
+		 		contentType : "application/json; charset=utf-8",
+		 		async: false,
+		        beforeSend : function(xhr){            
+		            xhr.setRequestHeader(header,token);
+		        },
+		 		success : function(res) {
+					console.log("영수증 목록 가져오기!");
+					
+					if(res.length == 0){
+						console.log("영수증 없음 (납부 내역 없음)");
+						
+						receiptListHTML += "<tr class='' id=''>";
+						receiptListHTML += "  <td colspan='4' class='text-center' style='vertical-align: middle'>" + "납부 내역이 없습니다" + "</td>";
+						receiptListHTML += "</tr>";
+						
+					}else{
+						console.log("영수증 목록 있음!!!");
+						var totalAmount = 0;
+						$(res).each(function(){
+							
+							
+							
+							var dateString = this.ipocdDttm;
+							var date = new Date(dateString);
+							var year = date.getFullYear();
+							var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷팅
+							var day = date.getDate().toString().padStart(2, '0'); // 일도 2자리로 포맷팅
+							var hours = date.getHours().toString().padStart(2, '0'); // 시간
+							var minutes = date.getMinutes().toString().padStart(2, '0'); // 분
+							
+							// 원하는 형식으로 조합
+							var formattedDate = year + '.' + month + '.' + day + ' ' + hours + ":" + minutes;
+							
+							
+							var paymthdStr = ""
+							if(this.paymthd === "1"){
+								paymthdStr = "카드";
+							}else{
+								paymthdStr = "현금";
+							}
+							
+							
+							receiptListHTML += "<tr class='oneReceipt' id='" + this.rciptNo + "' style='cursor: pointer;'>";
+							receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>";
+							receiptListHTML += 	this.rciptNo ;
+							receiptListHTML += "	</td>";
+							
+							
+							receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>" + formattedDate + "</td>";
+							receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(this.ipocdAmount) + "</td>";
+							receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>" + paymthdStr + "</td>";
+							receiptListHTML += "</tr>";
+							
+							totalAmount += this.ipocdAmount;
+							console.log("총계 >>> " + totalAmount);
+							
+						});
+						receiptListHTML += "<tr class='totalPayAmountTr bg-light' id=''>";
+						receiptListHTML += "  <td colspan='2' class='fw-semi-bold text-center' style='vertical-align: middle'>총계</td>";
+						receiptListHTML += "  <td colspan='2' class='fw-semi-bold text-center' style='vertical-align: middle'>" + formatWonNumber(totalAmount) + "</td>";
+						receiptListHTML += "</tr>";
+						
+						
+					}
+					receiptListTable.html(receiptListHTML);
+					
+		 		}
+		 	});
+			
+			
+			var receiveDetailTable = $("#receiveDetailTable");
+			var receiveDetailHTML = "";
+			
+			
+			var receiveDetailSelectObj = {
+					rcivNo : rcivNo
+				};
+			
+			$.ajax({
+		 		type : "post",
+				url : "/mediform/admin/receiptDetail/list",
+				data : JSON.stringify(receiveDetailSelectObj),
+		 		contentType : "application/json; charset=utf-8",
+		 		async: false,
+		        beforeSend : function(xhr){            
+		            xhr.setRequestHeader(header,token);
+		        },
+		 		success : function(res) {
+		 			
+					console.log("가져오기 성공");
+					console.log(">>>>" + res.patntNo);
+					console.log(">>>>" + res.rcivdMdcxm)
+					
+					if(res.rcivdMdcxm != null){
+						clnicPay4.html(formatWonNumber(parseInt(res.rcivdMdcxm) * 0.4)); 
+						clnicPay6 .html(formatWonNumber(parseInt(res.rcivdMdcxm) * 0.6)); 
+						
+						receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "진찰료";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(res.rcivdMdcxm) + "</td>";
+						receiveDetailHTML += "</tr>";
+					}
+					
+					if(res.rcivdHsptlz != null){
+						hospitalizationRc4.html(formatWonNumber(parseInt(res.rcivdHsptlz) * 0.4));
+						hospitalizationRc6.html(formatWonNumber(parseInt(res.rcivdHsptlz) * 0.6));
+						
+						receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "입원료";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(res.rcivdHsptlz) + "</td>";
+						receiveDetailHTML += "</tr>";
+					}
+					
+					if(res.rcivdCgffd != null){
+						io4.html(formatWonNumber(parseInt(res.rcivdCgffd) * 0.4));
+						io6.html(formatWonNumber(parseInt(res.rcivdCgffd) * 0.6));
+						receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "식대";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(res.rcivdCgffd) + "</td>";
+						receiveDetailHTML += "</tr>";
+					}
+					
+					
+					receiveDetailTable.html(receiveDetailHTML);
+					
+					
+		 		}
+		        
+		        
+		 	});
+			
+			
+			// 처방
+			$.ajax({
+	     		type : "post",
+	    		url : "/mediform/admin/receiptDetail/prescriptionOrder/list",
+	    		data : JSON.stringify(receiveSelectObj),
+	     		contentType : "application/json; charset=utf-8",
+	     		async: false,
+	            beforeSend : function(xhr){            
+	                xhr.setRequestHeader(header,token);
+	            },
+	     		success : function(res) {
+	    			console.log("처방 가져오기 성공");
+	    			
+	    			
+					if(res.length != 0){
+	    				
+	    				receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td colspan='2' class='bg-light text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "<h5><span class='badge badge-subtle-primary'>처방</span></h5>";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "</tr>";
+	    				
+						var mdctnTotal = 0;
+						
+						var injectTotal = 0;
+						var medichineTotal = 0;
+						
+	    				$(res).each(function(){
+	    					
+	    					var totalPrice = 0;
+	    					
+	    					
+	    					if(this.medcinUnit === "리터"){
+	    						
+	    						console.log("this.medcinPc >>> " + this.medcinPc);
+	    						console.log("this.mdctnCo >>> " + this.mdctnCo);
+	    						console.log("this.mdctnPd >>> " + this.mdctnPd);
+	    						console.log("this.mdctnCpcty >>> " + this.mdctnCpcty);
+	    						console.log("this.medcinStandard >>> " + this.medcinStandard);
+	    						
+	    						totalPrice = parseInt(this.medcinPc) * parseInt(this.mdctnCo) * parseInt(this.mdctnPd) * parseFloat(this.mdctnCpcty) / parseInt(this.medcinStandard);						
+	    						injectTotal += parseInt(totalPrice);
+	    						console.log("주사 가격 >>> " + totalPrice);
+	    						
+	    					}else{
+		    					totalPrice = parseInt(this.medcinPc) * parseInt(this.mdctnCpcty) * parseInt(this.mdctnCo) * parseInt(this.mdctnPd);
+		    					medichineTotal += parseInt(totalPrice);
+	    					}
+	    					
+	    					receiveDetailHTML += "<tr class='' id=''>";
+	    					receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>";
+	    					receiveDetailHTML += this.prscrptnNm;
+	    					receiveDetailHTML += "	</td>";
+	    					receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(parseInt(totalPrice)) + "</td>";
+	    					receiveDetailHTML += "</tr>";
+	    					
+	    					mdctnTotal += totalPrice;
+	    					
+	    				});
+	    				inject4.html(formatWonNumber(parseInt(injectTotal) * 0.4));
+						inject6.html(formatWonNumber(parseInt(injectTotal) * 0.6));
+						medicine4.html(formatWonNumber(parseInt(medichineTotal) * 0.4));
+						medicine6.html(formatWonNumber(parseInt(medichineTotal) * 0.6));
+						
+						
+	    				receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td class='fw-semi-bold text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "처방 합계";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "	<td class='text-center fw-semi-bold' style='vertical-align: middle'>" + formatWonNumber(mdctnTotal) + "</td>";
+						receiveDetailHTML += "</tr>";
+	    				
+	    				
+	    			}
+					receiveDetailTable.html(receiveDetailHTML);
+	     		}
+	            
+	            
+	     	});
+			// 처방
+			
+			
+			// 검사
+			$.ajax({
+	     		type : "post",
+	    		url : "/mediform/admin/receiptDetail/medicalExaminationOrder/list",
+	    		data : JSON.stringify(receiveSelectObj),
+	     		contentType : "application/json; charset=utf-8",
+	     		async: false,
+	            beforeSend : function(xhr){            
+	                xhr.setRequestHeader(header,token);
+	            },
+	     		success : function(res) {
+	    			console.log("검사 가져오기 성공");
+	    			
+	    			if(res.length != 0){
+	    				
+	    				receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td colspan='2' class='bg-light text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "<h5><span class='badge badge-subtle-primary'>검사</span></h5>";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "</tr>";
+	    				
+						var hlthchkTotal = 0;
+						
+						var hlthchkNum = 0;
+						
+						var xrayTotal = 0;
+						var checkTotal = 0;
+						
+	    				$(res).each(function(){
+	    					
+	    					hlthchkNum = parseInt(this.hlthchkpAmount);
+	    					
+	    					if(this.hlthchkpNm === "x-ray"){
+	    						xrayTotal += parseInt(this.hlthchkpAmount);
+	    					}else{
+	    						checkTotal += parseInt(this.hlthchkpAmount);
+	    					}
+	    					
+	    					receiveDetailHTML += "<tr class='' id=''>";
+	    					receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>";
+	    					receiveDetailHTML += this.hlthchkpNm;
+	    					receiveDetailHTML += "	</td>";
+	    					receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(this.hlthchkpAmount) + "</td>";
+	    					receiveDetailHTML += "</tr>";
+	    					
+	    					hlthchkTotal += hlthchkNum
+	    				});
+	    				
+	    				check4.html(formatWonNumber(parseInt(checkTotal) * 0.4));
+	    				check6.html(formatWonNumber(parseInt(checkTotal) * 0.6));
+	    				xray4.html(formatWonNumber(parseInt(xrayTotal) * 0.4));
+	    				xray6.html(formatWonNumber(parseInt(xrayTotal) * 0.6));
+	    				
+	    				receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td class='text-center fw-semi-bold' style='vertical-align: middle'>";
+						receiveDetailHTML += "검사 합계";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "	<td class='text-center fw-semi-bold' style='vertical-align: middle'>" + formatWonNumber(hlthchkTotal) + "</td>";
+						receiveDetailHTML += "</tr>";
+	    				
+	    			}
+	    			receiveDetailTable.html(receiveDetailHTML);
+	     		}
+	            
+	            
+	     	});
+			// 검사
+			
+			
+			// 치료
+			$.ajax({
+	     		type : "post",
+	    		url : "/mediform/admin/receiptDetail/medicalTreatmentRecord/list",
+	    		data : JSON.stringify(receiveSelectObj),
+	     		contentType : "application/json; charset=utf-8",
+	     		async: false,
+	            beforeSend : function(xhr){            
+	                xhr.setRequestHeader(header,token);
+	            },
+	     		success : function(res) {
+	    			console.log("치료 가져오기 성공");
+	    			
+	    			if(res.length != 0){
+	    				
+	    				receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td colspan='2' class='bg-light text-center' style='vertical-align: middle'>";
+						receiveDetailHTML += "<h5><span class='badge badge-subtle-primary'>치료</span></h5>";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "</tr>";
+	    				
+						var mdlrtTotal = 0;
+						
+						var mdlrtTotalNum = 0;
+						
+						var payTotal = 0;
+						var terpTotal = 0;
+						
+	    				$(res).each(function(){
+	    					
+	    					mdlrtTotalNum = parseInt(this.mdlrtAmount);
+	    					
+	    					if(this.mdlrtNm === "도수치료"){
+	    						terpTotal += parseInt(this.mdlrtAmount);
+	    					}else{
+	    						payTotal += parseInt(this.mdlrtAmount);
+	    					}
+	    					
+	    					receiveDetailHTML += "<tr class='' id=''>";
+	    					receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>";
+	    					receiveDetailHTML += this.mdlrtNm;
+	    					receiveDetailHTML += "	</td>";
+	    					receiveDetailHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(this.mdlrtAmount) + "</td>";
+	    					receiveDetailHTML += "</tr>";
+	    					
+	    					mdlrtTotal += mdlrtTotalNum;
+	    				});
+						
+	    				terp0.html(formatWonNumber(parseInt(terpTotal)));
+	    				terp02.html(formatWonNumber(parseInt(terpTotal))); 
+	    				terp4.html(formatWonNumber(parseInt(payTotal) * 0.4));
+	    				terp6.html(formatWonNumber(parseInt(payTotal) * 0.6));
+	    				
+						receiveDetailHTML += "<tr class='' id=''>";
+						receiveDetailHTML += "	<td class='text-center fw-semi-bold' style='vertical-align: middle'>";
+						receiveDetailHTML += "치료 합계";
+						receiveDetailHTML += "	</td>";
+						receiveDetailHTML += "	<td class='text-center fw-semi-bold' style='vertical-align: middle'>" + formatWonNumber(mdlrtTotal) + "</td>";
+						receiveDetailHTML += "</tr>";
+	    				
+	    			}
+	    			receiveDetailTable.html(receiveDetailHTML);
+	     		}
+	            
+	            
+	     	});
+			// 치료
+		
+		
+			
+			
+			// 영수증
+			var receiptModal = $("#receiptModal");
+			receiptListTable.on("click", ".oneReceipt", function(){
+	
+				console.log(">>> 영수증 클릭 <<<");
+				
+				receiptModal.modal("show");
+				
+				var rciptNo = $(this).attr("id");
+				
+				console.log("영수증 번호 >>> " + rciptNo)	
+					
+				var receiptSelectObj = {
+						rciptNo : rciptNo
+					};
+				
+				
+				$.ajax({
+			 		type : "post",
+					url : "/mediform/admin/receipt/select",
+					data : JSON.stringify(receiptSelectObj),
+			 		contentType : "application/json; charset=utf-8",
+			 		async: false,
+			        beforeSend : function(xhr){            
+			            xhr.setRequestHeader(header,token);
+			        },
+			 		success : function(res) {
+						console.log("");
+						
+						var dateString = res.ipocdDttm;
+						var date = new Date(dateString);
+						var year = date.getFullYear();
+						var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷팅
+						var day = date.getDate().toString().padStart(2, '0'); // 일도 2자리로 포맷팅
+	
+						// 원하는 형식으로 조합
+						var formattedDate = year + month;
+						
+						receiptNORc.html(formattedDate+rciptNo);
+						
+	
+						// 원하는 형식으로 조합
+						var formattedDate2 = year + "년 " + month + "월 " + day + "일";
+						
+						
+						today.html(formattedDate2);
+						
+						// 9번
+						var num9 = 0;
+						if(res.ipocdAmountBefore != null){
+							num9 = parseInt(res.ipocdAmountBefore);
+							paid.html(formatWonNumber(num9));
+						}
+						
+						
+						
+						// 10번
+						var stringSplitArray = (prearngeAmount.val()).split(',');
+						var prearngeAmountNum = stringSplitArray.join('');
+						console.log("num8 >>> ###" + prearngeAmountNum);
+						console.log("num9 >>> ### " + num9);
+						var num10 = parseInt(parseInt(prearngeAmountNum)) - parseInt(num9);
+						doPay.html(formatWonNumber(num10));
+						
+						
+						
+						// 11번
+						cardPay.html(formatWonNumber(res.ipocdAmount));
+						
+						// 납부하지 않음 금액
+						unPaid.html(formatWonNumber(num10 - parseInt(res.ipocdAmount)));
+						
+			 		}
+			 	});
+				
+				
+				
+				
+				
+				
+			});
+			// 영수증 끝
+			
+		}
+		
+		
+		// 수납 처리
+		var receiveBtn = $("#receiveBtn");
+			var receiveModal = $("#receiveModal");
+			var receivePayBtn = $("#receivePayBtn");
+			receiveBtn.on("click", function(){
+				console.log("수납 버튼 클릭!!!");
+				
+				receiveModal.modal("show");
+				var rcivNo = $("#rcivNoHidden").val();
+				
+				console.log("rcivNo(영수증 번호) >>> " + rcivNo);
+				
+				receivePayBtn.on("click", function(){
+					console.log("찐 수납하기 버튼 클릭!!")
+					
+					var receivePayAmount = $("#receivePayAmount").val();
+					
+					var stringArray = ($("#noReceive").val()).split(',');
+					
+					var noReceiveNum = stringArray.join('');
+					
+					console.log("미수납 금액 숫자 >>>> " + noReceiveNum);
+					
+					if(parseInt(noReceiveNum) < parseInt(receivePayAmount)){
+						Swal.fire({
+			  		      icon: 'warning',
+			  		      title: '수납금액',
+			  		      text: '수납할 금액보다 많은 금액을 입력하였습니다',
+			  		      confirmButtonText: '확인',
+			  		      confirmButtonColor: 'midnightblue',
+			  		    })
+						
+					}else if(parseInt(receivePayAmount) < 100){
+						
+						Swal.fire({
+							      icon: 'warning',
+							      title: '수납금액',
+							      text: '수납은 100원 단위 이상부터 가능합니다',
+							      confirmButtonText: '확인',
+							      confirmButtonColor: 'midnightblue',
+							    })
+						
+					}else{
+					
+						console.log("rcivNo 접수번호 >>>>> " + rcivNo);
+						
+						var payObj = {
+							rcivNo : rcivNo,
+							ipocdAmount : $("#receivePayAmount").val()
+						}
+						
+						
+						$.ajax({
+					 		type : "post",
+							url : "/mediform/admin/receive/update",
+							data : JSON.stringify(payObj),
+					 		contentType : "application/json; charset=utf-8",
+					 		async: false,
+					        beforeSend : function(xhr){            
+					            xhr.setRequestHeader(header,token);
+					        },
+					 		success : function(result) {
+								console.log("");
+								
+								Swal.fire({
+				  				      icon: 'success',
+				  				      title: '수납 완료',
+				  				      text: '수납되었습니다',
+				  				      confirmButtonText: '확인',
+				  				      confirmButtonColor: 'midnightblue',
+				  				    }).then(result => {
+				  				    	if(result.isConfirmed){
+				  				    		
+				  				    		receiveModal.modal("hide");
+				  				    		$("#receivePayAmount").val("");
+				  				    		recieve(rcivNo);
+				  				    		$("#rcivNoHidden").val("");
+				  				    	}
+				  				    	});
+								
+					 		}
+					 	});
+						
+					}				
+					
+					
+					
+				});
+				
+			});
+			// 수납 처리
+			
+				
+				
+		
+	});
+	// 모달창 끝
+	
+	
+});
+
+
+
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.7.2/bluebird.min.js"></script>
+<!-- jsPDF : PDF 파일을 생성하고 다운로드 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<!-- html2canvas : 웹 페이지의 DOM 요소를 캡처해 이미지로 만듦 -->
+<script src="https://unpkg.com/html2canvas@1.0.0-rc.5/dist/html2canvas.js"></script>
+
+<script>
+	var renderedImg = new Array;
+	var contWidth = 200, // 너비(mm) (a4에 맞춤)
+	padding = 3; // 상하좌우 여백(mm)
+	function createPdf() { // 이미지를 pdf로 만들기
+		console.log("ceatePdf 함수 실행!");
+		var lists = document.querySelectorAll(".pdfArea"), // 출력대상 명확히 지정 필요 -> div가 한 묶음으로 출력
+					deferreds = [],
+					doc = new jsPDF("p", "mm", "a4"),
+					listsLeng = lists.length;
+		
+		for (var i = 0; i < listsLeng; i++) { // div 개수만큼 이미지 생성
+		var deferred = $.Deferred();
+		deferreds.push(deferred.promise());
+		generateCanvas(i, doc, deferred, lists[i]);
+		}
+
+		$.when.apply($, deferreds).then(function () { // 이미지 렌더링이 끝난 후
+			var sorted = renderedImg.sort(function(a,b){return a.num < b.num ? -1 : 1;}), // 순서대로 정렬
+			curHeight = padding, // 위 여백 (이미지가 들어가기 시작할 y축)
+			sortedLeng = sorted.length;
+		
+			for (var i = 0; i < sortedLeng; i++) {
+				var sortedHeight = sorted[i].height, //이미지 높이
+				sortedImage = sorted[i].image; //이미지
+					if( curHeight + sortedHeight > 297 - padding * 2 ){ // a4 높이에 맞게 남은 공간이 이미지 높이보다 작을 경우 페이지 추가
+						doc.addPage(); // 페이지를 추가함
+						curHeight = padding; // 이미지가 들어갈 y축을 초기 여백값으로 초기화
+						doc.addImage(sortedImage, 'jpeg', padding ,
+						curHeight, contWidth, sortedHeight); // 이미지 넣기
+						curHeight += sortedHeight; // y축 = 여백 + 새로 들어간 이미지 높이
+					} else { // 페이지에 남은 공간보다 이미지가 작으면 페이지 추가하지 않음
+						doc.addImage(sortedImage, 'jpeg', padding ,
+						curHeight, contWidth, sortedHeight); // 이미지 넣기
+						curHeight += sortedHeight; // y축 = 기존y축 + 새로 들어간 이미지 높이
+					}
+			}
+			doc.save('pdf_test.pdf'); // pdf 저장
+			curHeight = padding; // y축 초기화
+			renderedImg = new Array; // 이미지 배열 초기화
+		});
+	}
+	
+	
+	function generateCanvas(i, doc, deferred, curList){ // 페이지를 이미지로 만들기
+		var pdfWidth = $(curList).outerWidth() * 0.2645, // px -> mm로 변환
+			pdfHeight = $(curList).outerHeight() * 0.2645,
+			heightCalc = contWidth * pdfHeight / pdfWidth;
+			html2canvas( curList ).then(
+			function (canvas) {
+				var img = canvas.toDataURL('image/jpeg', 1.0); // 이미지 형식 지정
+				renderedImg.push({num:i, image:img,
+				height:heightCalc}); // renderedImg 배열에 이미지 데이터 저장(뒤죽박죽방지)
+				deferred.resolve(); // 결과 보내기
+			}
+		);
+	}
+</script>
+

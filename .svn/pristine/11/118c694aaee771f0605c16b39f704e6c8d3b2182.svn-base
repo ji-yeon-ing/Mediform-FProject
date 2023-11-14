@@ -1,0 +1,2677 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%> --%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 │ 의사</title>
+<style type="text/css">
+.table thead {
+   position: sticky;
+   top: 0;
+   z-index: 1; /* 다른 콘텐츠 위로 표시하기 위해 z-index를 설정합니다. */
+}
+.pointer {
+	cursor: pointer;
+}
+.scrollbar::-webkit-scrollbar {
+	display: none;
+	/* 스크롤바를 숨기기 위해 display를 none으로 설정, 기능은 되지만 시각적으로만 숨겨놓은거임!!!!!!!! */
+}
+.professor-text {
+	height: 100%;
+}
+.callbutton {
+    width: 60px; 
+    height: 30px;  
+    padding: 1px 5px;  
+    font-size: x-small;
+}
+
+$thisButton.css{
+      width: 60px; 
+    height: 30px;  
+    padding: 1px 5px;  
+    font-size: x-small;
+}
+</style>
+</head>
+<body>
+	<div class="row" style="height: 900px;">
+		<div class="col-2 px-2" style="">
+			<div class="card border border-secondary">
+
+				<div style="background-color: midnightblue;">
+						<h4 class="col-12 mt-1 fw-semi-bold text-white text-center pt-2">${clinicNo }
+							진 료 실</h4>
+						<h6 class="col-12 mb-3 text-white text-center">
+							담 당 의 사 | <span id="empNo" data-empno="${empVO.empNo }">${empVO.empNm }</span><span
+								style="font-size: small; white-space: nowrap; font-weight: nomal;">
+								교수</span>
+						</h6>
+				</div>
+				<div class="card border scrollbar" style="height: 730px;">
+					<div>
+						<ul class="nav nav-tabs" id="myTab" role="tablist">
+							<li class="nav-item text-center col-6"><a
+								class="nav-link active fw-semi-bold" id="waiting-tab"
+								data-bs-toggle="tab" href="#tab-waiting" role="tab"
+								aria-controls="tab-waiting" aria-selected="true">진료대기</a></li>
+							<li class="nav-item text-center col-6"><a
+								class="nav-link fw-semi-bold" id="done-tab" data-bs-toggle="tab"
+								href="#tab-done" role="tab" aria-controls="tab-done"
+								aria-selected="false">진료완료</a></li>
+						</ul>
+					</div>
+					<div>
+						<div class="row card-body" style="padding: 0px; height: 650px;">
+							<div class="tab-content" id="myTabContent">
+
+								<!-- 진료대기 탭 시작 -->
+								<div class="col-12 tab-pane fade show active p-0"
+									id="tab-waiting" role="tabpanel" aria-labelledby="waiting-tab">
+									<div class="col-12"
+										style="display: flex; justify-content: flex-end;"></div>
+									<div
+										class="list bg-body-tertiary scrollbar d-flex flex-column gap-1 "
+										id="waitingList" style="overflow-y: auto; max-height: 650px;">
+										<!-- 내용 ajax 비동기 생성 -->
+									</div>
+								</div>
+								<!-- 진료대기 탭 끝 -->
+
+								<!-- 진료완료 탭 시작 -->
+								<div class="col-12 tab-pane fade" id="tab-done" role="tabpanel"
+									aria-labelledby="done-tab">
+									<div class="list bg-body-tertiary d-flex flex-column gap-1 "
+										id="doneClinicList"
+										style="overflow-y: auto; max-height: 650px;"></div>
+								</div>
+								<!-- 진료완료 탭 끝 -->
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-3 px-2">
+			<!-- 환자 검색 창 시작 -->
+			<div class="row card border border-secondary w-100" style="background-color: midnightblue; margin-left:1px; height: 55px;">
+				<div class="col-md-12">
+					<form class="position-relative" style="margin-top: 7px;" data-bs-toggle="search" data-bs-display="static">
+						<div class="input-group" style="top: 4px;">
+							<input class="form-control form-control-sm shadow-none search search-input patientInput" type="search" placeholder="환자 번호 및 환자 이름을 입력해주세요." aria-label="search" />
+							<div class="input-group-text bg-transparent"><span class="fas fa-search fs--1 text-600"></span></div>
+						</div>
+					</form>
+					<div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden" style="margin-left: 16px; top:35px;" id="patientDropMenu">
+						<div id="patinetMenu"  class="scrollbar list py-1" style="width:406px; max-height: 20.5rem;">
+							<div class="d-flex align-items-center">
+								<table class="text-center">
+									<thead>
+										<tr class="row dropdown-header text-black text-center fs--1">
+											<th class="col-3">환자 번호</th>
+											<th class="col-3">환자명</th>
+											<th class="col-3">나이</th>
+											<th class="col-3">생년월일</th>
+										</tr>
+									</thead>
+									<tbody id="patientTbody" class="list text-black fs--1">
+	
+									</tbody>
+								</table>
+		        			</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 환자 검색 창 끝 -->
+			<div class="card border border-secondary" style="height: 200px; margin-top: 5px;">
+
+				<div class="patientDetailTitle"
+					style="position: sticky; top: 0; z-index: 100;">
+					<input
+						class="fw-semi-bold col-7 text-white text-center form-control"
+						name="" type="text" value="상세정보"
+						style="background-color: midnightblue" disabled />
+				</div>
+				
+				<div class="card-body scrollbar m-1 p-1">
+					<div class="table-responsive scrollbar mx-nx1" id="patientDetail" data-patntno="">
+						<div class="col-12">
+							<div class="row mb-0">
+								<!-- 이름, 성별, 생년월일 -->
+								<div class="col-4 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem; margin-left: 20px;">이름 | </label> <input
+										class="form-control bg-white text-black ml-2" id="patntNmDt"
+										name="patntNm" type="text" value=""
+										style="font-size: 0.8rem; width: 70%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+								<div class="col-4 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem;">성별 | </label> <input
+										class="form-control bg-white text-black ml-2"
+										id="patntSexdstnDt" name="patntSexdstn" type="text" value=""
+										style="font-size: 0.8rem; width: 50%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+								<div class="col-4 d-flex align-items-center">
+									<label class="col-form-label fw-semi-bold text-black"
+										style="font-size: 0.8rem;">생년월일 |</label> <input
+										class="form-control bg-white text-black" id="patntRrno1Dt"
+										name="patntRrno1" type="text" value=""
+										style="font-size: 0.8rem; width: 60%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+							</div>
+
+							<div class="row mb-0">
+								<div class="col-4 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem; margin-left: 20px;">나이 | </label> <input
+										class="form-control bg-white text-black" id="patntAgeDt"
+										name="patntAge" type="text" value=""
+										style="font-size: 0.8rem; width: 50%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+								<div class="col-4 d-flex align-items-center">
+									<label class="col-form-label fw-semi-bold text-black"
+										style="font-size: 0.8rem; width: 50%;">연락처 |</label> <input
+										class="form-control bg-white text-black" id="patntTelnoDt"
+										name="patntTelno" type="text" value=""
+										style="font-size: 0.8rem; width: 110%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+								<div class="col-4 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem;">건강보험 | </label> <input
+										class="form-control bg-white text-black ml-2"
+										id="patntHlthinsAtDt" name="patntHlthinsAt" type="text"
+										value=""
+										style="font-size: 0.8rem; width: 50%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+							</div>
+
+							<div class="row mb-0">
+								<div class="col-4 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem; margin-left: 20px;">입원여부 | </label>
+									<input class="form-control bg-white text-black ml-2"
+										id="hsptlzAtDt" name="hsptlzAt" type="text" value=""
+										style="font-size: 0.8rem; width: 50%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+								<div class="col-3 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem;">보호자 | </label> <input
+										class="form-control bg-white text-black ml-2" id="prtctorNmDt"
+										name="prtctorNm" type="text" value=""
+										style="font-size: 0.8rem; width: 60%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+								<div class="col-5 d-flex align-items-center">
+									<label class="col-form-label fw-semi-bold text-black"
+										style="font-size: 0.8rem;">보호자 연락처 |</label> <input
+										class="form-control bg-white text-black" id="prtctorTelnoDt"
+										name="prtctorTelno" type="text" value=""
+										style="font-size: 0.8rem; width: 62%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+							</div>
+
+
+							<div class="row mb-0">
+								<div class="col-10 d-flex align-items-center">
+									<label
+										class="col-form-label fw-semi-bold text-black text-right"
+										style="font-size: 0.8rem; margin-left: 20px;">메모 | </label> <input
+										class="form-control bg-white text-black ml-2" id="patntMemoDt"
+										name="patntMemo" type="text" value=""
+										style="font-size: 0.8rem; width: 85%; border: none; box-shadow: none;"
+										disabled />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!--  신체계측 및 바이타아ㅏ아아아알 -->
+			<div class="card border border-secondary"
+				style="height: 80px; margin-top: 5px;">
+
+				<div class="card-body scrollbar m-0 p-0">
+
+					<div class="row mb-2">
+						<table class="table mb-0 data-table fs--1 " id="patientoPvTable">
+							<thead class="bg-200 m-0">
+								<tr>
+									<th class="text-800 text-center">키</th>
+									<th class="text-800 text-center">몸무게</th>
+									<th class="text-800 text-center">혈액형</th>
+									<th class="text-800 text-center">최고혈압</th>
+									<th class="text-800 text-center">최저혈압</th>
+									<th class="text-800 text-center">체온</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="padding: 0px;"><input
+										class="form-control bg-white text-black text-center"
+										id="patntHeightDt" name="patntHeight" type="text" value=""
+										style="font-size: 0.8rem; border: none; box-shadow: none;"
+										disabled /></td>
+									<td style="padding: 0px;"><input
+										class="form-control bg-white text-black text-center"
+										id="patntBdwghDt" name="patntBdwgh" type="text" value=""
+										style="font-size: 0.8rem; border: none; box-shadow: none;"
+										disabled /></td>
+									<td style="padding: 0px;"><input
+										class="form-control bg-white text-black text-center"
+										id="patntBdpDt" name="patntBdp" type="text" value=""
+										style="font-size: 0.8rem; border: none; box-shadow: none;"
+										disabled /></td>
+									<td style="padding: 0px;"><input
+										class="form-control bg-white text-black text-center"
+										id="hghrkHhprsDt" name="hghrkHhprs" type="text" value=""
+										style="font-size: 0.8rem; border: none; box-shadow: none;"
+										disabled /></td>
+									<td style="padding: 0px;"><input
+										class="form-control bg-white text-black text-center"
+										id="lwtrkHhprsDt" name="lwtrkHhprs" type="text" value=""
+										style="font-size: 0.8rem; border: none; box-shadow: none;"
+										disabled /></td>
+									<td style="padding: 0px;"><input
+										class="form-control bg-white text-black text-center"
+										id="bdheatDt" name="bdheat" type="text" value=""
+										style="font-size: 0.8rem; border: none; box-shadow: none;"
+										disabled /></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+
+
+			<!-- 진료기록  -->
+			<div class="card border scrollbar border-secondary"
+				style="height: 460px; margin-top: 5px;"">
+				<div class="patientPreOrder">
+					<input
+						class="fw-semi-bold col-7 text-white text-center form-control"
+						name="" type="text" value="진료기록"
+						style="background-color: midnightblue" disabled />
+				</div>
+				<div class="card-body" style="padding: 0px; padding-top: 20px;">
+
+					<div class="row" style="margin: 0px;">
+						<div class="col-2" style="padding-right: 5px; padding-left: 18px;">
+							<div id="clinicRecord" class="list-group"
+								style="width: 105px; padding: 0;"></div>
+						</div>
+						<div class="col-10" style="padding-left: 30px; margin-left: 0px;"
+							id="clnic-list"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 진료 작성  시작-------------------------------------------------------->
+		<div class="col-5 px-2">
+			<div class="card border border-secondary">
+				<div class="">
+					<div class="form-control"
+						style="background-color: midnightblue; height: 810px;">
+						<input
+							class="fw-semi-bold col-12 text-white text-center form-control"
+							id="clinic" name="" type="text" value="진료작성"
+							style="background-color: midnightblue" disabled />
+<!--진료 시작================================ 진료  시작========================================================= -->
+						<p class="fw-semi-bold text-white align-middle"
+							style="margin-bottom: 0; vertical-align: center;">
+							<input type="hidden" id="rceptNo" value="">
+							<span>진료 </span> [
+							<input type="hidden" id="clnicTime" value="">
+							<span id="clnicTimeText" ></span>
+							]
+							<span id="hsptlzAtText" class="pointer">입원 </span><input type="checkbox" class="pointer" id="hsptlzAt" value="Y">
+							<button type="button" id="clnicInsertBtn" class="btn btn-success btn-sm" style="font-size: small; font-weight: normal;">진료 등록</button>
+						</p>
+						
+						<textarea class="card border border-secondary w-100" id="clnicCn"
+							style="border-radius: 5px;" rows="3" cols=""></textarea>
+<!--진료 끝 ================================ 진료 끝 ========================================================= -->
+
+<!--상병 시작 =============================== 상병 시작=================================================================== -->
+						<div style="display: flex; justify-content: space-between; align-items: center;">
+						    <div style="width: 50%;">
+						        <p class="fw-semi-bold text-white align-middle" style="margin-bottom: 0; vertical-align: center;">상병</p>
+						    </div>
+						    <div style="width: 50%;">
+						        <p class="fw-semi-bold text-white align-middle" style="margin-bottom: 0; vertical-align: center;">
+						            <span>발병일</span>
+						            <input style="width: 25px;" type="date" id="atfssDt" value="">
+						        </p>
+						    </div>
+						</div>
+						<div class="card border border-secondary scrollbar-overlay w-90" style="height:300px; margin-top:0; background-color: white;">
+						<!-- 상병 오더 리스트 테이블 시작----------------------->
+								<div>
+									<table class="table p-0 mb-0 w-100" id="sawlCheckTable">
+										<thead class="bg-200" >
+											 <tr class="row fs--1">
+									            <th class="col-1 align-middle white-space-nowrap" style="text-align: center;">
+									              <div class="form-check mb-0">
+									                <input id="sawlCheckTh" class="form-check-input" type="checkbox"/>
+									              </div>
+									            </th>
+									            <th class="col-2  text-black dark__text-white align-middle">질병분류기호</th>
+									            <th class="col-2 text-black dark__text-white align-middle">주 부 배제</th>
+									            <th class="col-2 text-black dark__text-white align-middle">한글명 </th>
+									            <th class="col-2 text-black dark__text-white align-middle">영문명</th>
+									            <th class="col-2 text-black dark__text-white align-middle">주상병구분</th>
+									            <th style="width: 88px;" class="col-1 text-black dark__text-white align-middle"> 
+									            	<button id="sawlAllDelBtn" class="btn btn-outline-danger btn-sm btn-outline-primary" 
+									            			style="font-size: small; font-weight: normal;" type="button">삭제</button>
+									            </th>
+									          </tr>
+										</thead>
+										<tbody class="sawlInsertTable1 sawDelTable fs--1">
+										
+										</tbody>
+										<tbody class="sawlInsertTable2 sawDelTable fs--1">
+
+										</tbody>
+										<tbody class="sawlInsertTable3 sawDelTable fs--1">
+
+										</tbody>
+									</table>
+								</div>
+								<!-- 상병 오더 리스트 테이블 끝----------------------->
+								<!--겅색창 div 시작------------------------------------------------------------>
+								<div>
+									<div class="search-box w-100" id="sawlSearchBox">
+										<form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+											<input class="form-control search-input sawlInput" type="search" placeholder="상병코드 및 상병명을 입력해주세요." aria-label="Search" />
+											<span class="fas fa-search search-box-icon"></span>
+									 	</form>
+									 	<div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+											<button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+										</div>
+										<div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100" id="sawlDropMenu">
+		    								<div id="sawlMenu"  class="scrollbar list py-3" style="max-height: 24rem;">
+		    									<div class="d-flex align-items-center">
+		    										<table class="w-100 text-center table-sm">
+		    											<thead>
+		    												<tr class="row dropdown-header text-black text-center fs--1">
+		    													<th class="col-3">질병분류기호</th>
+		    													<th class="col-3">한글명</th>
+		    													<th class="col-4">영문명 </th>
+		    													<th class="col-2">주상병구분</th>
+		    												</tr>
+		    											</thead>
+		    											<tbody id="sawlTbody" class="list text-black fs--1">
+															
+		    											</tbody>
+
+		    										</table>
+										        </div>
+		    								</div>
+		    							</div>
+									</div>
+								</div>
+								<!--겅색창 div 끝------------------------------------------------------------>
+							</div>
+<!--상병 끝 =============================== 상병 끝=================================================================== -->
+
+<!--검사 시작 =============================== 검사 시작 =================================================================== -->
+						<p class="fw-semi-bold text-white align-middle" style="margin-bottom: 0; vertical-align: center;">
+							<span>검사</span> 
+							<button id="hcOrderBtn" class="btn btn-success btn-sm" style="font-size: small; font-weight: normal;">검사 오더 등록</button>
+						</p>
+						<div class="card border border-secondary scrollbar-overlay" style="height: 300px; margin-top: 0; background-color: white;">
+								<!-- 검사 오더 리스트 테이블 시작----------------------->
+								<div>
+									<table class="table mb-0 w-100" id="hcCheckTable">
+										<thead class="bg-200 w-100 fs--1" >
+											 <tr class="row">
+									            <th class="col-1 align-middle white-space-nowrap">
+									              <div class="form-check mb-0">
+									                <input id="hcCheckTh" class="form-check-input" type="checkbox"/>
+									              </div>
+									            </th>
+									            <th class="col-3 text-black dark__text-white align-middle">검사코드</th>
+									            <th class="col-3 text-black dark__text-white align-middle">검사명 </th>
+									            <th class="col-3 text-black dark__text-white align-middle">급여여부</th>
+									            <th class="col-2 text-black dark__text-white align-middle"> 
+									            	<button id="hcAllDelBtn" class="btn btn-outline-danger btn-sm btn-outline-primary" 
+									            			style="font-size: small; font-weight: normal;" type="button">삭제</button>
+									            </th>
+									          </tr>
+										</thead>
+										<tbody class="hcInsertTable fs--1">
+
+										</tbody>
+									</table>
+								</div>
+								<!-- 검사 오더 리스트 테이블 끝----------------------->
+								<!--겅색창 div 시작------------------------------------------------------------>
+								<div>
+									<div class="search-box w-100" id="hcSearchBox">
+										<form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+											<input class="form-control search-input hCInput" type="search" placeholder="검사코드 및 검사명을 입력해주세요." aria-label="Search" />
+											<span class="fas fa-search search-box-icon"></span>
+									 	</form>
+									 	<div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+											<button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+										</div>
+										<div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100" id="hcDropMenu">
+		    								<div id="hcMenu"  class="scrollbar list py-3" style="max-height: 24rem;">
+		    									<div class="d-flex align-items-center">
+		    										<table class="w-100 text-center">
+		    											<thead>
+		    												<tr class="row dropdown-header text-black text-center fs--1">
+		    													<th class="col-3">검사코드</th>
+		    													<th class="col-7">검사명</th>
+		    													<th class="col-2">급여여부</th>
+		    												</tr>
+		    											</thead>
+		    											<tbody id="hCTbody" class="list text-black fs--1">
+
+		    											</tbody>
+
+		    										</table>
+										        </div>
+		    								</div>
+		    							</div>
+									</div>
+								</div>
+								<!--겅색창 div 끝------------------------------------------------------------>
+							</div>
+<!--검사 끝 =============================== 검사 끝 =================================================================== -->
+
+<!--치료 시작 =============================== 치료 시작 =================================================================== -->
+							<p class="fw-semi-bold text-white align-middle"
+								style="margin-bottom: 0; vertical-align: center;">치료</p>
+							<div class="card border border-secondary scrollbar-overlay" style="height: 300px; margin-top: 0; background-color: white;">
+								<!-- 치료 오더 리스트 테이블 시작----------------------->
+								<div>
+									<table class="table mb-0 w-100" id="mtCheckTable">
+										<thead class="bg-200 w-100 fs--1" >
+											 <tr class="row">
+									            <th class="col-1 align-middle white-space-nowrap">
+									              <div class="form-check mb-0">
+									                <input id="mtCheckTh" class="form-check-input" type="checkbox"/>
+									              </div>
+									            </th>
+									            <th class="col-3 text-black dark__text-white align-middle">치료코드</th>
+									            <th class="col-3 text-black dark__text-white align-middle">치료명 </th>
+									            <th class="col-3 text-black dark__text-white align-middle">급여여부</th>
+									            <th class="col-2 text-black dark__text-white align-middle"> 
+									            	<button id="mtAllDelBtn" class="btn btn-outline-danger btn-sm btn-outline-primary" 
+									            			style="font-size: small; font-weight: normal;" type="button">삭제</button>
+									            </th>
+									          </tr>
+										</thead>
+										<tbody class="mtInsertTable fs--1">
+										</tbody>
+									</table>
+								</div>
+								<!-- 치료 오더 리스트 테이블 끝----------------------->
+								<!--치료 div 시작------------------------------------------------------------>
+								<div>
+									<div class="search-box w-100" id="mtSearchBox">
+										<form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+											<input class="form-control search-input mtInput" type="search" placeholder="치료코드 및 치료명을 입력해주세요." aria-label="Search" />
+											<span class="fas fa-search search-box-icon"></span>
+									 	</form>
+									 	<div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+											<button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+										</div>
+										<div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100" id="mtDropMenu">
+		    								<div id="mtMenu"  class="scrollbar list py-3" style="max-height: 24rem;">
+		    									<div class="d-flex align-items-center">
+		    										<table class="w-100 text-center">
+		    											<thead>
+		    												<tr class="row dropdown-header text-black text-center fs--1">
+		    													<th class="col-3">치료코드</th>
+		    													<th class="col-7">치료명</th>
+		    													<th class="col-2">급여여부</th>
+		    												</tr>
+		    											</thead>
+		    											<tbody id="mtTbody" class="list text-black fs--1">
+
+		    											</tbody>
+		    										</table>
+										        </div>
+		    								</div>
+		    							</div>
+									</div>
+								</div>
+								<!--치료 div 끝------------------------------------------------------------>
+<!--치료 끝 =============================== 치료 끝 =================================================================== -->
+<!--처방 시작 =============================== 처방 시작 =================================================================== -->
+								<p class="fw-semi-bold text-white align-middle" style="margin-bottom: 0; vertical-align: center;">처방</p>
+								<!-- 처방 오더 리스트 테이블 시작 ------------------------------------------------->
+								<div class="">
+									<table class="table mb-0 w-100" id="mCheckTable">
+										<thead class="bg-200 w-100 fs--1" >
+											 <tr class="row">
+									            <th class="col-1 p-0 align-middle">
+									              <div class="form-check mb-0">
+									                <input id="mCheckTh" class="form-check-input" type="checkbox"/>
+									              </div>
+									            </th>
+									            <th class="col-2 p-0 text-black dark__text-white align-middle">약품코드</th>
+									            <th class="col-2 p-0 text-black dark__text-white align-middle">약품명</th>
+									            <th class="col-2 p-0 text-black dark__text-white align-middle">업체명</th>
+									            <th class="col-1 p-0 text-black dark__text-white align-middle">투여량</th>
+									            <th class="col-1 p-0 text-black dark__text-white align-middle">투여횟수</th>
+									            <th class="col-1 p-0 text-black dark__text-white align-middle">투여기간</th>
+									            <th class="col-2 p-0 text-black dark__text-white align-middle"> 
+									            	<button id="mAllDelBtn" class="btn btn-outline-danger btn-sm btn-outline-primary" 
+									            			style="font-size: small; font-weight: normal;" type="button">삭제</button>
+									            </th>
+									          </tr>
+										</thead>
+										<tbody class="mInsertTable fs--1">
+										</tbody>
+									</table>
+								</div>
+								<!-- 처방 오더 리스트 테이블 끝----------------------->
+								<!--처방 div 시작------------------------------------------------------------>
+								<div>
+									<div class="search-box w-100" id="mSearchBox">
+										<form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+											<input class="form-control search-input mInput" type="search" placeholder="약품코드 및 약품명을 입력해주세요." aria-label="Search" />
+											<span class="fas fa-search search-box-icon"></span>
+									 	</form>
+									 	<div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+											<button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+										</div>
+										<div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100" id="mDropMenu">
+		    								<div id="mMenu"  class="scrollbar list py-3" style="max-height: 24rem;">
+		    									<div class="d-flex align-items-center">
+		    										<table class="w-100 text-center">
+		    											<thead>
+		    												<tr class="row dropdown-header text-black text-center fs--1">
+		    													<th class="col-2">약품코드</th>
+		    													<th class="col-5">약품명</th>
+		    													<th class="col-3">업체명</th>
+		    													<th class="col-2">투여경로</th>
+		    												</tr>
+		    											</thead>
+		    											<tbody id="mTbody" class="list text-black fs--1">
+
+		    											</tbody>
+		    										</table>
+										        </div>
+		    								</div>
+		    							</div>
+									</div>
+								</div>
+								<!--처방 div 끝------------------------------------------------------------>
+							</div>
+<!-- 							<div class="card border border-secondary scrollbar-overlay" -->
+<!-- 								style="height: 132px; margin-top: 0; background-color: white;"> -->
+<!-- 							</div> -->
+<!--처방 끝 =============================== 처방 끝 =================================================================== -->
+							
+						</div>
+					</div>
+					<div></div>
+				</div>
+			</div>
+			<!-- 진료 작성  끝-->
+
+			<div class="col-2 px-2">
+				<div class="card border border-secondary">
+					<div class="">
+						<input
+							class="fw-semi-bold col-12 text-white text-center form-control"
+							id="groupOrder" name="" type="text" value="그룹오더"
+							style="background-color: midnightblue" disabled />
+					</div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css"> -->
+		<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script> -->
+		<meta id="_csrf" name="_csrf" content="${_csrf.token}" />
+		<meta id="_csrf_header" name="_csrf_header"
+			content="${_csrf.headerName}" />
+<script>
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+var selectedPatntNo;
+//진료대기 환자 리스트
+$(function(){
+	
+	updateList();
+	
+	setTimeout(() => {
+		updateList()
+	}, 10000);
+	
+	function updateList(){
+		$.ajax({
+			type: "get",
+			url: "/mediform/doctor/room/list",
+			contentType : "application/json; charset=utf-8",
+	        beforeSend : function(xhr){
+	        	 xhr.setRequestHeader(header,token);
+	        },
+	        success : function(data){
+				var waitingList = "";
+				var doneList = "";
+				console.log(data);
+				
+	        	$.each(data, function(index, item) {
+	        		var rceptNo = item.rceptVO.rceptNo;						// 접수번호
+					var status = item.rceptVO.rceptSttus;					// 상태
+					
+					var name = item.patientVO.patntNm;					// 환자명
+					
+		        	var hlthinsAt = item.patientVO.patntHlthinsAt;		// 건강보험
+		        	if(hlthinsAt == "Y"){
+		        		hlthinsAt = "보험 유";
+					}else{
+						hlthinsAt = "보험 무";
+					}
+					var hsptlzAt = item.patientVO.patntHsptlzAt;
+					
+					var time = new Date(item.rceptVO.rceptDt);			// 접수 일시
+					var hour = time.getHours().toString().padStart(2,'0');
+					var minute = time.getMinutes().toString().padStart(2,'0');
+					var rcepttime = hour + ":" + minute; 	
+					
+					var no = item.rceptVO.patntNo;					// 환자 번호
+					var birthDay = item.patientVO.patntRrno1.toString()	// 생년월일
+					var birth = birthDay.substring(0,2) + "." + birthDay.substring(2,4) + "." + birthDay.substring(4,6);	// 생년월일
+					var age = item.patientVO.patntAge;					// 나이
+					var gender = item.patientVO.patntSexdstn;			// 성별
+					if(gender == "M"){
+						gender = "남";
+					}else{
+						gender = "여";
+					}
+					var memo = item.rceptVO.rceptReason;				// 내원 이유
+					if(memo == "null" || memo == ""){
+						memo = " ";
+					}
+					
+					var itemList = "";
+					
+					if(status == "0" | status == "1" | status == "2" || status == "3" || status == "4"){
+		        		
+						if(status == "0"){
+							status = "진료대기";
+							color = "primary";
+						}else if(status == "1"){
+							status = "진료중";
+							color = "success";
+						}else if(status == "2"){
+							status = "검사대기";
+							color = "warning";
+						}else if(status == "3"){
+							status = "검사중";
+							color = "warning";
+						}else if(status == "4"){
+							status = "검사완료";
+							color = "primary";
+						}
+						
+						itemList += "<div id='" + no + "' class='noFormat patientWaitingList bg-white dark__bg-1100 d-md-flex d-xl-inline-block d-xxl-flex align-items-center p-3 rounded-3 shadow-sm card-view-height gap-1'>";
+						itemList += "<div class='d-flex align-items-start align-items-sm-center'>";
+						itemList += "<div class='row align-items-center gx-0 gy-2'>";
+						itemList += "<div class='col-auto'>";
+						itemList += "<div class='row'>";
+						itemList += "<div class='col-7'>";
+						itemList += "<span class='fas fa-user' data-fa-transform='shrink-3 up-1'></span>";
+						itemList += " <span style='font-weight: bold;'>" + name + "</span>";
+						itemList += "</div>";
+						itemList += "<div class='col-5' style='padding-right: 10px; display: flex; justify-content: flex-end;'>";
+						itemList += "<button class='btn btn-sm btn-outline-" + color + " callbutton' style='padding-right:5px; padding-left:5px; font-size: x-small;' value='" + rceptNo + "'>" + status +"</button>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "<div class='row' style='font-size: small;'>";
+						itemList += "<span class='clickPatntNo'>" + no + " | " + hlthinsAt + " | " + rcepttime + "</span><br/>";
+						itemList += "<span>" + birth + " | 만 " + age + "세 | " + gender + "</span>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "<hr style='margin-bottom: 0px;'/>";
+						itemList += "<div class='col-auto'>";
+						itemList += "<h6 class='mb-0 text-500 pt-0'>" + memo + "</h6>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "</div>";
+						
+						waitingList += itemList;
+						
+					}else if(status == "9"){
+						status = "진료완료";
+						color = "dark";
+						
+						itemList += "<div id='" + no + "' class='noFormat patientWaitingList bg-white dark__bg-1100 d-md-flex d-xl-inline-block d-xxl-flex align-items-center p-3 rounded-3 shadow-sm card-view-height gap-1'>";
+						itemList += "<div class='d-flex align-items-start align-items-sm-center'>";
+						itemList += "<div class='row align-items-center gx-0 gy-2'>";
+						itemList += "<div class='col-auto'>";
+						itemList += "<div class='row'>";
+						itemList += "<div class='col-7'>";
+						itemList += "<span class='fas fa-user' data-fa-transform='shrink-3 up-1'></span>";
+						itemList += "<span style='font-weight: bold;'>" + name + "</span>";
+						itemList += "</div>";
+						itemList += "<div class='col-5' style='padding-right: 10px; display: flex; justify-content: flex-end;'>";
+						itemList += "<button class='btn btn-sm btn-outline-" + color + " callbutton' style='padding-right:5px; padding-left:5px; font-size: x-small;' value='" + rceptNo + "'>" + status +"</button>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "<div class='row' style='font-size: small;'>";
+						itemList += "<span class='clickPatntNo'>" + no + " | " + hlthinsAt + " | " + rcepttime + "</span><br/>";
+						itemList += "<span>" + birth + " | 만 " + age + "세 | " + gender + "</span>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "<hr style='margin-bottom: 0px;'/>";
+						itemList += "<div class='col-auto'>";
+						itemList += "<h6 class='mb-0 text-500 pt-0'>" + memo + "</h6>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "</div>";
+						itemList += "</div>";
+						
+						doneList += itemList;
+					}
+					
+	        	});
+				$("#waitingList").empty().append(waitingList);
+        	 	$("#doneClinicList").empty().append(doneList);
+	        },
+	        error: function(){
+	        	alert("서버오류! 다시 시도해주세요.");
+	        }
+		});
+	}
+	////
+});
+var thisText = "";
+
+		// 진료대기 때 호출 hover
+		$(document).on('mouseover', '.callbutton', function() {
+			thisText = $(this).text();
+			if(thisText == '진료대기' || thisText == '검사완료'){
+				$(this).text("호출");
+				$(this).css({"font-weight": "bold", "font-size": "x-small"});
+			}
+		}).on('mouseout', '.callbutton', function() {
+			if($(this).text() == '호출'){
+				$(this).text(thisText);
+				$(this).css({"font-weight": "normal", "font-size": "x-small"});
+			}
+		});
+		
+		
+		// 호출 버튼 클릭시
+		$(document).on('click', '.callbutton', function() {
+			var $thisButton = $(this);  // 현재 클릭한 버튼
+			var patntNo = $(this).closest(".noFormat").attr("id");
+			console.log(patntNo);
+		    var rceptNo = $thisButton.val();
+		    var updateObject = {};
+			
+		    // 진료대기 버튼을 눌렀을 때
+		    if ($thisButton.text() === "호출" || $thisButton.text() === "진료대기" || $thisButton.text() == "검사완료") {
+		        updateObject = {
+		            rceptNo: rceptNo,
+		            rceptSttus: 1  // 진료중 상태값
+		        };
+		        $thisButton.text("진료중");
+		        $thisButton.removeClass("btn-outline-primary").addClass("btn-outline-success");
+				
+				$.ajax({
+					type: "post",
+					url: "/mediform/doctor/room/update/status",
+					data: JSON.stringify(updateObject),
+					contentType: "application/json; charset=utf-8",
+			        beforeSend: function(xhr){
+			        	 xhr.setRequestHeader(header,token);
+			        },
+			        success: function(data){
+						var clnicStartTime = new Date();
+			 			var clnicStartTimeFormat = moment(clnicStartTime).format('YYYY년 MM월 DD일 HH:mm');
+			 			$(clnicTimeText).html(clnicStartTimeFormat);
+			 			$("#rceptNo").val(rceptNo);
+			 			$("#patient").val(patntNo);
+			        },
+			        error: function(){
+			        	alert("서버오류! 다시 시도해주세요.");	
+			        }
+				});
+		    } 
+		
+		});
+		
+
+// 진료기록 (날짜별로 보기)
+function showSection(id) {
+    let sections = document.querySelectorAll('[id^="clnic-section-"]');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+
+    document.getElementById('clnic-section-' + id).style.display = 'block';
+}
+
+
+function handleClick() {
+    // 클릭한 요소의 아이디를 가져옵니다.
+    var elementId = $(this).attr('id');
+    alert("클릭한 요소의 아이디: " + elementId);
+  }	
+$('#waitingList .patientWaitingList').click(handleClick);
+
+// 환자 검색 관련 시작
+$(function(){
+	var patientInput = $(".patientInput");
+	var patientTbody = $("#patientTbody");
+	var patientSearchBox = $("#patientSearchBox");
+	var patientMenu = $("#patientMenu");
+	var patientDropMenu = $("#patientDropMenu");
+	var patientInsertTable = $(".patientInsertTable");
+	var patientTbodyHtml = "";
+	
+// 	환자 검색 시작
+	$(function(){
+// 		검색창 포커스 아웃일 때 드롭다운 사라지게 만들기
+		patientInput.focusout(function(){
+			setTimeout(() => {
+				$(patientDropMenu).hide();
+			}, 100);
+		});
+		
+		// 검색창 포커스인
+		patientInput.focusin(function(){
+			$(patientDropMenu).show();
+			if(patientInput.val() == "" || patientInput.val() == null){
+				
+				$.ajax({
+					type : "post",
+					url  : "/mediform/patient/searchList",
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var patientDropItemHtml = "";
+						patientTbodyHtml = "";
+						$(res).each(function(idx, item){
+							var patientBirth = birthFormat(this.patntRrno1, this.patntRrno2);
+							patientDropItemHtml = patientDropItem(this.patntNo, this.patntNm, this.patntAge, 
+									this.patntRrno1, this.patntRrno2, patientBirth, this.patntSexdstn, this.patntTelno, this.patntHlthinsAt,
+									this.patntHsptlzAt, this.prtctorNm, this.prtctorTelno);
+							
+						});
+						$(patientTbody).html(patientDropItemHtml);
+					},
+					error : function(err){
+						console.log(err.status);
+					}
+				});
+				
+			}
+		});
+		
+		// 환자 keyup 검색
+		patientInput.on("keyup",function(event){
+			if(event.which != 13){
+				var patientKeyword = patientInput.val();
+				var keyword = { 
+						"keyword" : patientKeyword
+						};
+				// 검색 환자 정보
+				$.ajax({
+					type : "post",
+					url  : "/mediform/patient/search",
+					data : JSON.stringify(keyword),
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var patientBirth = birthFormat(this.patntRrno1, this.patntRrno2);
+						var patientDropItemHtml = "";
+						patientTbodyHtml = "";
+						if(res.length == 0){
+							patientDropItemHtml += "<tr class='text-center row dropdown-item px-x1 py-2 mb-0'>";
+							patientDropItemHtml += '<td class="col-12 text-black fw-bold fw-3 ">조회하신 검사가 없습니다.</td>';
+							patientDropItemHtml += '</tr>';
+						}else{
+							$(res).each(function(idx, item){
+								patientDropItemHtml = patientDropItem(this.patntNo, this.patntNm, this.patntAge, 
+										this.patntRrno1, this.patntRrno2, patientBirth, this.patntSexdstn, this.patntTelno, this.patntHlthinsAt,
+										this.patntHsptlzAt, this.prtctorNm, this.prtctorTelno);
+							});
+						}
+						$(patientTbody).html(patientDropItemHtml);
+					},
+					error : function(err){
+						console.log("err에러 : " + err);
+					}
+				});
+			}
+		});
+		
+		// 환자 결과 누르기 이벤트들 시작 ---------------------------------------------
+		// 엔터 눌렀을 시 제일 위에 환자 번호를 찾는다.
+		$(patientInput).keypress(function(event){
+			if(event.which == 13){
+				event.preventDefault();
+				var patntNo = patientTbody.children("tr:eq(0)").data("patntno");
+				var patntNm = patientTbody.children("tr:eq(0)").data("patntnm");
+				var patntAge = patientTbody.children("tr:eq(0)").data("patntage");
+				var patntRrno1 = patientTbody.children("tr:eq(0)").data("patntrrno1");
+				var patntRrno2 = patientTbody.children("tr:eq(0)").data("patntrrno2");
+				var patientBirth = patientTbody.children("tr:eq(0)").data("patientbirth");
+				var patntSexdstn = patientTbody.children("tr:eq(0)").data("patntsexdstn");
+				var patntTelno = patientTbody.children("tr:eq(0)").data("patnttelno");
+				var patntHlthinsAt = patientTbody.children("tr:eq(0)").data("patnthlthinsat");
+				var patntHsptlzAt = patientTbody.children("tr:eq(0)").data("patnthsptlzat");
+				var prtctorNm = patientTbody.children("tr:eq(0)").data("prtctornm");
+				var prtctorTelno = patientTbody.children("tr:eq(0)").data("prtctortelno");
+				// input태그 비우기
+				$(patientInput).val("");
+				// 환자 테이블에 넣어주기
+				selectPatientAjax(patntNo, patntNm, patntAge, patntRrno1, patntRrno2, patientBirth,
+						patntSexdstn, patntTelno, patntHlthinsAt, patntHsptlzAt, prtctorNm, prtctorTelno);
+				
+				patientInput.blur();
+				$(patientDropMenu).hide();
+			}
+		});
+		
+		// 검색창 목록 클릭 이벤트
+		$(patientTbody).on("click", function(){
+			var targets = $(event.target);
+			// 클릭된 요소의 부모인 tr 태그
+			var clickTr = "";
+			
+			if(targets.is('td')){
+				clickTr = targets.closest('tr');
+			}else if(targets.is('tr')){
+				clickTr = targets;
+			}
+			var patntNo = clickTr.data("patntno");
+			var patntNm = clickTr.data("patntnm");
+			var patntAge = clickTr.data("patntage");
+			var patntRrno1 = clickTr.data("patntrrno1");
+			var patntRrno2 = clickTr.data("patntrrno2");
+			var patientBirth = clickTr.data("patientbirth");
+			var patntSexdstn = clickTr.data("patntsexdstn");
+			var patntTelno = clickTr.data("patnttelno");
+			var patntHlthinsAt = clickTr.data("patnthlthinsat");
+			var patntHsptlzAt = clickTr.data("patnthsptlzat");
+			var prtctorNm = clickTr.data("prtctornm");
+			var prtctorTelno = clickTr.data("prtctortelno");
+			
+			// input 태그 비워주기
+			$(patientInput).val("");
+			
+			selectPatientAjax(patntNo, patntNm, patntAge, patntRrno1, patntRrno2, patientBirth,
+					patntSexdstn, patntTelno, patntHlthinsAt, patntHsptlzAt, prtctorNm, prtctorTelno);
+			patientInput.blur();
+			$(patientDropMenu).hide();
+		});
+		
+		// 환자 결과 누르기 이벤트들 끝 ------------------------------------------------
+		// 환자 상세보기에 값 넣어주기
+		function selectPatientAjax(patntNo, patntNm, patntAge, patntRrno1, patntRrno2, patientBirth,
+				patntSexdstn, patntTelno, patntHlthinsAt, patntHsptlzAt, prtctorNm, prtctorTelno){
+			
+			$("#patntNmDt").val(patntNm); 
+			
+			if(patntSexdstn == "M"){
+				patntSexdstn = "남";
+			}else{
+				patntSexdstn = "여";
+			}
+			
+			$("#patntSexdstnDt").val(patntSexdstn); 
+			$("#patntRrno1Dt").val(patientBirth); 
+			$("#patntAgeDt").val(patntAge); 
+			$("#patntTelnoDt").val(patntTelno); 
+			$("#patntHlthinsAtDt").val(patntHlthinsAt); 
+			$("#hsptlzAtDt").val(patntHsptlzAt); 
+			$("#prtctorNmDt").val(prtctorNm); 
+			$("#prtctorTelnoDt").val(prtctorTelno); 
+	      	
+			
+		}
+		
+		// 환자 검색창에 목록 생성
+		function patientDropItem(patntNo, patntNm, patntAge, patntRrno1, patntRrno2, patientBirth,
+				patntSexdstn, patntTelno, patntHlthinsAt, patntHsptlzAt, prtctorNm, prtctorTelno){
+			
+			patientTbodyHtml += "<tr class='row dropdown-item px-x1 py-2 mb-0 hover-primary pointer'"
+				+ "data-patntno='"+patntNo+"' data-patntnm='"+patntNm+"' data-patntage='"+patntAge+"'"
+				+ "data-patntrrno1='"+patntRrno1+"' data-patntrrno2='"+patntRrno2+"' data-patientbirth='"+patientBirth+"'"
+				+ "data-patntsexdstn='"+patntSexdstn+"' data-patnttelno='"+patntTelno+"' data-patnthlthinsat='"+patntHlthinsAt+"'"
+				+ "data-patnthsptlzat='"+patntHsptlzAt+"' data-prtctornm='"+prtctorNm+"' data-prtctortelno='"+prtctorTelno+"'>";
+			patientTbodyHtml += "<td class='col-3'>"+patntNo+"</td>";
+			patientTbodyHtml += "<td class='col-3'>"+patntNm+"</td>";
+			patientTbodyHtml += "<td class='col-3'>"+"만 "+patntAge+"세"+"</td>";
+			patientTbodyHtml += "<td class='col-3'>"+patientBirth+"</td>";
+			patientTbodyHtml += "</tr>";
+			
+			return patientTbodyHtml;
+		}
+		
+	});
+	
+	// 환자 주민등록번호로 생년월일 만들기(주민등록번호1, 주민등록번호2)
+	function birthFormat(patntRrno1, patntRrno2){
+		if(patntRrno1 == null || patntRrno1 == "" || patntRrno2 == null || patntRrno2 == ""){
+			return;
+		}
+		
+		// 주민등록번호2의 첫번째 자리로 1900년도인지 2000년도인지 구분
+		var firstNo = patntRrno2.toString().charAt(0);
+		var birth = "";
+		
+		if(firstNo == "1" || firstNo == "2" || firstNo == "5" || firstNo == "6"){
+			birth = "19";
+		}else if(firstNo == "3" || firstNo == "4" || firstNo == "7" || firstNo == "8"){
+			birth = "20";
+		}
+		// 주민등록번호1을 조합
+		birth += patntRrno1;
+		var birthSpl = birth.split('');
+		
+		// 연도, 월, 일을 구분지어주는 점 찍어주는 역할
+		birthSpl.splice(4, 0, '.');
+		birthSpl.splice(7, 0, '.');
+		
+		// 합치기
+		var birthJoin = birthSpl.join('');
+		
+		return birthJoin;
+	}
+});
+// 환자 검색 끝
+// 환자 리스트
+function handleClick() {
+    // 클릭한 요소의 아이디를 가져옵니다.
+    var elementId = $(this).attr('id');
+    alert("클릭한 요소의 아이디: " + elementId);
+  }	
+$('#waitingList .patientWaitingList').click(handleClick);
+
+//환자 상세 정보 및 진료기록 불러오기
+
+$(function(){
+
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
+var $waitingList = $("#waitingList"); // div태그
+
+var patientWaitingList = $(".patientWaitingList");
+// 대기 리스트 중 환자 이름 선택하면 상세 정보로 값 넘기기
+$waitingList.on("click", ".patientWaitingList", function() {
+	var status = $(this).find("button").text().trim();
+	console.log("status : "+ status);
+	// 환자 상태가 진료대기, 검사대기, 호출이 아니라면 이벤트를 막는기능
+	if(status === "진료대기" || status === "검사대기" || status === "호출"){
+		var selectedPatientNo = $(this).attr("id");
+		// this => 내가 클릭한 div.patientWaitingList 의 블럭
+		
+		console.log("대기환자 클릭이벤트>>>>>!!!")
+		
+		var _patntNo = $(this).attr("id");
+		$("#patientDetail").data("patntno", _patntNo);
+		console.log("patntNo >>>>>> " + _patntNo);
+		
+		// 환자 상세정보 조회
+	    selectPatientAjax(_patntNo);
+		
+		// 환자 진료기록 조회
+		selectAllClinic(_patntNo);
+		
+	}
+	
+});	
+});
+
+//환자 진료기록 조회
+function selectAllClinic(_patntNo) {
+
+var _patientObj = {
+	patntNo : _patntNo
+};
+// 진료일시 목록 초기화
+$('#clinicRecord').empty();
+
+// 진료상세내용 목록 초기화
+$('#clnic-list').empty();
+	
+// 환자 진료 기록 조회 ajax 시작
+$.ajax({
+	type : "post",
+	url  : "/mediform/doctor/allClinic",
+	data : JSON.stringify(_patientObj),
+	contentType : "application/json; charset=utf-8",
+	async: false,
+    beforeSend : function(xhr){
+        //ajax호출 중 처리
+        //글로벌 변수로 설정한 csrf token 셋팅
+        xhr.setRequestHeader(header,token);
+    },
+	success : function(res){
+
+		if(res.length == 0){ // 진료 내역이 없을때
+				
+			var _clinicListHtml1 = "<tr class='oneBoard' id=''>";
+			_clinicListHtml1 += "	<td colspan='4' class='text-center' style='vertical-align: middle'>" + "진료 내역이 없습니다" + "</td>";
+			_clinicListHtml1 += "</tr>";
+			$('#clnic-list').html(_clinicListHtml1);
+				
+		}else{
+			var clinicLatest = $(res)[0].clnicNo;
+			console.log(">>>>>>>>>>>>>>>>>>>>ㅇㅇㅇㅇㅇㅇㅇㅇ" + clinicLatest );
+			// 진료 내역이 있으면 loop 돌면서 진료날짜 목록하고 진료상세내역 목록을 생성해서 append
+			$(res).each(function(){
+					
+				var dateString = this.clnicTime;
+				var date = new Date(dateString);
+				var year = date.getFullYear();
+				var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷팅
+				var day = date.getDate().toString().padStart(2, '0'); // 일도 2자리로 포맷팅
+
+				// 원하는 형식으로 조합
+				var formattedDate = year + '.' + month + '.' + day;
+
+				console.log("의사 사번 :>>> " + this.empNo);
+					
+				// 진료일시 목록 생성
+				var _clnicDate = '<span class="clinicLatest list-group-item list-group-item-action" style="font-size: small; cursor: pointer;" onclick="showSection(\'' + this.clnicNo + '\')">' + formattedDate + '</span>';
+				$('#clinicRecord').append(_clnicDate);
+				
+				var _clinicListHtml = "";
+
+				_clinicListHtml += '<div id="clnic-section-' + this.clnicNo + '" style="display: none;">                                      ';
+				_clinicListHtml += '	<div class="d-flex align-items-center justify-content-between">                        				  ';
+				_clinicListHtml += '		<h6>담당의 : ' + this.employeeVO.empNm + '</h6>                                                                 ';
+				_clinicListHtml += '		<button class="btn btn-secondary btn-sm"                                            			  ';
+				_clinicListHtml += '			style="background-color: midnightblue;" onclick="제증명(\'\')">제증명</button>        			  ';
+				_clinicListHtml += '	</div>                                                                                  			  ';
+				_clinicListHtml += '	<div class="table-container">                                                           			  ';
+				_clinicListHtml += '		<table class="table table-bordered table-striped fs--1 mb-0">                       			  ';
+				_clinicListHtml += '			<thead>                                                                         			  ';
+				_clinicListHtml += '				<tr class="bg-light">                                                       			  ';
+				_clinicListHtml += '					<th class="text-left"                                                   			  ';
+				_clinicListHtml += '						style="font-size: small; width: 130px; height: 50px;">진료번호</th> 				  ';
+				_clinicListHtml += '					<th class="text-left"                                                   			  ';
+				_clinicListHtml += '						style="font-size: small; width: 380px; height: 50px;">' + this.clnicNo + '</th>	  ';
+				_clinicListHtml += '				</tr>                                                                       			  ';
+				_clinicListHtml += '			</thead>                                                                        			  ';
+				_clinicListHtml += '			<tbody style="overflow-y: auto; max-height: 180px;">                            			  ';
+				_clinicListHtml += '				<tr>                                                                        			  ';
+				_clinicListHtml += '					<td class="text-left" style="font-size: small;"><a                      			  ';
+				_clinicListHtml += '						data-bs-toggle="collapse" href="#collapseExample1-' + this.clnicNo + '"           ';
+				_clinicListHtml += '						role="button" aria-expanded="false"                                 			  ';
+				_clinicListHtml += '						aria-controls="collapseExample">진단내역</a></td>                   				  ';
+				_clinicListHtml += '					<td>                                                                    			  ';
+				_clinicListHtml += '						<div class="collapse show" id="collapseExample1-' + this.clnicNo + '">                 ';
+				_clinicListHtml += '							<div class="card card-body">' + this.clnicCn + '</div>                		  ';
+				_clinicListHtml += '						</div>                                                              			  ';
+				_clinicListHtml += '					</td>                                                                   			  ';
+				_clinicListHtml += '				</tr>                                                                       			  ';
+				_clinicListHtml += '				<tr>                                                                        			  ';
+				_clinicListHtml += '					<td class="text-left" style="font-size: small;"><a                      			  ';
+				_clinicListHtml += '						data-bs-toggle="collapse" href="#collapseExample2-' + this.clnicNo + '"           ';
+				_clinicListHtml += '						role="button" aria-expanded="false"                                 			  ';
+				_clinicListHtml += '						aria-controls="collapseExample">상병내역</a></td>                   				  ';
+				_clinicListHtml += '					<td>                                                                    			  ';
+				_clinicListHtml += '						<div class="collapse show" id="collapseExample2-' + this.clnicNo + '">                 ';
+				_clinicListHtml += '							<div class="card card-body">' + this.sickAndWoundedVO.sckwndCd + '</div>                		  ';
+				_clinicListHtml += '						</div>                                                              			  ';
+				_clinicListHtml += '					</td>                                                                   			  ';
+				_clinicListHtml += '				</tr>                                                                       			  ';
+				_clinicListHtml += '				<tr>                                                                        			  ';
+				_clinicListHtml += '					<td class="text-left" style="font-size: small;"><a                      			  ';
+				_clinicListHtml += '						data-bs-toggle="collapse" href="#collapseExample3-' + this.clnicNo + '"           ';
+				_clinicListHtml += '						role="button" aria-expanded="false"                                 			  ';
+				_clinicListHtml += '						aria-controls="collapseExample">검사내역</a></td>                   				  ';
+				_clinicListHtml += '					<td>                                                                    			  ';
+				_clinicListHtml += '						<div class="collapse show" id="collapseExample3-' + this.clnicNo + '">                 ';
+				_clinicListHtml += '							<div class="card card-body">' + this.medicalExaminationOrderVO.hlthchkpCd + '</div>                	  ';
+				_clinicListHtml += '						</div>                                                              			  ';
+				_clinicListHtml += '					</td>                                                                   			  ';
+				_clinicListHtml += '				</tr>                                                                       			  ';
+				_clinicListHtml += '				<tr>                                                                        			  ';
+				_clinicListHtml += '					<td class="text-left" style="font-size: small;"><a                      			  ';
+				_clinicListHtml += '						data-bs-toggle="collapse" href="#collapseExample4-' + this.clnicNo + '"           ';
+				_clinicListHtml += '						role="button" aria-expanded="false"                                 			  ';
+				_clinicListHtml += '						aria-controls="collapseExample">치료내역</a></td>                   				  ';
+				_clinicListHtml += '					<td>                                                                    			  ';
+				_clinicListHtml += '						<div class="collapse show" id="collapseExample4-' + this.clnicNo + '">                 ';
+				_clinicListHtml += '							<div class="card card-body">' + this.medicalTreatmentRecordVO.mdlrtrdCd + '</div>                	  ';
+				_clinicListHtml += '						</div>                                                              			  ';
+				_clinicListHtml += '					</td>                                                                   			  ';
+				_clinicListHtml += '				</tr>                                                                       			  ';
+				_clinicListHtml += '				<tr>                                                                        			  ';
+				_clinicListHtml += '					<td class="text-left" style="font-size: small;"><a                      			  ';
+				_clinicListHtml += '						data-bs-toggle="collapse" href="#collapseExample5-' + this.clnicNo + '"           ';
+				_clinicListHtml += '						role="button" aria-expanded="false"                                 			  ';
+				_clinicListHtml += '						aria-controls="collapseExample">처방내역</a></td>                   				  ';
+				_clinicListHtml += '					<td>                                                                    			  ';
+				_clinicListHtml += '						<div class="collapse show" id="collapseExample5-' + this.clnicNo + '">                 ';
+				_clinicListHtml += '							<div class="card card-body">' + this.prescriptionOrderVO.prscrptnCd + '</div>                	  ';
+				_clinicListHtml += '						</div>                                                              			  ';
+				_clinicListHtml += '					</td>                                                                   			  ';
+				_clinicListHtml += '				</tr>                                                                       			  ';
+				_clinicListHtml += '			</tbody>                                                                       				  ';
+				_clinicListHtml += '		</table>                                                                       					  ';
+				_clinicListHtml += '	</div>                                                                       						  ';
+				_clinicListHtml += '</div>                                                                       							  ';
+				
+				$('#clnic-list').append(_clinicListHtml);
+				
+			});
+			showSection(clinicLatest);
+		}
+	},
+	error : function(err){
+		console.log(err.status)
+	}
+});
+}
+
+//환자 상세정보 조회
+function selectPatientAjax(_patntNo) {
+
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
+var _patientObj = {
+    patntNo: _patntNo
+};
+
+// 환자 정보 ajax 시작
+$.ajax({
+    type: "post",
+    url: "/mediform/patient/info",
+    data: JSON.stringify(_patientObj),
+    contentType: "application/json; charset=utf-8",
+    async: false,
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader(header, token);
+    },
+    success: function(res) {
+        // 환자 상세 정보
+        $("#patntNmDt").val(res.patntNm);
+        $("#patntSexdstnDt").val(res.patntSexdstn == "M" ? "남" : "여");
+        $("#patntRrno1Dt").val(res.patntRrno1);
+        $("#patntTelnoDt").val(res.patntTelno);
+        $("#patntAgeDt").val(res.patntAge + "세");
+        $("#patntHlthinsAtDt").val(res.patntHlthinsAt == "Y" ? "O" : "X");
+        $("#prtctorNmDt").val(res.prtctorNm);
+        $("#prtctorTelnoDt").val(res.prtctorTelno);
+        $("#patntHeightDt").val(res.patntHeight + "cm");
+        $("#patntBdwghDt").val(res.patntBdwgh + "kg");
+        $("#patntBdpDt").val(res.patntBdp + "형");
+        $("#patntMemoDt").val(res.patntMemo);
+        $("#hsptlzAtDt").val(res.hsptlzAt == "Y" ? "O" : "X");
+
+    },
+    error: function(err) {
+        console.log("Error:", err);
+    }
+});
+}
+
+// 진료 등록 관련 시작 ============================================================================================================
+$(function(){
+	var hsptlzAtText = $("#hsptlzAtText");
+	var hsptlzAt = $("#hsptlzAt");
+	var clnicInsertBtn = $("#clnicInsertBtn");
+	var hcOrderBtn = $("#hcOrderBtn");	
+	
+	// 입원 텍스트 클릭시에도 체크 박스 사용 기능
+	$(hsptlzAtText).on("click", function(){
+		if(hsptlzAt.prop('checked')){
+			hsptlzAt.prop('checked', false);	
+		}else{
+			hsptlzAt.prop('checked', true);
+		}
+	});
+	
+	// 진료 등록 버튼 클릭시 이벤트
+	$(clnicInsertBtn).on("click", function(){
+		var btnText = clnicInsertBtn.text();
+		insertClinic(btnText);
+		
+	});
+	
+	//검사 오더 등록 버튼 클릭시
+	$(hcOrderBtn).on("click",function(){
+		var btnText = hcOrderBtn.text();
+		insertClinic(btnText);
+	});
+	
+	// 진료 등록 ajax
+	function insertClinic(btnText){
+		
+		var rceptNo = $("#rceptNo").val();
+		var patntNo = $("#patient").val();
+		var empNo = $("#empNo").data("empno");
+		var clnicTime = $("#clnicTimeText").text();
+		var clnicTimeParts = clnicTime.split(/[년월일 :]/).filter(function(part) {
+		    return part !== ''; // 빈 문자열 제거
+		});
+		var year = clnicTimeParts[0];
+		var month = clnicTimeParts[1];
+		var day = clnicTimeParts[2];
+		var hours = clnicTimeParts[3];
+		var minu = clnicTimeParts[4];
+		clnicTime = year + "-" + month +"-" + day +" " + hours + ":" + minu;
+		var clnicCn = $("#clnicCn").val();
+		if(btnText == '진료 등록'){
+			var clnicAt = 'Y';
+		}else if(btnText == '검사 오더 등록'){
+			var clnicAt = 'N';
+		}
+		var beforeClnicNo = "";
+		var hsptlzAtVal = "";
+		var atfssDt = $("#atfssDt").val();
+		if(hsptlzAt.prop('checked')){
+			hsptlzAtVal = hsptlzAt.val();
+			
+		}
+		var clnicMemo = "";
+		var clinicVO = {};
+		var clnicNo = "";
+		
+		// 상병 가져오기
+		var sawlInsertTable1 = $(".sawlInsertTable1").find("td");
+		var sawVO = [];
+		var kcd = [];
+		var sckwndSe = [];
+		var sckwndKr = [];
+		var sckwndEn = [];
+		
+		// 주상병 가져오기
+		for(var i = 0; i < 5; i++){
+			if(i == 1){
+				if($(sawlInsertTable1[1]).text() == null || $(sawlInsertTable1[1]).text() == ""){
+					if(btnText == "진료 등록"){
+						Swal.fire({
+						      icon: 'error',
+							  title:'진료 등록',
+						      text: '주상병을 작성해주세요.',
+						      confirmButtonColor: 'blue'
+						    });
+						return;
+					}else{
+						break;						
+					}
+				}
+				kcd.push($(sawlInsertTable1[1]).text());
+			}
+			if(i == 2){
+				sckwndSe.push($(sawlInsertTable1[2]).find("input[type='radio']:checked").val()); 
+			} 
+			if(i == 3){
+				sckwndKr.push($(sawlInsertTable1[3]).text()); 
+			}
+			if(i == 4){
+				sckwndEn.push($(sawlInsertTable1[4]).text()); 
+			}
+		}
+		
+		
+		var sawlInsertTable2 = $(".sawlInsertTable2").find("tr");
+		
+		// 부상병 가져오기
+		$(sawlInsertTable2).each(function(i) {
+			var tds = $(this).find("td");
+			if($(sawlInsertTable2[1]).text() == null || $(sawlInsertTable2[1]).text() == ""){
+				return false;					
+			}
+			kcd.push($(tds[1]).text()); 
+			sckwndSe.push($(tds[2]).find("input[type='radio']:checked").val()); 
+			sckwndKr.push($(tds[3]).text()); 
+			sckwndEn.push($(tds[4]).text());
+			});
+		
+		// 배제된 상병 가져오기
+		var sawlInsertTable3 = $(".sawlInsertTable3").find("tr");
+		$(sawlInsertTable3).each(function(i) {
+			  var tds = $(this).find("td");
+			  if($(sawlInsertTable3[1]).text() == null || $(sawlInsertTable3[1]).text() == ""){
+					return false;					
+				}
+			  kcd.push($(tds[1]).text()); 
+			  sckwndSe.push($(tds[2]).find("input[type='radio']:checked").val()); 
+			  sckwndKr.push($(tds[3]).text()); 
+			  sckwndEn.push($(tds[4]).text());
+		});
+		if(kcd[0] == null || kcd[0] == ""){
+			
+		}
+		// 상병 담아둔 곳
+		var sawObj = {
+				"rceptNo" : rceptNo,
+				"patntNo" : patntNo,
+				"clnicNo" : clnicNo,
+				"kcdList" : kcd,
+				"sckwndSeList" : sckwndSe,
+				"sckwndKrList" : sckwndKr,
+				"sckwndEnList" : sckwndEn
+		};
+		
+		// 검사 가져오기
+		var hcInsertTable = $(".hcInsertTable").find("tr");
+		
+		var hlthchkpCd = [];
+		// 가격 계산을 위해
+		var hlthchkpAmount = [];
+		// 검사 총합 금액(엑스레이 제외)
+		var hcTotalPrice = 0;
+		// 엑스레이 검사 금액
+		var xcTotalPrice = 0; 
+		
+		// 검사 테이블에서 가져온 것
+		$(hcInsertTable).each(function(i) {
+			  var tds = $(this).find("td");
+
+			  hlthchkpCd.push($(tds[1]).text()); 
+			  hlthchkpAmount.push(parseInt($(tds[1]).data("hlthchkpamount"))); 
+		});
+		
+		for(var i = 0; i < hlthchkpAmount.length; i++){
+			if(hlthchkpCd[i] == 'HC003'){
+				xcTotalPrice += hlthchkpAmount[i];
+			}else{
+				hcTotalPrice += hlthchkpAmount[i];
+			}
+		}
+		
+		console.log("x레이 가격 :", xcTotalPrice);
+		console.log("일반 검사 가격 : ", hcTotalPrice);
+		// 검사 담아둔 곳
+		var hcObj = {
+				"rceptNo" : rceptNo,
+				"patntNo" : patntNo,
+				"clnicNo" : clnicNo,
+				"hlthchkpCdList" : hlthchkpCd,
+				"xcTotalPrice" : xcTotalPrice,
+				"hcTotalPrice" : hcTotalPrice
+		}
+		
+		// 치료 가져오기
+		var mtInsertTable = $(".mtInsertTable").find("tr");
+		
+		var mdlrtCd = [];
+		var mdlrtCl = [];
+		// 가격 따로 보내주기 위해
+		var mdlrtAmount = [];
+		
+		// 치료 테이블에서 가져오기
+		$(mtInsertTable).each(function(i) {
+			  var tds = $(this).find("td");
+
+			  mdlrtCd.push($(tds[1]).text());
+			  mdlrtCl.push($(tds[1]).data("mdlrtcl"));
+			  mdlrtAmount.push(parseInt($(tds[1]).data("mdlrtamount")));
+		});
+		
+		// 급여치료 가격 합
+		var mmTotalPrice = 0;
+		// 비급여치료 가격 합
+		var zzTotalPrice = 0;
+		for(var i = 0; i < mdlrtAmount.length; i++){
+			if(mdlrtCd[i].substr(0, 2) === "MM"){
+				mmTotalPrice += mdlrtAmount[i];
+			}else{
+				zzTotalPrice += mdlrtAmount[i];
+			}
+		}
+		console.log("물리 치료료 : ", mmTotalPrice);
+		console.log("도수 치료료 : ", zzTotalPrice);
+		
+		// 치료 담아둔 곳
+		var mtObj = {
+				"rceptNo" : rceptNo,
+				"patntNo" : patntNo,
+				"clnicNo" : clnicNo,
+				"mdlrtCdList" : mdlrtCd,
+				"mmTotalPrice" : mmTotalPrice,
+				"zzTotalPrice" : zzTotalPrice
+		}
+		
+		// 처방 가져오기
+		var mInsertTable = $(".mInsertTable").find("tr");
+		
+		var medcinCd = [];
+		var prscrptnNm = [];
+		var mdctnCpcty = [];
+		var mdctnUnit = [];
+		var mdctnCo = [];
+		var mdctnPd = [];
+		var mdctnCoursUsage = [];
+		
+		// 가격 따로 보내주기 위해
+		var medcinPc = [];
+		var medcinStandard = [];
+		
+		// 처방 테이블에서 가져오기
+		$(mInsertTable).each(function(i) {
+			  var tds = $(this).find("td");
+
+			  medcinCd.push($(tds[1]).text()); 
+			  prscrptnNm.push($(tds[2]).text()); 
+			  mdctnCpcty.push($(tds[5]).find("input").val()); 
+			  mdctnUnit.push($(tds[5]).text()); 
+			  mdctnCo.push($(tds[6]).find("input").val()); 
+			  mdctnPd.push($(tds[7]).find("input").val()); 
+			  mdctnCoursUsage.push($(tds[4]).text()); 
+			  // 약품 가격
+			  medcinPc.push($(tds[1]).data("medcinpc")); 
+			  // 약품 규격
+			  medcinStandard.push($(tds[1]).data("medcinstandard"));
+		});
+		
+		var poTotalPrice = 0;
+		var injectionTotalPrice = 0;
+		
+		for(var i = 0; i < mdctnUnit.length; i++){
+			if(mdctnUnit[i] == "리터"){
+				injectionTotalPrice += parseInt(medcinPc[i]) * parseInt(mdctnCo[i]) * parseInt(mdctnPd[i]) * parseInt(mdctnCpcty[i]) / parseInt(medcinStandard[i]);                  
+	        }else if(mdctnUnit[i] == "앰플"){
+	        	injectionTotalPrice += parseInt(medcinPc[i]) * parseInt(mdctnCpcty[i]) * parseInt(mdctnCo[i]) * parseInt(mdctnPd[i]);
+	        }else{
+	        	poTotalPrice += parseInt(medcinPc[i]) * parseInt(mdctnCpcty[i]) * parseInt(mdctnCo[i]) * parseInt(mdctnPd[i]);
+	        }
+		}
+		console.log("주사료 : ", injectionTotalPrice);
+		console.log("약가격 : ", poTotalPrice);
+		// 처방 담아둔 곳
+		var mObj = {
+				"rceptNo" : rceptNo,
+				"patntNo" : patntNo,
+				"clnicNo" : clnicNo,
+				"medcinCdList" : medcinCd,
+				"prscrptnNmList" : prscrptnNm,
+				"mdctnCpctyList" : mdctnCpcty,
+				"mdctnUnitList" : mdctnUnit,
+				"mdctnCoList" : mdctnCo,
+				"mdctnPdList" : mdctnPd,
+				"mdctnCoursUsageList" : mdctnCoursUsage,
+				"poTotalPrice" : poTotalPrice,
+				"injectionTotalPrice" : injectionTotalPrice
+		}
+		
+		if(atfssDt == "" || atfssDt == null){
+				clinicVO = {
+					"rceptNo" : rceptNo,
+					"patntNo" : patntNo,
+					"empNo" : empNo,
+					"clnicTime" : clnicTime,
+					"clnicCn" : clnicCn,
+					"clnicAt" : clnicAt,
+					"beforeClnicNo" : beforeClnicNo,
+					"hsptlzAt" : hsptlzAtVal,
+					"clnicMemo" : clnicMemo,
+					"clnicFe" : 10000,
+					"sickAndWoundedVO" : sawObj,
+					"medicalExaminationOrderVO" : hcObj,
+					"medicalTreatmentRecordVO" : mtObj,
+					"prescriptionOrderVO" : mObj
+				}	
+		}else{
+			clinicVO = {
+					"rceptNo" : rceptNo,
+					"patntNo" : patntNo,
+					"empNo" : empNo,
+					"clnicTime" : clnicTime,
+					"clnicCn" : clnicCn,
+					"clnicAt" : clnicAt,
+					"beforeClnicNo" : beforeClnicNo,
+					"hsptlzAt" : hsptlzAtVal,
+					"clnicMemo" : clnicMemo,
+					"clnicFe" : 10000,
+					"atfssDt" : atfssDt,
+					"sickAndWoundedVO" : sawObj,
+					"medicalExaminationOrderVO" : hcObj,
+					"medicalTreatmentRecordVO" : mtObj,
+					"prescriptionOrderVO" : mObj
+				}	
+		}
+		$.ajax({
+			type : "post",
+	 		url  : "/mediform/doctor/clinic/insert",
+	 		data : JSON.stringify(clinicVO),
+	 		contentType : "application/json; charset=utf-8",
+	         beforeSend : function(xhr){
+	             //ajax호출 중 처리
+	             //글로벌 변수로 설정한 csrf token 셋팅
+	             xhr.setRequestHeader(header,token);
+	         },
+	 		success : function(res){
+	 			console.log("성공인가 : " + res);
+	 			if(res == 'FAILED' || res == 'SAWFAILED' || res == 'MEOFAILED' ||
+	 					res == 'MTRFAILED' || res == 'POFAILED' || res == 'MANYRESULTFAILED' || res == 'MANYRECEIVEKEYFAILED'){
+	 				console.log(res);
+	 				Swal.fire({
+					      icon: 'error',
+						  title: btnText == '검사 오더 등록' ? '검사 오더 등록' : '진료 등록',
+					      text: '등록되지 않았습니다.',
+					      confirmButtonColor: 'blue'
+					    });
+	 			}else if(res == 'OK'){
+	 				Swal.fire({
+					      icon: 'success',
+						  title: btnText == '검사 오더 등록' ? '검사 오더 등록' : '진료 등록',
+					      text: '정상적으로 등록되었습니다.',
+					      confirmButtonColor: 'blue'
+					    });
+	 				// 검사 오더 등록 버튼일 때 환자 상태변경
+	 				if(btnText == '검사 오더 등록'){
+	 					var data = {
+	 							"rceptNo" : rceptNo,
+	 							"rceptSttus" : 2
+	 					}
+	 					// 환자 상태 변경(검사 대기)
+	 					statusUpadate(data);
+	 				// 진료 등록 버튼일 때 환자 상태 변경
+	 				}else if(btnText == '진료 등록'){
+	 					// 진료 등록일 때, 검사가 있을 때
+	 					if(hlthchkpCd.length > 0){
+		 					var data = {
+		 							"rceptNo" : rceptNo,
+		 							"rceptSttus" : 2
+		 					}
+		 					// 환자 상태 변경(검사대기)
+		 					statusUpadate(data);
+		 					
+		 				// 진료 등록일 때, 검사 없고 치료는 있을 때	
+	 					}else if(mdlrtCl.length > 0 && hlthchkpCd.length == 0){
+	 						// 치료코드 중에 물리치료(MM)가 들어간게 있는지 boolean값을 반환
+	 						var hasMM = mdlrtCl.some(function(item) {
+	 							return item.includes('물리');
+	 						});
+	 						// 치료구분 중에 물리치료(물리)가 있을 때
+	 						if(hasMM){
+	 							var data = {
+			 							"rceptNo" : rceptNo,
+			 							"rceptSttus" : 5
+			 					}
+	 							// 환자 상태 변경(물리치료대기)
+	 							statusUpadate(data);
+	 						}else{
+	 							var data = {
+			 							"rceptNo" : rceptNo,
+			 							"rceptSttus" : 7	
+			 					}
+	 							// 환자 상태 변경(작업치료대기)
+	 							statusUpadate(data);
+	 						}
+	 					// 검사도 없고 치료도 없는 상태 (수납대기)
+	 					}else if(mdlrtCd.length == 0 && hlthchkpCd.length == 0){
+	 						var data = {
+		 							"rceptNo" : rceptNo,
+		 							"rceptSttus" : 9	
+		 					}
+	 						// 환자 상태 변경(수납대기)
+ 							statusUpadate(data);
+	 					}
+	 				}
+	 				// 등록이 완료되면 값 다 지우기
+		 			cleanAll();
+	 			}
+	 		},
+	 		error : function(err){
+	 			console.log("에러 발생 : " + err.status);
+	 		}
+		});
+			
+		console.log(clinicVO);
+	}
+	
+	
+	// 환자 상태 변경 ajax
+	function statusUpadate(data){
+		$.ajax({
+			type : "post",
+	 		url  : "/mediform/doctor/room/update/status",
+	 		data : JSON.stringify(data),
+	 		contentType : "application/json; charset=utf-8",
+	         beforeSend : function(xhr){
+	             //ajax호출 중 처리
+	             //글로벌 변수로 설정한 csrf token 셋팅
+	             xhr.setRequestHeader(header,token);
+	         },
+	 		success : function(res){
+	 			console.log("환자 대기 상태 변경 완료");
+	 		},
+	 		error : function(err){
+	 			console.log("환자 대기 상태 변경 실패");
+	 		}
+		});
+	}
+	
+	function cleanAll(){
+		$("#rceptNo").val("");
+		$("#patient").val("");
+		$(".sawlInsertTable1 tr").empty();
+		$(".sawlInsertTable2 tr").empty();
+		$(".sawlInsertTable3 tr").empty();
+		$(".mInsertTable tr").empty();
+		$(".mtInsertTable tr").empty();
+		$(".hcInsertTable tr").empty();
+		$("#clnicTimeText").text("");
+		$("#clnicCn").val("");
+		$("#atfssDt").val("");
+		$("#hsptlzAt").prop("checked", false);
+	}
+});
+// 진료 등록 관련 끝 ============================================================================================================
+
+// 상병 관련 스크립트 시작=======================================================================================================
+$(function(){
+	// 상병 검색 관련
+	var sawlTbody = $("#sawlTbody");
+	var sawlInput = $(".sawlInput");
+	var sawlSearchBox = $("#sawlSearchBox");
+	var sawlMenu = $("#sawlMenu");
+	var sawlDropMenu = $("#sawlDropMenu");
+	var sawlInsertTable1 = $(".sawlInsertTable1");
+	var sawlInsertTable2 = $(".sawlInsertTable2");
+	var sawlInsertTable3 = $(".sawlInsertTable3");
+	var idNo = 1;
+	var sawlTbodyHtml = "";
+	var number = 1;
+	
+	// 상병 검색 시작
+	$(function(){
+		// 검색창 포커스 아웃일 때 드롭다운 사라지게 만들기
+		sawlInput.focusout(function(){
+			setTimeout(() => {
+				$(sawlDropMenu).hide();
+			}, 100);
+		});
+		
+		// 검색창 포커스인
+		sawlInput.focusin(function(){
+			$(sawlDropMenu).show();
+			if(sawlInput.val() == "" || sawlInput.val() == null){
+				
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/sickAndWoundedList/list",
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var sawlDropItemHtml = "";
+						sawlTbodyHtml = "";
+						$(res).each(function(idx, item){
+							sawlDropItemHtml = sawlDropItem(this.sickcd, this.krnm, this.sicknm, this.msick)
+						});
+						$(sawlTbody).html(sawlDropItemHtml);
+					},
+					error : function(err){
+						console.log(err.status);
+					}
+				});
+				
+			}
+		});
+		
+		// 상병 keyup 검색
+		sawlInput.on("keyup",function(event){
+			if(event.which != 13){
+				var sawlKeyword = sawlInput.val();
+				var sawlKeywordObj = { 
+						sawlKeyword : sawlKeyword
+						};
+				// 검색 정보
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/sickAndWoundedList/select",
+					data : JSON.stringify(sawlKeywordObj),
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var sawlDropItemHtml = "";
+						sawlTbodyHtml = "";
+						if(res.length == 0){
+							sawlDropItemHtml += "<tr class='text-center row dropdown-item px-x1 py-2 mb-0'>";
+							sawlDropItemHtml += '<td class="col-12 text-black fw-bold fw-3 ">조회하신 상병이 없습니다.</td>';
+							sawlDropItemHtml += '</tr>';
+						}else{
+							$(res).each(function(idx, item){
+								sawlDropItemHtml = sawlDropItem(this.sickcd, this.krnm, this.sicknm, this.msick)
+							});
+						}
+						$(sawlTbody).html(sawlDropItemHtml);
+					},
+					error : function(err){
+						console.log("err에러 : " + err);
+					}
+				});
+			}
+		});
+		
+		// 상병 결과 누르기 이벤트들 시작 ---------------------------------------------
+		// 엔터 눌렀을 시 제일 위에 상병 정보를 찾는다.
+		$(sawlInput).keypress(function(event){
+			if(event.which == 13){
+				event.preventDefault();
+				var sickcd = sawlTbody.children("tr:eq(0)").data("sickcd");
+				var krnm = sawlTbody.children("tr:eq(0)").data("krnm");
+				var sicknm = sawlTbody.children("tr:eq(0)").data("sicknm");
+				var msick = sawlTbody.children("tr:eq(0)").data("msick");
+				if(msick == "" || msick == null){
+					msick = "Y";
+				}
+				// input태그 비우기
+				$(sawlInput).val("");
+				// 상병 테이블에 넣어주기
+				selectSAWLAjax(sickcd, krnm, sicknm, msick);
+				
+				sawlInput.blur();
+				$(sawlDropMenu).hide();
+			}
+		});
+		
+		// 검색창 목록 클릭 이벤트
+		$(sawlTbody).on("click", function(){
+			var targets = $(event.target);
+			// 클릭된 요소의 부모인 tr 태그
+			var clickTr = "";
+			
+			if(targets.is('td')){
+				clickTr = targets.closest('tr');
+			}else if(targets.is('tr')){
+				clickTr = targets;
+			}
+			var sickcd = clickTr.data("sickcd");
+			var krnm = clickTr.data("krnm");
+			var sicknm = clickTr.data("sicknm");
+			var msick = clickTr.data("msick");
+			if(msick == "" || msick == null){
+				msick = "Y";
+			}
+			
+			// input 태그 비워주기
+			$(sawlInput).val("");
+			
+			selectSAWLAjax(sickcd, krnm, sicknm, msick);
+			sawlInput.blur();
+			$(sawlDropMenu).hide();
+		});
+		
+		// 상병 결과 누르기 이벤트들 끝 ------------------------------------------------
+		// 상병 테이블(sawlInsertTable2)에 넣어주기
+		function selectSAWLAjax(sickcd, krnm, sicknm, msick){
+			idNo++;
+			number++;
+			var sawlInsertTableHtml = "";
+	      
+			sawlInsertTableHtml += "<tr class='row px-x1 py-2 mb-0 hover-primary text-center'>";
+			sawlInsertTableHtml += '<td class="col-1 align-middle white-space-nowrap">';
+			sawlInsertTableHtml += '<div class="form-check mb-0">';
+			sawlInsertTableHtml += '<input class="form-check-input sawlCheckTd" type="checkbox" id="checkbox-'+idNo+'"/>';
+			sawlInsertTableHtml += '</div>';
+			sawlInsertTableHtml += '</td>';
+			sawlInsertTableHtml += "<td class='col-2'>" + sickcd + "</td>";
+			sawlInsertTableHtml += "<td class='col-2'>주<input type='radio' name='sickDivision"+number+"' class='mainSick' value='1'";
+			if(msick == "N"){
+				sawlInsertTableHtml += " disabled";
+			}
+			sawlInsertTableHtml	+= ">부<input type='radio' name='sickDivision"+number+"' class='otherSick' value='2' checked>"
+									+"배제<input type='radio' name='sickDivision"+number+"' class='otherSick' value='3'></td>";
+			sawlInsertTableHtml += "<td class='col-2'>" + krnm + "</td>";
+			sawlInsertTableHtml += "<td class='col-2'>" + sicknm + "</td>";
+			sawlInsertTableHtml += "<td class='col-2'>" + msick + "</td>";
+			sawlInsertTableHtml += "<td class='col-1'><div class='btn-close-falcon sawlDel'></div></td>";
+			sawlInsertTableHtml += "</tr>";
+			
+			sawlInsertTable2.append(sawlInsertTableHtml);
+		}
+		
+		// 상병 검색창에 목록 생성
+		function sawlDropItem(sickcd, krnm, sicknm, msick){
+			sawlTbodyHtml += "<tr class='row dropdown-item px-x1 py-2 mb-0 hover-primary pointer'"
+				+ "data-sickcd='"+sickcd+"' data-krnm='"+krnm+"' data-sicknm='"+sicknm+"' data-msick='"+msick+"'>";
+			sawlTbodyHtml += "<td class='col-3'>"+sickcd+"</td>";
+			sawlTbodyHtml += "<td class='col-4'>"+krnm+"</td>";
+			sawlTbodyHtml += "<td class='col-3'>"+sicknm+"</td>";
+			if(msick == null || msick == ""){
+				msick = 'Y';
+			}
+			sawlTbodyHtml += "<td class='col-2'>"+msick+"</td>";
+			sawlTbodyHtml += "</tr>";
+			
+			return sawlTbodyHtml;
+		}
+		
+	});
+	// 상병 검색 끝
+	
+	
+	// 상병 테이블 체크 박스
+	$(function(){
+		var sawlCheckTh = $("#sawlCheckTh");
+		var sawlCheckTable = $("#sawlCheckTable");
+		var sawlAllDelBtn = $("#sawlAllDelBtn");
+		
+		// th체크 박스로 모든 체크 박스 컨트롤
+		$(sawlCheckTh).on('change', function() {
+			// sawlCheckTh체크 박스랑 동일한 체크가 된다.
+	       	$(".sawlCheckTd").prop('checked', this.checked);
+	    });
+		
+		// x 버튼 클릭 삭제기능
+		$(".sawDelTable").on("click",".sawlDel", function(event){
+			var btnClick = event.target.closest('tr');
+			btnClick.remove();			
+		});
+		
+		// 삭제 버튼을 눌렀을 때 체크된 것들 삭제 기능
+		$(sawlAllDelBtn).on("click", function(){
+			var sawlTdCheckAll = $(".sawDelTable input[type=checkbox]:checked");
+			sawlTdCheckAll.closest('tr').remove();
+			$(sawlCheckTh).prop('checked', false);
+		});
+		
+	});
+	
+	// 주상병 구분 라디오 이벤트 ------------------------------
+	$(function(){
+		var selectName = "";
+		$(".sawDelTable").on("change",".mainSick", function(){
+			var mainSick = $(".mainSick");
+			
+			if(selectName != "" && selectName != null){
+				// 이전 주상병 체크된 곳의 부상병 라디오 버튼
+				var beforeSelect = $('input[name="'+selectName+'"]:eq(1)');
+				// 부상병 라디오 버튼 체크
+				beforeSelect.prop('checked', true);
+				// 부상병 라디오 버튼이 있는 tr가져오기
+				var existingTr = beforeSelect.closest('tr');
+				// 부상병 테이블로 옮기기
+				$(sawlInsertTable2).append(existingTr);
+			}
+			
+			// 체크된 주상병의 tr 가져오기
+			var selectTr = $(this).closest('tr');
+			// 체크된 주상병 tr을 주상병 테이블로 옮기기
+			$(sawlInsertTable1).append(selectTr);
+			
+			// 주상병 체크 된 곳의  name 값
+			selectName = $(this).attr("name");
+			
+		});
+		// 부상병, 배제된 상병 라디오 클릭시 테이블 옮기는 이벤트
+		$(".sawDelTable").on("change",".otherSick", function(){
+			var selectVal = $(this).val();
+			var selectTr = $(this).closest('tr');
+			
+			if(selectVal == 2){
+				$(sawlInsertTable2).append(selectTr);
+			}else if(selectVal == 3){
+				$(sawlInsertTable3).append(selectTr);
+			}
+		});
+	});
+});
+// 상병 관련 스크립트 끝=======================================================================================================
+// 검사 관련 스크립트 시작=======================================================================================================
+$(function(){
+	// 검사 검색 관련
+	var hCTbody = $("#hCTbody");
+	var hCInput = $(".hCInput");
+	var hcSearchBox = $("#hcSearchBox");
+	var hcMenu = $("#hcMenu");
+	var hcDropMenu = $("#hcDropMenu");
+	var hcInsertTable = $(".hcInsertTable");
+	var idNo = 1;
+	var hCTbodyHtml = "";
+	
+	// 검사 검색 시작
+	$(function(){
+		// 검색창 포커스 아웃일 때 드롭다운 사라지게 만들기
+// 		hCInput.focusout(function(){
+// 			setTimeout(() => {
+// 				$(hcDropMenu).hide();
+// 			}, 100);
+// 		});
+		
+		// 검색창 포커스인
+		hCInput.focusin(function(){
+			$(hcDropMenu).show();
+			if(hCInput.val() == "" || hCInput.val() == null){
+				
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/healthCheckup/list",
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var hcDropItemHtml = "";
+						hCTbodyHtml = "";
+						$(res).each(function(idx, item){
+							hcDropItemHtml = hcDropItem(this.hlthchkpCd, this.hlthchkpNm, this.mllwncAt, this.hlthchkpAmount)
+						});
+						$(hCTbody).html(hcDropItemHtml);
+					},
+					error : function(err){
+						console.log(err.status);
+					}
+				});
+				
+			}
+		});
+		
+		// 검사 keyup 검색
+		hCInput.on("keyup",function(event){
+			if(event.which != 13){
+				var hCKeyword = hCInput.val();
+				var hCKeywordObj = { 
+						hCKeyword : hCKeyword
+						};
+				// 검색 환자 정보
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/healthCheckup/select",
+					data : JSON.stringify(hCKeywordObj),
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var hcDropItemHtml = "";
+						hCTbodyHtml = "";
+						if(res.length == 0){
+							hcDropItemHtml += "<tr class='text-center row dropdown-item px-x1 py-2 mb-0'>";
+							hcDropItemHtml += '<td class="col-12 text-black fw-bold fw-3 ">조회하신 검사가 없습니다.</td>';
+							hcDropItemHtml += '</tr>';
+						}else{
+							$(res).each(function(idx, item){
+								hcDropItemHtml = hcDropItem(this.hlthchkpCd, this.hlthchkpNm, this.mllwncAt, this.hlthchkpAmount)
+							});
+						}
+						$(hCTbody).html(hcDropItemHtml);
+					},
+					error : function(err){
+						console.log("err에러 : " + err);
+					}
+				});
+			}
+		});
+		
+		// 검사 결과 누르기 이벤트들 시작 ---------------------------------------------
+		// 엔터 눌렀을 시 제일 위에 검사 코드를 찾는다.
+		$(hCInput).keypress(function(event){
+			if(event.which == 13){
+				event.preventDefault();
+				var hlthchkpCd = hCTbody.children("tr:eq(0)").data("hccd");
+				var hlthchkpNm = hCTbody.children("tr:eq(0)").data("hcnm");
+				var mllwncAt = hCTbody.children("tr:eq(0)").data("mllat");
+				var hlthchkpAmount = hCTbody.children("tr:eq(0)").data("hlthchkpamount");
+				// input태그 비우기
+				$(hCInput).val("");
+				// 검사 테이블에 넣어주기
+				selectHCAjax(hlthchkpCd, hlthchkpNm, mllwncAt, hlthchkpAmount);
+				
+				hCInput.blur();
+				$(hcDropMenu).hide();
+			}
+		});
+		
+		// 검색창 목록 클릭 이벤트
+		$(hCTbody).on("click", function(){
+			var targets = $(event.target);
+			// 클릭된 요소의 부모인 tr 태그
+			var clickTr = "";
+			
+			if(targets.is('td')){
+				clickTr = targets.closest('tr');
+			}else if(targets.is('tr')){
+				clickTr = targets;
+			}
+			var hlthchkpCd = clickTr.data("hccd");
+			var hlthchkpNm = clickTr.data("hcnm");
+			var mllwncAt = clickTr.data("mllat");
+			var hlthchkpAmount = clickTr.data("hlthchkpamount");
+			
+			// input 태그 비워주기
+			$(hCInput).val("");
+			
+			selectHCAjax(hlthchkpCd, hlthchkpNm, mllwncAt, hlthchkpAmount);
+			hCInput.blur();
+			$(hcDropMenu).hide();
+		});
+		
+		// 검사 결과 누르기 이벤트들 끝 ------------------------------------------------
+		// 검사 테이블(hcInsertTable)에 넣어주기
+		function selectHCAjax(hlthchkpCd, hlthchkpNm, mllwncAt, hlthchkpAmount){
+			idNo++;
+			var hcInsertTableHtml = "";
+	      
+			hcInsertTableHtml += "<tr class='row px-x1 py-2 mb-0 hover-primary text-center'>";
+			hcInsertTableHtml += '<td class="col-1 align-middle white-space-nowrap">';
+			hcInsertTableHtml += '<div class="form-check mb-0">';
+			hcInsertTableHtml += '<input class="form-check-input hcCheckTd" type="checkbox" id="checkbox-'+idNo+'"/>';
+			hcInsertTableHtml += '</div>';
+			hcInsertTableHtml += '</td>';
+			hcInsertTableHtml += "<td class='col-3' data-hlthchkpamount='"+hlthchkpAmount+"'>" + hlthchkpCd + "</td>";
+			hcInsertTableHtml += "<td class='col-3'>" + hlthchkpNm + "</td>";
+			hcInsertTableHtml += "<td class='col-3'>" + mllwncAt + "</td>";
+			hcInsertTableHtml += "<td class='col-2'><div class='btn-close-falcon hcDel'></div></td>";
+			hcInsertTableHtml += "</tr>";
+			
+			hcInsertTable.append(hcInsertTableHtml);
+		}
+		
+		// 검사 검색창에 목록 생성
+		function hcDropItem(hlthchkpCd, hlthchkpNm, mllwncAt, hlthchkpAmount){
+			hCTbodyHtml += "<tr class='row dropdown-item px-x1 py-2 mb-0 hover-primary pointer'"
+				+ "data-hccd='"+hlthchkpCd+"' data-hcnm='"+hlthchkpNm+"' data-mllat='"+mllwncAt+"' data-hlthchkpamount='"+hlthchkpAmount+"'>";
+			hCTbodyHtml += "<td class='col-4'>"+hlthchkpCd+"</td>";
+			hCTbodyHtml += "<td class='col-6'>"+hlthchkpNm+"</td>";
+			hCTbodyHtml += "<td class='col-2'>"+mllwncAt+"</td>";
+			hCTbodyHtml += "</tr>";
+			
+			return hCTbodyHtml;
+		}
+		
+	});
+	// 검사 검색 끝
+	
+	
+	// 검사 테이블 체크 박스
+	$(function(){
+		var hcCheckTh = $("#hcCheckTh");
+		var hcCheckTable = $("#hcCheckTable");
+		var hcAllDelBtn = $("#hcAllDelBtn");
+		
+		// th체크 박스로 모든 체크 박스 컨트롤
+		$(hcCheckTh).on('change', function() {
+			// hcCheckTh체크 박스랑 동일한 체크가 된다.
+	       	$(".hcCheckTd").prop('checked', this.checked);
+	    });
+		
+		// x 버튼 클릭 삭제기능
+		$(hcInsertTable).on("click",".hcDel", function(event){
+			var btnClick = event.target.closest('tr');
+			btnClick.remove();			
+		});
+		
+		// 삭제 버튼을 눌렀을 때 체크된 것들 삭제 기능
+		$(hcAllDelBtn).on("click", function(){
+			var hcTdCheckAll = $(".hcInsertTable input[type=checkbox]:checked");
+			hcTdCheckAll.closest('tr').remove();
+			$(hcCheckTh).prop('checked', false);
+		});
+		
+	});
+	
+	var hcOrderBtn = $("#hcOrderBtn");
+	
+	$(hcOrderBtn).on("click", function(){
+		
+	});
+});
+//검사 관련 스크립트 끝=======================================================================================================
+// 치료 관련 스크립트 시작=======================================================================================================
+$(function(){
+	// 치료 검색 관련
+	var mtTbody = $("#mtTbody");
+	var mtInput = $(".mtInput");
+	var mtSearchBox = $("#mtSearchBox");
+	var mtMenu = $("#mtMenu");
+	var mtDropMenu = $("#mtDropMenu");
+	var mtInsertTable = $(".mtInsertTable");
+	var idNo = 1;
+	var mtTbodyHtml = "";
+	
+	// 치료 검색 시작
+	$(function(){
+		// 치료창 포커스 아웃일 때 드롭다운 사라지게 만들기
+		mtInput.focusout(function(){
+			setTimeout(() => {
+				$(mtDropMenu).hide();
+			}, 100);
+		});
+		
+		// 치료창 포커스인
+		mtInput.focusin(function(){
+			$(mtDropMenu).show();
+			if(mtInput.val() == "" || mtInput.val() == null){
+				
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/medicalTreatment/list",
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var mtDropItemHtml = "";
+						mtTbodyHtml = "";
+						$(res).each(function(idx, item){
+							mtDropItemHtml = mtDropItem(this.mdlrtCd, this.mdlrtNm, this.mllwncAt, this.mdlrtAmount, this.mdlrtCl)
+						});
+						$(mtTbody).html(mtDropItemHtml);
+					},
+					error : function(err){
+						console.log(err.status);
+					}
+				});
+				
+			}
+		});
+		
+		// 치료 keyup 검색
+		mtInput.on("keyup",function(event){
+			if(event.which != 13){
+				var mtKeyword = mtInput.val();
+				var mtKeywordObj = { 
+						mtKeyword : mtKeyword
+						};
+				// 치료 환자 정보
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/medicalTreatment/select",
+					data : JSON.stringify(mtKeywordObj),
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var mtDropItemHtml = "";
+						mtTbodyHtml = "";
+						if(res.length == 0){
+							mtDropItemHtml += "<tr class='text-center row dropdown-item px-x1 py-2 mb-0'>";
+							mtDropItemHtml += '<td class="col-12 text-black fw-bold fw-3 ">조회하신 치료가 없습니다.</td>';
+							mtDropItemHtml += '</tr>';
+						}else{
+							$(res).each(function(idx, item){
+								mtDropItemHtml = mtDropItem(this.mdlrtCd, this.mdlrtNm, this.mllwncAt, this.mdlrtAmount, this.mdlrtCl)
+							});
+						}
+						$(mtTbody).html(mtDropItemHtml);
+					},
+					error : function(err){
+						console.log("err에러 : " + err);
+					}
+				});
+			}
+		});
+		
+		// 치료 결과 누르기 이벤트들 시작 ---------------------------------------------
+		// 엔터 눌렀을 시 제일 위에 치료 코드를 찾는다.
+		$(mtInput).keypress(function(event){
+			if(event.which == 13){
+				event.preventDefault();
+				var mdlrtCd = mtTbody.children("tr:eq(0)").data("mtcd");
+				var mdlrtNm = mtTbody.children("tr:eq(0)").data("mtnm");
+				var mllwncAt = mtTbody.children("tr:eq(0)").data("mtmllat");
+				var mdlrtAmount = mtTbody.children("tr:eq(0)").data("mdlrtamount");
+				var mdlrtCl = mtTbody.children("tr:eq(0)").data("mdlrtcl");
+				// input태그에 선택된 이름 넣어주기
+				$(mtInput).val("");
+				// 치료 테이블에 넣어주기
+				selectMTAjax(mdlrtCd, mdlrtNm, mllwncAt, mdlrtAmount, mdlrtCl);
+				
+				mtInput.blur();
+				$(mtDropMenu).hide();
+			}
+		});
+		
+		// 치료창 목록 클릭 이벤트
+		$(mtTbody).on("click", function(){
+			var targets = $(event.target);
+			// 클릭된 요소의 부모인 tr 태그
+			var clickTr = "";
+			
+			if(targets.is('td')){
+				clickTr = targets.closest('tr');
+			}else if(targets.is('tr')){
+				clickTr = targets;
+			}
+			var mdlrtCd = clickTr.data("mtcd");
+			var mdlrtNm = clickTr.data("mtnm");
+			var mllwncAt = clickTr.data("mtmllat");
+			var mdlrtAmount = clickTr.data("mdlrtamount");
+			var mdlrtCl = clickTr.data("mdlrtcl");
+			// input 태그 비워주기
+			$(mtInput).val("");
+			
+			selectMTAjax(mdlrtCd, mdlrtNm, mllwncAt, mdlrtAmount, mdlrtCl);
+			mtInput.blur();
+			$(mtDropMenu).hide();
+		});
+		
+		// 치료 결과 누르기 이벤트들 끝 ------------------------------------------------
+		// 치료 테이블(mtInsertTable)에 넣어주기
+		function selectMTAjax(mdlrtCd, mdlrtNm, mllwncAt, mdlrtAmount, mdlrtCl){
+			idNo++;
+			var mtInsertTableHtml = "";
+	      
+			mtInsertTableHtml += "<tr class='row px-x1 py-2 mb-0 hover-primary text-center'>";
+			mtInsertTableHtml += '<td class="col-1 align-middle white-space-nowrap">';
+			mtInsertTableHtml += '<div class="form-check mb-0">';
+			mtInsertTableHtml += '<input class="form-check-input mtCheckTd" type="checkbox" id="checkbox-'+idNo+'"/>';
+			mtInsertTableHtml += '</div>';
+			mtInsertTableHtml += '</td>';
+			mtInsertTableHtml += "<td class='col-3' data-mdlrtamount='"+mdlrtAmount+"' data-mdlrtcl='"+mdlrtCl+"'>" + mdlrtCd + "</td>";
+			mtInsertTableHtml += "<td class='col-3'>" + mdlrtNm + "</td>";
+			mtInsertTableHtml += "<td class='col-3'>" + mllwncAt + "</td>";
+			mtInsertTableHtml += "<td class='col-2'><div class='btn-close-falcon mtDel'></div></td>";
+			mtInsertTableHtml += "</tr>";
+			
+			mtInsertTable.append(mtInsertTableHtml);
+		}
+		
+		// 치료 검색창에 목록 생성
+		function mtDropItem(mdlrtCd, mdlrtNm, mllwncAt, mdlrtAmount, mdlrtCl){
+			mtTbodyHtml += "<tr class='row dropdown-item px-x1 py-2 mb-0 hover-primary pointer'"
+				+ "data-mtcd='"+mdlrtCd+"' data-mtnm='"+mdlrtNm+"' data-mtmllat='"+mllwncAt+"' data-mdlrtamount='"+mdlrtAmount+"' data-mdlrtcl='"+mdlrtCl+"'>";
+			mtTbodyHtml += "<td class='col-3'>"+mdlrtCd+"</td>";
+			mtTbodyHtml += "<td class='col-7'>"+mdlrtNm+"</td>";
+			mtTbodyHtml += "<td class='col-2'>"+mllwncAt+"</td>";
+			mtTbodyHtml += "</tr>";
+			
+			return mtTbodyHtml;
+		}
+		
+	});
+	// 치료 검색 끝
+	
+	
+	// 치료 테이블 체크 박스
+	$(function(){
+		var mtCheckTh = $("#mtCheckTh");
+		var mtCheckTable = $("#mtCheckTable");
+		var mtAllDelBtn = $("#mtAllDelBtn");
+		
+		// th체크 박스로 모든 체크 박스 컨트롤
+		$(mtCheckTh).on('change', function() {
+			// mtrCheckTh체크 박스랑 동일한 체크가 된다.
+	       	$(".mtCheckTd").prop('checked', this.checked);
+	    });
+		
+		// x 버튼 클릭 삭제기능
+		$(mtInsertTable).on("click",".mtDel", function(event){
+			var btnClick = event.target.closest('tr');
+			btnClick.remove();			
+		});
+		
+		// 삭제 버튼을 눌렀을 때 체크된 것들 삭제 기능
+		$(mtAllDelBtn).on("click", function(){
+			var mtTdCheckAll = $(".mtInsertTable input[type=checkbox]:checked");
+			mtTdCheckAll.closest('tr').remove();
+			$(mtCheckTh).prop('checked', false);
+		});
+		
+	});
+	
+});
+// 치료 관련 스크립트 끝=======================================================================================================	
+// 처방 관련 스크립트 시작=======================================================================================================
+$(function(){
+	// 처방 검색 관련
+	var mTbody = $("#mTbody");
+	var mInput = $(".mInput");
+	var mSearchBox = $("#mSearchBox");
+	var mMenu = $("#mMenu");
+	var mDropMenu = $("#mDropMenu");
+	var mInsertTable = $(".mInsertTable");
+	var idNo = 1;
+	var mTbodyHtml = "";
+	
+	// 처방 검색 시작
+	$(function(){
+		// 처방창 포커스 아웃일 때 드롭다운 사라지게 만들기
+		mInput.focusout(function(){
+			setTimeout(() => {
+				$(mDropMenu).hide();
+			}, 100);
+		});
+		
+		// 검색창 포커스인
+		mInput.focusin(function(){
+			$(mDropMenu).show();
+			if(mInput.val() == "" || mInput.val() == null){
+				
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/medicine/list",
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var mDropItemHtml = "";
+						mTbodyHtml = "";
+						$(res).each(function(idx, item){
+							mDropItemHtml = mDropItem(this.medcinCd, this.medcinNm, this.medcinMfbiz, this.mdctnCours, this.medcinUnit, this.medcinPc, this.medcinStandard);
+						});
+						$(mTbody).html(mDropItemHtml);
+					},
+					error : function(err){
+						console.log(err.status);
+					}
+				});
+				
+			}
+		});
+		
+		// 처방 keyup 검색
+		mInput.on("keyup",function(event){
+			if(event.which != 13){
+				var mKeyword = mInput.val();
+				var mKeywordObj = { 
+						mKeyword : mKeyword
+						};
+				// 처방 환자 정보
+				$.ajax({
+					type : "post",
+					url  : "/mediform/doctor/medicine/select",
+					data : JSON.stringify(mKeywordObj),
+					contentType : "application/json; charset=utf-8",
+			        beforeSend : function(xhr){
+			            //ajax호출 중 처리
+			            //글로벌 변수로 설정한 csrf token 셋팅
+			            xhr.setRequestHeader(header,token);
+			        },
+					success : function(res){
+						var mDropItemHtml = "";
+						mTbodyHtml = "";
+						if(res.length == 0){
+							mDropItemHtml += "<tr class='text-center row dropdown-item px-x1 py-2 mb-0'>";
+							mDropItemHtml += '<td class="col-12 text-black fw-bold fw-3 ">조회하신 약품이 없습니다.</td>';
+							mDropItemHtml += '</tr>';
+						}else{
+							$(res).each(function(idx, item){
+								mDropItemHtml = mDropItem(this.medcinCd, this.medcinNm, this.medcinMfbiz, this.mdctnCours, this.medcinUnit, this.medcinPc, this.medcinStandard)
+							});
+						}
+						$(mTbody).html(mDropItemHtml);
+					},
+					error : function(err){
+						console.log("err에러 : " + err);
+					}
+				});
+			}
+		});
+		
+		// 처방 결과 누르기 이벤트들 시작 ---------------------------------------------
+		// 엔터 눌렀을 시 제일 위에 처방 코드를 찾는다.
+		$(mInput).keypress(function(event){
+			if(event.which == 13){
+				event.preventDefault();
+				var medcinCd = mTbody.children("tr:eq(0)").data("medcd");
+				var medcinNm = mTbody.children("tr:eq(0)").data("mednm");
+				var medcinMfbiz = mTbody.children("tr:eq(0)").data("medmfbiz");
+				var mdctnCours = mTbody.children("tr:eq(0)").data("mdctncours");
+				var medcinUnit = mTbody.children("tr:eq(0)").data("medcinunit");
+				var medcinPc = mTbody.children("tr:eq(0)").data("medcinpc");
+				var medcinStandard = mTbody.children("tr:eq(0)").data("medcinstandard");
+				// input태그에 선택된 이름 넣어주기
+				$(mInput).val("");
+				// 처방 테이블에 넣어주기
+				selectMAjax(medcinCd, medcinNm, medcinMfbiz, mdctnCours, medcinUnit, medcinPc , medcinStandard);
+				
+				mInput.blur();
+				$(mDropMenu).hide();
+			}
+		});
+		
+		// 검색창 목록 클릭 이벤트
+		$(mTbody).on("click", function(){
+			var targets = $(event.target);
+			// 클릭된 요소의 부모인 tr 태그
+			var clickTr = "";
+			
+			if(targets.is('td')){
+				clickTr = targets.closest('tr');
+			}else if(targets.is('tr')){
+				clickTr = targets;
+			}
+			var medcinCd = clickTr.data("medcd");
+			var medcinNm = clickTr.data("mednm");
+			var medcinMfbiz = clickTr.data("medmfbiz");
+			var mdctnCours = clickTr.data("mdctncours");
+			var medcinUnit = clickTr.data("medcinunit");
+			var medcinPc = clickTr.data("medcinpc");
+			var medcinStandard = clickTr.data("medcinstandard");
+			// input 태그 비워주기
+			$(mInput).val("");
+			
+			selectMAjax(medcinCd, medcinNm, medcinMfbiz, mdctnCours, medcinUnit, medcinPc, medcinStandard);
+			mInput.blur();
+			$(mDropMenu).hide();
+		});
+		
+		// 처방 결과 누르기 이벤트들 끝 ------------------------------------------------
+		// 처방 테이블(mInsertTable)에 넣어주기
+		function selectMAjax(medcinCd, medcinNm, medcinMfbiz, mdctnCours, medcinUnit, medcinPc, medcinStandard){
+			idNo++;
+			var mInsertTableHtml = "";
+	      
+			mInsertTableHtml += "<tr class='row px-x1 py-2 mb-0 hover-primary text-center'>";
+			mInsertTableHtml += '<td class="col-1 align-middle white-space-nowrap">';
+			mInsertTableHtml += '<div class="form-check mb-0">';
+			mInsertTableHtml += '<input class="form-check-input mCheckTd" type="checkbox" id="checkbox-'+idNo+'"/>';
+			mInsertTableHtml += '</div>';
+			mInsertTableHtml += '</td>';
+			mInsertTableHtml += "<td class='col-2' data-medcinpc='"+medcinPc+"' data-medcinstandard='"+medcinStandard+"'>" + medcinCd + "</td>";
+			mInsertTableHtml += "<td class='col-2'>" + medcinNm + "</td>";
+			mInsertTableHtml += "<td class='col-2'>" + medcinMfbiz + "</td>";
+			mInsertTableHtml += "<td class='col-2'>" + mdctnCours + "</td>";
+			mInsertTableHtml += "<td class='col-1'><input type='text' style='width:100%' class='mdctnCpctyInput' value='' />"+medcinUnit+"</td>";
+			mInsertTableHtml += "<td class='col-1'><input type='text' style='width:100%' class='mdctnCoInput' value='' /> 회</td>";
+			mInsertTableHtml += "<td class='col-1'><input type='text' style='width:100%' class='mdctnPdInput' value='' /> 일</td>";
+			mInsertTableHtml += "<td class='col-1'><div class='btn-close-falcon mDel'></div></td>";
+			mInsertTableHtml += "</tr>";
+			
+			mInsertTable.append(mInsertTableHtml);
+		}
+		
+		// 처방 검색창에 목록 생성
+		function mDropItem(medcinCd, medcinNm, medcinMfbiz, mdctnCours, medcinUnit, medcinPc, medcinStandard){
+			mTbodyHtml += "<tr class='row dropdown-item px-x1 py-2 mb-0 hover-primary pointer'"
+				+ "data-medcd='"+medcinCd+"' data-mednm='"+medcinNm+"' data-medmfbiz='"+medcinMfbiz+"' data-mdctncours='"+mdctnCours+"'"
+				+ "data-medcinunit='"+medcinUnit+"' data-medcinpc='"+medcinPc+"' data-medcinstandard='"+medcinStandard+"'>";
+			mTbodyHtml += "<td class='col-2'>"+medcinCd+"</td>";
+			mTbodyHtml += "<td class='col-5'>"+medcinNm+"</td>";
+			mTbodyHtml += "<td class='col-3'>"+medcinMfbiz+"</td>";
+			mTbodyHtml += "<td class='col-2'>"+mdctnCours+"</td>";
+			mTbodyHtml += "</tr>";
+			
+			return mTbodyHtml;
+		}
+		
+	});
+	// 처방 검색 끝
+	
+	
+	// 처방 테이블 체크 박스
+	$(function(){
+		var mCheckTh = $("#mCheckTh");
+		var mCheckTable = $("#mCheckTable");
+		var mAllDelBtn = $("#mAllDelBtn");
+		
+		// th체크 박스로 모든 체크 박스 컨트롤
+		$(mCheckTh).on('change', function() {
+			// mCheckTh체크 박스랑 동일한 체크가 된다.
+	       	$(".mCheckTd").prop('checked', this.checked);
+	    });
+		
+		// x 버튼 클릭 삭제기능
+		$(mInsertTable).on("click",".mDel", function(event){
+			var btnClick = event.target.closest('tr');
+			btnClick.remove();			
+		});
+		
+		// 삭제 버튼을 눌렀을 때 체크된 것들 삭제 기능
+		$(mAllDelBtn).on("click", function(){
+			var mTdCheckAll = $(".mInsertTable input[type=checkbox]:checked");
+			mTdCheckAll.closest('tr').remove();
+			$(mCheckTh).prop('checked', false);
+		});
+		
+	});
+	
+});
+// 처방 관련 스크립트 끝=======================================================================================================	
+
+</script>

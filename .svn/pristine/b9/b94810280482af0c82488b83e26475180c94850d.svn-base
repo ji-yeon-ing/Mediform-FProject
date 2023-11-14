@@ -1,0 +1,83 @@
+package kr.or.ddit.nurse.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.nurse.service.RecordService;
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/nurse")
+public class NurseController {
+	
+	@Inject
+	private IPatientService patientService;
+	
+	@Inject
+	private RecordService recordService;
+	
+	// 간호기록차트 환자 list 조회
+	@RequestMapping(value = "/list")
+	public String recordPatientList(Model model) {
+		log.info("recordPatientList() 실행...!");
+		
+		List<PatientVO> patientList = patientService.selectPatientList();
+		log.info("recordPatientList>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + patientList);
+		
+		model.addAttribute("patientList", patientList);
+		
+		return "nurse/record";
+	}
+	
+	// 병동 관리 환자 list 조회
+		@RequestMapping(value = "/roomlist")
+		public String roomPatientList(Model model) {
+			log.info("roomPatientList() 실행...!");
+			
+			List<PatientVO> patientList = patientService.selectPatientList();
+			log.info("roomPatientList>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + patientList);
+			
+			model.addAttribute("patientList", patientList);
+			
+			return "nurse/room";
+		}
+	
+	
+	// 간호기록차트 ---- 해당 환자 모달창에 상세 정보 띄우기
+	@ResponseBody
+	@RequestMapping("/getPatientDetails")
+	public PatientVO getPatientDetails(@RequestParam String patntNo) {
+	    log.info("getPatientDetails() 실행...!");
+
+	    PatientVO patient = patientService.selectPatientOne(patntNo);
+
+	    return patient;
+	}
+	
+	
+	// 환자 외래진료 간호 액팅 기록 조회
+	@ResponseBody
+	@PostMapping("/allRecordList") 
+	public List<NurseRecordVO> allRecordList(@RequestBody Map<String, String> map) {
+		
+	    List<NurseRecordVO> allRecordList = recordService.selectRecordList(map);
+	    log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>allRecordList : " + allRecordList);
+	    
+	    return allRecordList;
+	}
+	
+}

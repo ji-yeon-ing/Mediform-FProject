@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.doctor.DoctorRoundMapper">
+<select id="getInpatientRecordDateList" parameterType="doctorRoundVO" resultType="doctorRoundInpatientRecordVO">
+	SELECT
+	    IR.INPTNT_NO
+	  , IR.INPTNT_DE
+	FROM
+	    INPATIENT_RECORD IR 
+	    JOIN HOSPITALIZATION H ON IR.HSPTLZ_CD =  H.HSPTLZ_CD 
+	WHERE 
+	    H.PATNT_NO = #{patntNo}
+	ORDER BY 
+    	IR.INPTNT_DE DESC
+
+</select>
+
+<select id="getClinicDateList" parameterType="doctorRoundVO" resultType="doctorRoundClinicVO">
+	SELECT
+	    clnic_no
+	  , clnic_time
+	FROM
+	    clinic
+	WHERE 
+	    patnt_no = #{patntNo}
+	ORDER BY 
+		clnic_time DESC
+	
+
+</select>
+
+<select id="getOtptRecordDateList" parameterType="doctorRoundVO" resultType="doctorRoundOtptRecordVO">
+	SELECT
+	    OTPT_CD
+	  , MDLRT_DT
+	FROM
+	    OTPT_RECORD
+	WHERE 
+	    patnt_no = #{patntNo}
+	ORDER BY 
+		MDLRT_DT DESC	    
+</select>
+
+<select id="getNurseRecordDateList" parameterType="doctorRoundVO" resultType="doctorRoundNurseRecordVO">
+	SELECT
+	    NRS_RCORD_CD
+	  , NRS_RCORD_DE
+	FROM
+	    NURSE_RECORD
+	WHERE 
+	    PATNT_NO = #{patntNo} 
+	    AND NRS_RCORD_CD LIKE 'NRM%'
+	ORDER BY 
+		NRS_RCORD_DE DESC		    
+</select>
+
+<select id="getClinicVO" parameterType="doctorRoundClinicVO" resultType="doctorRoundClinicVO">
+	SELECT
+	    C.clnic_no
+	  , C.rcept_no
+	  , C.patnt_no
+	  , C.emp_no
+	  , C.clnic_time
+	  , C.clnic_cn
+	  , C.clnic_at
+	  , C.before_clnic_no
+	  , C.hsptlz_at
+	  , C.clnic_memo
+	  , C.atfss_dt
+	  , C.clnic_fe
+	  , H.hsptlz_cd
+	  , H.hsptlz_sckrm
+	  , H.hsptlz_sckbd
+	  , H.hsptlz_de
+	  , H.prarnde_lhstl
+	  , H.real_lhstl
+	  , P.patnt_nm 
+  	  , P.patnt_sexdstn
+  	  , P.PATNT_AGE
+  	  , E.EMP_NM
+	FROM
+	    clinic C 
+	LEFT JOIN hospitalization H ON C.clnic_no = H.clnic_no 
+	JOIN PATIENT P ON P.PATNT_NO = C.PATNT_NO
+	JOIN EMPLOYEE E ON E.EMP_NO = C.EMP_NO 
+	WHERE C.CLNIC_NO = #{clnicNo}
+</select>
+
+<select id="roundSickAndWoundedList" parameterType="doctorRoundClinicVO" resultType="doctorRoundSickAndWoundedVO">
+	SELECT
+	    sckwnd_cd
+	  , clnic_no
+	  , rcept_no
+	  , patnt_no
+	  , sckwnd_kr
+	  , sckwnd_en
+	  , body_cd
+	  , kcd
+	  , sckwnd_se
+	FROM
+	    sick_and_wounded
+	WHERE CLNIC_NO = #{clnicNo}
+</select>
+
+<select id="medicalExamOrderList" parameterType="doctorRoundClinicVO" resultType="doctorRoundMedicalExamOrderVO">
+	SELECT M.*, H.HLTHCHKP_NM as hlthchkpNm
+	FROM MEDICAL_EXAMINATION_ORDER M
+	JOIN HEALTH_CHECKUP H ON M.HLTHCHKP_CD = H.HLTHCHKP_CD
+	WHERE M.CLNIC_NO = #{clnicNo}
+</select>
+
+<select id="prescriptionOrderList" parameterType="doctorRoundClinicVO" resultType="doctorRoundPrescriptionOrderVO">
+	SELECT
+	    clnic_no
+	  , rcept_no
+	  , medcin_cd
+	  , prscrptn_nm
+	  , mdctn_cpcty
+	  , mdctn_unit
+	  , mdctn_co
+	  , mdctn_pd
+	  , mdctn_cours_usage
+	  , prscrptn_cd
+	FROM
+	    prescription_order
+	WHERE CLNIC_NO = #{clnicNo}
+</select>
+
+<insert id="insertRound" parameterType="doctorRoundInpatientRecordVO">
+	INSERT INTO inpatient_record (
+	    inptnt_no
+	    , hsptlz_cd
+	    , inptnt_de
+	    , doctr_empno
+	    , inptnt_rcord
+	) VALUES (
+	  'IR' || SEQ_INPATIENT_RECORD.NEXTVAL
+	  , #{hsptlzCd}
+	  , SYSDATE
+	  , #{doctrEmpno}
+	  , #{inptntRcord}
+	)
+</insert>
+
+<select id="getInpatientRecord" parameterType="doctorRoundInpatientRecordVO" resultType="doctorRoundInpatientRecordVO">
+	SELECT
+	    IR.inptnt_no
+	  , IR.hsptlz_cd
+	  , IR.inptnt_de
+	  , IR.inptnt_empno
+	  , IR.doctr_empno
+	  , E.EMP_NM
+	  , P.PATNT_NM
+	  , IR.inptnt_rcord
+	FROM inpatient_record IR
+	LEFT JOIN HOSPITALIZATION H ON IR.HSPTLZ_CD = H.HSPTLZ_CD
+	JOIN PATIENT P ON P.PATNT_NO = H.PATNT_NO
+	JOIN EMPLOYEE E ON E.EMP_NO = IR.doctr_empno
+	WHERE inptnt_no = #{inptntNo}
+</select>
+
+<select id="getNurseRecord" parameterType="doctorRoundNurseRecordVO" resultType="doctorRoundNurseRecordVO">
+	SELECT
+	    NR.nrs_rcord_cd
+	  , NR.nrs_rcord_de
+	  , NR.nrs_rcord_wrter
+	  , NR.nrs_rcord_cn
+	  , NR.nrs_rcord_memo
+	  , NR.clnic_no
+	  , NR.rcept_no
+	  , NR.patnt_no
+	  , P.PATNT_NM
+	  , E.EMP_NM  
+	FROM  nurse_record NR
+	LEFT JOIN EMPLOYEE E ON E.EMP_NO = NR.NRS_RCORD_WRTER 
+	JOIN PATIENT P ON P.patnt_no = NR.patnt_no
+	WHERE nrs_rcord_cd = #{nrsRcordCd}
+</select>
+
+<select id="getOtptRecord" parameterType="doctorRoundOtptRecordVO" resultType="doctorRoundOtptRecordVO">
+	SELECT
+	    ORD.otpt_cd
+	  , ORD.clnic_no
+	  , ORD.rcept_no
+	  , ORD.patnt_no
+	  , P.PATNT_NM
+	  , P.PATNT_SEXDSTN
+	  , ORD.otpt_appeal
+	  , ORD.otpt_history
+	  , ORD.orient_time
+	  , ORD.orient_place
+	  , ORD.orient_person
+	  , ORD.otpt_stm
+	  , ORD.otpt_ltm
+	  , ORD.otpt_st
+	  , ORD.otpt_dysp
+	  , ORD.otpt_pd
+	  , ORD.must_ub_right
+	  , ORD.must_ub_left
+	  , ORD.must_lb_right
+	  , ORD.must_lb_left
+	  , ORD.main_cntrvs
+	  , ORD.lngtr_coal
+	  , ORD.srtpd_coal
+	  , ORD.must_plan
+	  , ORD.must_etc
+	  , ORD.mdlrt_dt
+	FROM  otpt_record ORD 
+	LEFT JOIN PATIENT P ON ORD.PATNT_NO = P.PATNT_NO
+	WHERE ORD.otpt_cd = #{otptCd}
+</select>
+
+<select id="doctorRoundDate" parameterType="doctorRoundVO" resultType="doctorRoundVO">
+	select *
+	from HOSPITALIZATION
+	where HSPTLZ_CD = #{hsptlzCd}
+</select>
+
+<select id="doctorRoundPatient" parameterType="doctorRoundVO" resultType="patientVO">
+	select *
+	from PATIENT
+	where PATNT_NO = #{patntNo}
+</select>
+
+<select id="doctorRoundPatientVital" parameterType="doctorRoundVO" resultType="vitalVO">
+	SELECT *
+	FROM (
+		SELECT *
+		FROM VITALS
+		WHERE PATNT_NO = #{patntNo}
+		ORDER BY VITAL_DATE DESC
+		)
+	WHERE ROWNUM = 1
+</select>
+
+</mapper>

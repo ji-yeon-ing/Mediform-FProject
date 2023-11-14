@@ -1,0 +1,229 @@
+package kr.or.ddit.manager.service.impl;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.AuthorityVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.manager.service.IManagerService;
+import kr.or.ddit.mapper.manager.ManagerEmployeeMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class ManagerServiceImpl implements IManagerService{
+
+	@Inject
+	private ManagerEmployeeMapper managerMapper;
+	
+	// 자바 메일 sender 의존성 주입
+	@Inject
+	private JavaMailSender emailSender;
+	
+	@Inject
+	private PasswordEncoder pe;
+	
+	/**
+	 * 회원 상세 조회
+	 */
+	@Override
+	public EmployeeVO getEmployee(String empNo) {
+		return managerMapper.getEmployee(empNo);
+	}
+
+	/**
+	 * 반려 URL
+	 */
+	@Override
+	public ServiceResult rejectUpdate(EmployeeVO empVO) throws MessagingException, UnsupportedEncodingException{
+		ServiceResult result = null;
+		int cnt  = managerMapper.rejectUpdate(empVO);
+		if(cnt > 0) {
+			String empResult = "N";
+			MimeMessage message = sendMessage(empVO, empResult);
+			emailSender.send(message);
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	/**
+	 * 승인 처리 URL
+	 * @throws MessagingException 
+	 */
+	@Transactional
+	@Override
+	public ServiceResult agreeEmployee(EmployeeVO empVO) throws MessagingException, UnsupportedEncodingException {
+		ServiceResult result = null;
+		UUID uuid = UUID.randomUUID();
+		// 랜덤 비밀번호
+		String rndPw = uuid.toString().replace("-", "").substring(0,8);
+		
+		// 인코딩한 비밀번호
+		// 시큐리티 적용 후 하겠음.(적용후 setEmpPw 바꾸기)
+		String encPw = pe.encode(rndPw);
+		log.info("인코딩 전 비밀번호: " + rndPw);
+		log.info("인코딩 후 비밀번호: " + encPw);
+		empVO.setEmpPw(encPw);
+		
+		// 소속에 따른 권한 부여
+		AuthorityVO auth = new AuthorityVO();
+		auth.setEmpNo(empVO.getEmpNo());
+		String empSe = empVO.getEmpSe();
+		String authName = "";
+		log.info("empSe : " + empSe);
+		if(empSe != null && empSe.equals("d")) {
+			authName = "ROLE_DOCTOR";
+		}else if(empSe != null && empSe.equals("n")) {
+			authName = "ROLE_NURSE";
+		}else if(empSe != null && empSe.equals("a")) {
+			authName = "ROLE_ADMIN";
+		}else if(empSe != null && empSe.equals("t")) {
+			authName = "ROLE_THERAPIST";
+		}else if(empSe != null && empSe.equals("k")) {
+			authName = "ROLE_DIRECTOR";
+		}else if(empSe != null && empSe.equals("m")) {
+			authName = "ROLE_MANAGER";
+		}
+		
+		auth.setAuthorNm(authName);
+		
+		
+		
+		int authCnt = managerMapper.insertAuth(auth);
+		int cnt = managerMapper.agreeEmployee(empVO);
+		if(cnt > 0 && authCnt > 0) {
+			empVO.setEmpPw(rndPw);
+			String empResult = "Y";
+			MimeMessage message = sendMessage(empVO, empResult);
+			emailSender.send(message);
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	public MimeMessage sendMessage(EmployeeVO empVO, String empResult) throws MessagingException, UnsupportedEncodingException {
+		MimeMessage message = emailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+		
+		helper.setTo(empVO.getEmpEmail());	// 받는 사람 이메일
+		helper.setSubject("메디폼 재활병원 회원 신청 결과 안내");	// 메일 제목
+		
+		String emailContent = "";	// html식 메일 내용
+		if(empResult.equals("Y")) {
+			emailContent = agreeContent(empVO);	
+		}else if(empResult.equals("N")){
+			emailContent = rejectContent(empVO);
+		}
+		
+		helper.setText(emailContent, true);	// 메일 내용
+		
+		helper.setFrom(new InternetAddress("nammj0419@gmail.com","메디폼재활병원"));	// 메일주소, 보내는 사람 이름
+		
+		return message;
+	}
+	
+	// 회원가입 최종승인 안내 메일 문구
+	// html 형식의 문자열 생성 -> 메일 내용
+	public String agreeContent(EmployeeVO empVO) {
+		StringBuilder sb = new StringBuilder();
+		
+		String content = "";
+		content += "<html>";
+		content += "<head>";
+		content += "<title>메디폼 재활병원</title>";
+		content += "</head>";
+		content += "<body>";
+		content += "<div style='margin:100px;'>";
+		content += "<h1>귀하의 회원가입 신청 결과 <font color='red'>승인</font> 처리 되었습니다.</h1>";
+		content += "<p>비밀번호를 확인해주시고, 로그인 후 반드시 비밀번호를 변경하여 주세요.<p>";
+		content += "<br/>";
+		content += "<hr/>";
+		content += "<h2>아이디 : "+ empVO.getEmpNo() + "</h2>";
+		content += "<h2>임시비밀번호 : "+ empVO.getEmpPw() + "</h2>";
+		content += "<br/>";
+		content += "<hr/>";
+		content += "</div>";
+		content += "</body>";
+		
+		sb.append(content);
+		
+		return sb.toString();
+	}
+	
+	// 회원가입 최종승인 안내 메일 문구
+	// html 형식의 문자열 생성 -> 메일 내용
+	public String rejectContent(EmployeeVO empVO) {
+		StringBuilder sb = new StringBuilder();
+		
+		String content = "";
+		content += "<html>";
+		content += "<head>";
+		content += "<title>메디폼 재활병원</title>";
+		content += "</head>";
+		content += "<body>";
+		content += "<div style='margin:100px;'>";
+		content += "<h1>귀하의 회원가입 신청 결과 <font color='red'>반려</font> 처리 되었습니다.</h1>";
+		content += "<p>반려 사유를 확인해 주세요.<p>";
+		content += "<br/>";
+		content += "<hr/>";
+		content += "<h2>반려사유 : "+ empVO.getRjctResn() + "</h2>";
+		content += "<br/>";
+		content += "<hr/>";
+		content += "</div>";
+		content += "</body>";
+		
+		sb.append(content);
+		
+		return sb.toString();
+	}
+
+	@Override
+	public int deleteAuth(EmployeeVO empVO) {
+		return managerMapper.deleteAuth(empVO);
+	}
+
+	@Override
+	public int retireEmp(EmployeeVO empVO) {
+		return managerMapper.retireEmp(empVO);
+	}
+	
+	@Override
+	public int updateEmp(EmployeeVO empVO) {
+		return managerMapper.updateEmp(empVO);
+	}
+
+	@Override
+	public int selectEmpCount(PaginationInfoVO<EmployeeVO> empPagingVO) {
+		return managerMapper.selectEmpCount(empPagingVO);
+	}
+
+	@Override
+	public List<EmployeeVO> selectEmpList(PaginationInfoVO<EmployeeVO> empPagingVO) {
+		return managerMapper.selectEmpList(empPagingVO);
+	}
+
+
+
+
+	
+	
+}

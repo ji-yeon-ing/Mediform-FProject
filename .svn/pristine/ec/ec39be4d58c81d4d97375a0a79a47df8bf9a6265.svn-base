@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.NurseMapper">
+	
+	<resultMap type="NurseRecordVO" id="NurseRecordVO">
+	
+		<id property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<result property="nrsRcordDe" column="NRS_RCORD_DE"/>
+		<result property="nrsRcordWrter" column="NRS_RCORD_WRTER"/>
+		<result property="nrsRcordCn" column="NRS_RCORD_CN"/>
+		<result property="nrsRcordMemo" column="NRS_RCORD_MEMO"/>
+		
+	</resultMap>
+	
+	<!-- 간호기록내역조회 -->
+	<select id="selectRecordList" parameterType="Map" resultMap="NurseRecordVO">
+		select 
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN,NRS_RCORD_MEMO,CLNIC_NO,RCEPT_NO,PATNT_NO
+		from nurse_record 
+		where nrs_rcord_cd = #{nrsRcordCd}
+	</select>
+</mapper>

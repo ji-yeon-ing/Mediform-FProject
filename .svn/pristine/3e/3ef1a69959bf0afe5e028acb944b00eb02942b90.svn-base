@@ -1,0 +1,926 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<c:set var="customUser" value="${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal}" />
+
+<div class="row">
+	
+
+	
+	<!--  상세조회 종료 -->
+	<!-- list (실상 영수증 list) -->
+	<div class="col-lg-12">
+		<div class="card" style="height: 730px;">
+			<div class="card-header border-bottom"
+				style="background-color: midnightblue">
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h5 class="mb-0 text-white fw-semi-bold" id="header">
+							수납
+						</h5>
+					</div>
+					<div class="col-auto ms-auto"></div>
+				</div>
+			</div>
+			<div class="card-body pt-0">
+				<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+					<form action="/mediform/admin/receive/list" method="post"
+						id="searchForm" style="display: flex;">
+						<div style="display: flex; margin-left: 50px;">
+							<input type="hidden" name="page" id="page" /> 
+							<select
+								class="form-select form-select-sm"
+								aria-label=".form-select-sm example" id="searchType"
+								name="searchType" style="width: initial;">
+								<option value="all"
+									<c:if test="${searchType eq 'all'}">selected</c:if>>전체</option>
+								<option value="com"
+									<c:if test="${searchType eq 'com'}">selected</c:if>>수납완료</option>
+								<option value="part"
+									<c:if test="${searchType eq 'part'}">selected</c:if>>부분수납</option>
+								<option value="unpaid"
+									<c:if test="${searchType eq 'unpaid'}">selected</c:if>>미수납</option>
+							</select>
+							<div class="search-box" id="patientSearchBox" style="display: flex;">
+								<input
+									class="searchInput form-control search-input fuzzy-search"
+									type="search" placeholder="수진자명을 입력해 주세요." aria-label="Search"
+									id="searchWordBox" value="${searchWord }" name="searchWord" />
+								<span class="fas fa-search search-box-icon"></span>
+								<div
+									class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none"
+									data-bs-dismiss="search">
+									<button class="btn btn-link btn-close-falcon p-0"
+										aria-label="Close"></button>
+								</div>
+							</div>
+						</div>
+						&nbsp;
+						<div style="display: flex; justify-content: flex-end;">
+							<input type="date" id="selectDate1" name="startDate"
+								value="<fmt:formatDate value='${startDate }' pattern='yyyy-MM-dd'/>">
+							<span id="spanCss">&nbsp;&nbsp;~&nbsp;&nbsp;</span> <input
+								type="date" id="selectDate2" name="endDate"
+								value="<fmt:formatDate value='${endDate }' pattern='yyyy-MM-dd'/>">
+							&nbsp;
+							<button class="btn btn-outline-secondary me-1 mb-1" type="button"
+								id="searchBtn">검색</button>
+						</div>
+						<sec:csrfInput />
+					</form>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane preview-tab-pane active">
+						<div class="table-responsive scrollbar">
+							<table class="table table-hover table-striped overflow-hidden">
+								<thead>
+									<tr>
+										<th class=" text-center" scope="col">수납여부</th>
+										<th class=" text-center" scope="col">수진자명</th>
+										<th class=" text-center" scope="col">생년월일</th>
+										<th class=" text-center" scope="col">전화번호</th>
+										<th class=" text-center" scope="col">진료일자</th>
+										<th class=" text-center" scope="col">미수금액</th>
+										<th class=" text-center" scope="col">납부액</th>
+										<th class=" text-center" scope="col">납부총액</th>
+										<th class=" text-center" scope="col">수납총액</th>
+									</tr>
+								</thead>
+								<tbody>
+								
+								<c:set value="${pagingVO.dataList }" var="receiveList"/>
+								
+								<c:choose>
+									<c:when test="${empty pagingVO.dataList }">
+										<td class="text-nowrap text-center" colspan="9" scope="col">해당 내역이 존재하지 않습니다.</td>
+									</c:when>
+									<c:otherwise>
+										<c:forEach items="${receiveList }" var="receive">
+											<tr class="oneRecieve align-middle" id="${receive.rcivNo }">
+												<td class="text-nowrap text-center">
+													<c:choose>
+														<c:when test="${receive.rcivAt eq 0 }">
+															<span class="badge rounded-pill badge-subtle-danger">미수납</span>
+														</c:when>
+														<c:when test="${receive.rcivAt eq 1 }">
+															<span class="badge rounded-pill bg-primary">수납</span>
+														</c:when>
+														<c:otherwise>
+															<span class="badge rounded-pill bg-warning">부분수납</span>
+														</c:otherwise>
+													</c:choose>
+												</td>
+												<td class="text-nowrap text-center">${receive.patntNm }</td>
+												<td class="text-nowrap text-center">${receive.patntRrno1 }</td>
+												<td class="text-nowrap text-center">${receive.patntTelno }</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatDate value="${receive.clnicTime }" pattern="yyyy.MM.dd HH:mm"/>
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.prearngeAmount - receive.rcivAmount}" pattern="#,##0" />
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.rcivAmount }" pattern="#,##0" />
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.prearngeAmount }" pattern="#,##0" />
+												</td>
+												<td class="text-nowrap text-center">
+													<fmt:formatNumber type="number" value="${receive.recivTotamt }" pattern="#,##0" />
+												</td>
+											</tr>
+									
+										</c:forEach>
+								
+									</c:otherwise>
+								</c:choose>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix col-auto text-center align-self-center pagingArea"
+					id="pagingArea">${pagingVO.pagingHTML }
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 모달 -->
+
+
+<div class="modal fade" id="receiveDtModal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="width: 1400; max-width: 1400px;">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form method="post" id="reservationUpdateForm" action="/mediform/admin/reservation/update">
+				<div class="modal-body p-0">
+					<div class="rounded-top-3 py-3 ps-4 pe-6"
+						style="background-color: midnightblue">
+						<h4 class="mb-1 text-white" id="modalExampleDemoLabel">수납 정보</h4>
+					</div>
+					<div class="p-4 pb-0">
+					
+						<div>
+							<h4><span id="patientNm"></span><span> 환자</span></h4>
+						</div>
+					
+						<div class="row">
+
+							<!-- 좌측 -->
+							<div class="col-7">
+							
+								<br>
+								<div class="row">
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+												id="" name="" type="text" value="이름" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white" id="patntNmDt"
+													name="patntNm" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="성별" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="patntSexdstnDt" name="patntSexdstn" type="text" value=""
+													disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="col-5">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="생년월일" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="patntRrno1Dt" name="patntRrno1" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+
+								<br>
+								<div class="row">
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-4 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="전화번호" disabled />
+											<div class="col-8 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="patntTelnoDt" name="patntTelno" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="나이" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="patntAgeDt" name="patntAge" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-9 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="건강보험" disabled />
+											<div class="col-3 input-group-append p-0 m-0">
+												<input
+													class="text-black text-center form-control px-0 bg-white"
+													id="patntHlthinsAtDt" name="patntHlthinsAt" type="text"
+													value="" disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-2 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="주소" disabled />
+											<div class="col-10 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="patntAdres1Dt" name="patntAdres1" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="row input-group">
+											<div class="col-2"></div>
+											<div class="col-10 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="patntAdres2Dt" name="patntAdres2" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br><br>
+								<div class="row">
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+												id="" name="" type="text" value="담당의" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white" id="empNmDt"
+													name="empNm" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="진료일자" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white"
+													id="clnicTimeDt" name="clnicTime" type="text" value=""
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+												id="" name="" type="text" value="병실" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white text-center" id="hsptlzSckrmDt" placeholder="-"
+													name="hsptlzSckrm" type="text" value="" disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="병상" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white text-center"
+													id="hsptlzSckbdDt" name="hsptlzSckbd" type="text" value="" placeholder="-"
+													disabled />
+											</div>
+										</div>
+									</div>
+									<div class="col-4">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="인실" disabled />
+											<div class="col-6 input-group-append p-0 m-0">
+												<input class="text-black form-control bg-white text-center" 
+													id="sckrmCntDt" name="sckrmCnt" type="text" value="" placeholder="-"
+													disabled />
+											</div>
+										</div>
+									</div>
+								</div>
+							
+								<br>
+								<div class="row">
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="입원일" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white text-center" id="hsptlzDeDt"
+													name="hsptlzDe" type="text" placeholder="-"
+													data-options='{"disableMobile":true}' disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="퇴원일" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white text-center" id="realLhstlDt"
+													name="realLhstl" type="text" placeholder="-"
+													data-options='{"disableMobile":true}' disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<!-- 납부 상세 -->
+								<br>
+								<div class="table-container"
+									style="overflow-y: auto; max-height: 180px;">
+									<table class="table table-sm table-striped"
+										style="height: 160px;">
+										<thead>
+											<tr id="" class="bg-light">
+												<th class="col-2 text-center" scope="col">No</th>
+												<th class="col-3 text-center" scope="col">진료일자</th>
+												<th class="col-2 text-center" scope="col">담당의</th>
+												<th class="col-5 text-center" scope="col">기록</th>
+											</tr>
+										</thead>
+										<tbody style="overflow-y: auto; max-height: 160px;"
+											id="clinicListTable1">
+
+										</tbody>
+									</table>
+								</div>
+								<!-- 납부 상세 끝 -->
+								
+								<br>
+
+							</div>
+							<!-- 좌측 끝 -->
+							
+							
+		
+							
+							<!-- 우측 -->
+							<div class="col-5">
+								
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="납부상태" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="rcivAtDt"
+													name="rcivAt" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="미수금액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="rcivNotDt"
+													name="rcivNot" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="납부액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="rcivAmountDt"
+													name="rcivAmount" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="납부총액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="prearngeAmountDt"
+													name="prearngeAmount" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="수납총액" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control bg-white" id="recivTotamtDt"
+													name="recivTotamt" type="text" disabled/>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<div class="row">
+									<div class="col-12">
+										<div class="row input-group">
+											<input
+												class="fw-semi-bold col-5 bg-secondary-subtitle text-black text-center form-control"
+												id="" name="" type="text" value="수납메모" disabled />
+											<div class="col-7 input-group-append p-0 m-0">
+												<input class="form-control" id="recivMemoDt"
+													name="recivMemo" type="text" />
+											</div>
+										</div>
+									</div>
+								</div>
+								
+							
+								<br>
+								
+								
+								<!-- 납부 기록 가져오기 -->
+								<div>
+									<div class="row">
+										<div class="table-container"
+											style="overflow-y: auto; max-height: 200px;">
+											<table class="table table-sm table-striped"
+												style="height: 180px;">
+												<thead>
+													<tr id="" class="bg-light">
+														<th class="col-3 text-center" scope="col">영수증번호</th>
+														<th class="col-4 text-center" scope="col">납부일시</th>
+														<th class="col-3 text-center" scope="col">수납금액</th>
+														<th class="col-2 text-center" scope="col">수납방법</th>
+													</tr>
+												</thead>
+												<tbody style="overflow-y: auto; max-height: 180px;" id="receiptListTable">
+													
+		
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<!-- 납부 기록 가져오기 끝 -->
+							
+							
+							</div>
+							<!-- 우측 끝 -->
+
+
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="modal-footer">
+				<button class="btn btn-primary" id="receiveBtn" type="button">수납</button>
+				<button class="btn btn-secondary" type="button"
+					data-bs-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 모달  끝 -->
+
+
+
+
+
+<script type="text/javascript">
+
+$(function(){
+	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content")
+
+	
+	var searchForm = $("#searchForm");
+	var pagingArea = $("#pagingArea");
+	
+	var searchBtn = $('#searchBtn');
+	searchBtn.on('click', function(){
+		searchForm.submit();
+	});
+	
+	// 해당 검색창에서 엔터 누르면 이벤트 발생
+	$("#searchWordBox").on("keydown", function(e) {
+	    if (e.key === "Enter") { 
+	    	searchForm.submit();
+	    }
+	});
+	
+	pagingArea.on("click", "a", function(event){
+		
+		event.preventDefault();
+		var pageNo = $(this).data("page")
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+	
+	// 검색 x버튼 누르면 검색창 초기화 
+	var searchXbtn = $('.btn-close-falcon-container');
+	searchXbtn.on('click', function(){
+		event.preventDefault();
+		$('.fuzzy-search').val("");
+	});
+	// 검색 x버튼 누르면 검색창 초기화  끝
+	
+	// 날짜 유효성 검사
+	$('#selectDate1').on('change', function() {
+        var date1 = new Date($(this).val());
+        var date2 = new Date($('#selectDate2').val());
+
+        if (date1 > date2) {
+        	Swal.fire({
+			      icon: 'error',
+			      title: 'error',
+			      html: '입력한 날짜 범위가 올바르지 않습니다. <br> 시작 날짜는 종료 날짜보다 이전이어야 합니다.',
+			      confirmButtonColor: 'blue'
+			    });
+            $(this).val(''); // 값을 변경하지 않음
+        }
+    });
+	// 날짜 유효성 검사 끝
+	
+	// selectDate2 값 변경 감지
+    $('#selectDate2').on('change', function() {
+        var date1 = new Date($('#selectDate1').val());
+        var date2 = new Date($(this).val());
+
+        if (date2 < date1) {
+        	Swal.fire({
+			      icon: 'error',
+			      title: 'error',
+			      html: '입력한 날짜 범위가 올바르지 않습니다. <br> 종료 날짜는 시작 날짜보다 이후여야 합니다.',
+			      confirmButtonColor: 'blue'
+			    });
+            $(this).val(''); // 값을 변경하지 않음
+        }
+    });	
+ 	// selectDate2 값 변경 감지 끝
+	
+	// 날짜 형식 바꾸어주는 함수
+	function formatDateNoTime(timeStamp){
+	    var date = new Date(timeStamp);
+	    
+	    var year = date.getFullYear();
+	    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고, 문자열로 변환하여 두 자리로 만듭니다.
+	    var day = date.getDate().toString().padStart(2, '0'); // 일도 마찬가지로 두 자리로 만듭니다.
+	    
+	    var formattedDate = year + '.' + month + '.' + day;
+	    
+	    return formattedDate;
+	}
+	// 날짜 형식 바꾸어주는 함수 끝
+	
+	
+	
+	// 금액 형식 바꾸어주는 함수
+	function formatWonNumber(number){
+		var formatNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		return formatNumber;
+	}
+	// 금액 형식 바꾸어주는 함수 끝
+	
+	
+	var oneRecieve = $(".oneRecieve");
+	
+	var receiveDtModal = $("#receiveDtModal");
+	
+	oneRecieve.on("click", function(){
+		
+		console.log("수납 클릭 이벤트!!!")
+		
+		receiveDtModal.modal("show");
+		
+		var rcivNo = $(this).attr("id");
+		
+		
+		console.log("수납 코드 >>>>> " + rcivNo);
+		
+		var patntNm = $("#patntNmDt"); // 환자이름
+		var patntSexdstn = $("#patntSexdstnDt"); // 성별
+		var patntRrno1 = $("#patntRrno1Dt"); // 생년월일
+		var patntTelno = $("#patntTelnoDt"); // 전화번호
+		var patntAge = $("#patntAgeDt"); // 나이
+		var patntHlthinsAt = $("#patntHlthinsAtDt"); // 보험여부
+		var patntAdres1 = $("#patntAdres1Dt"); // 주소1
+		var patntAdres2 = $("#patntAdres2Dt"); // 주소2
+		var empNm = $("#empNmDt"); // 담당의이름
+		var clnicTime = $("#clnicTimeDt"); // 진료시간
+		var hsptlzSckrm = $("#hsptlzSckrmDt"); // 병실
+		var hsptlzSckbd = $("#hsptlzSckbdDt"); // 병상
+		var sckrmCnt = $("#sckrmCntDt"); // 인실
+		var hsptlzDe = $("#hsptlzDeDt"); // 입원일자
+		var realLhstl = $("#realLhstlDt"); // 실제퇴원일
+		var rcivAt = $("#rcivAtDt"); // 납부상태
+		var rcivNot = $("#rcivNotDt"); // 미수금액
+		var rcivAmount = $("#rcivAmountDt"); // 납부액(납부한금액)
+		var prearngeAmount = $("#prearngeAmountDt"); // 납부총액(보험O)
+		var recivTotamt = $("#recivTotamtDt"); // 수납총액(보험X)
+		var recivMemo = $("#recivMemoDt"); // 수납메모
+		
+		patntSexdstn.val("");
+		patntRrno1.val("");
+		patntTelno.val("");
+		patntAge.val("");
+		patntHlthinsAt.val("");
+		patntAdres1.val("");
+		patntAdres2.val("");
+		empNm.val("");
+		clnicTime.val("");
+		hsptlzSckrm.val("");
+		hsptlzSckbd.val("");
+		sckrmCnt.val("");
+		hsptlzDe.val("");
+		realLhstl.val("");
+		rcivAt.val("");
+		rcivNot.val("");
+		rcivAmount.val("");
+		prearngeAmount.val("");
+		recivTotamt.val("");
+		recivMemo.val("");
+			
+		receiveSelectObj = {
+			rcivNo : rcivNo
+		};
+		
+		
+		$.ajax({
+	 		type : "post",
+			url : "/mediform/admin/receive/select",
+			data : JSON.stringify(receiveSelectObj),
+	 		contentType : "application/json; charset=utf-8",
+	 		async: false,
+	        beforeSend : function(xhr){            
+	            xhr.setRequestHeader(header,token);
+	        },
+	 		success : function(res) {
+	 			
+				console.log("성공");
+				
+				console.log("환자 이름 : " + res.patntNm);
+				
+				
+				patntNm.val(res.patntNm);
+				var gender = "";
+				if(res.patntSexdstn === "M"){
+					gender = "남";
+				}else if(res.patntSexdstn === "F"){
+					gender = "여";
+				}
+				patntSexdstn.val(gender);
+				patntRrno1.val(res.patntRrno1);
+				patntTelno.val(res.patntTelno);
+				patntAge.val(res.patntAge);
+				var patntHlthinsYN = "";
+				if(res.patntHlthinsAt === "Y"){
+					patntHlthinsYN = "O";
+				}else if(res.patntHlthinsAt === "N"){
+					patntHlthinsYN = "X";
+				}	
+				patntHlthinsAt.val(patntHlthinsYN);
+				patntAdres1.val(res.patntAdres1);
+				patntAdres2.val(res.patntAdres2);
+				empNm.val(res.empNm);
+				clnicTime.val(formatDateNoTime(res.clnicTime));
+				hsptlzSckrm.val(res.hsptlzSckrm);
+				hsptlzSckbd.val(res.hsptlzSckbd);
+				
+				var sckrmCntStr = "";
+				if(res.hsptlzSckrm != null){
+					var sckrmCntSplit = (res.hsptlzSckrm).charAt(0);
+					console.log(sckrmCntSplit);
+					if(sckrmCntSplit === '5'){
+						sckrmCntStr = "6";
+			 		}else if(sckrmCntSplit === '6'){
+			 			sckrmCntStr = "4";
+			 		}
+				}
+				
+				sckrmCnt.val(sckrmCntStr);
+				hsptlzDe.val(formatDateNoTime(res.hsptlzDe));
+				realLhstl.val(formatDateNoTime(res.realLhstl));
+				var rcivAtYn = "";
+				if(res.rcivAt === "0"){
+					rcivAtYn = "미수납";
+				}else if(res.rcivAt === "1"){
+					rcivAtYn = "수납완료";
+				}else if(res.rcivAt === "2"){
+					rcivAtYn = "부분수납";
+				}
+				rcivAt.val(rcivAtYn);
+				
+				if(res.rcivAmount != null){
+					rcivNot.val(formatWonNumber(res.prearngeAmount - res.rcivAmount));
+				}else{
+					rcivNot.val(res.prearngeAmount - res.rcivAmount);
+				}
+				if(res.rcivAmount != null){
+					rcivAmount.val(formatWonNumber(res.rcivAmount));
+				}else{
+					rcivAmount.val(res.rcivAmount);
+				}
+				if(res.prearngeAmount != null){
+					prearngeAmount.val(formatWonNumber(res.prearngeAmount));
+				}else{
+					prearngeAmount.val(res.prearngeAmount);
+				}
+				if(res.recivTotamt != null){
+					recivTotamt.val(formatWonNumber(res.recivTotamt));
+				}else{
+					recivTotamt.val(res.recivTotamt);
+				}
+				console.log("수납 총액 >>> " + res.recivTotamt);
+				recivMemo.val(res.recivMemo);
+				
+	 		}
+	 	});
+		
+		
+		var receiptListTable = $("#receiptListTable");
+		
+		var receiptListHTML = "";
+		
+		$.ajax({
+	 		type : "post",
+			url : "/mediform/admin/receipt/list",
+			data : JSON.stringify(receiveSelectObj),
+	 		contentType : "application/json; charset=utf-8",
+	 		async: false,
+	        beforeSend : function(xhr){            
+	            xhr.setRequestHeader(header,token);
+	        },
+	 		success : function(res) {
+				console.log("영수증 목록 가져오기!");
+				
+				if(res.length == 0){
+					console.log("영수증 없음 (납부 내역 없음)");
+					
+					receiptListHTML += "<tr class='' id=''>";
+					receiptListHTML += "  <td colspan='4' class='text-center' style='vertical-align: middle'>" + "납부 내역이 없습니다" + "</td>";
+					receiptListHTML += "</tr>";
+					
+				}else{
+					console.log("영수증 목록 있음!!!");
+					var totalAmount = 0;
+					$(res).each(function(){
+						
+						var dateString = this.ipocdDttm;
+						var date = new Date(dateString);
+						var year = date.getFullYear();
+						var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 해주고 2자리로 포맷팅
+						var day = date.getDate().toString().padStart(2, '0'); // 일도 2자리로 포맷팅
+						var hours = date.getHours().toString().padStart(2, '0'); // 시간
+						var minutes = date.getMinutes().toString().padStart(2, '0'); // 분
+						// 원하는 형식으로 조합
+						var formattedDate = year + '.' + month + '.' + day + ' ' + hours + ":" + minutes;
+						
+						var paymthdStr = ""
+						if(this.paymthd === "1"){
+							paymthdStr = "카드";
+						}else{
+							paymthdStr = "현금";
+						}
+						
+						
+						receiptListHTML += "<tr class='oneReceipt' id=''>";
+						receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>";
+						receiptListHTML += 	this.rciptNo ;
+						receiptListHTML += "	</td>";
+						
+						
+						receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>" + formattedDate + "</td>";
+						receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>" + formatWonNumber(this.ipocdAmount) + "</td>";
+						receiptListHTML += "	<td class='text-center' style='vertical-align: middle'>" + paymthdStr + "</td>";
+						receiptListHTML += "</tr>";
+						
+						totalAmount += this.ipocdAmount;
+						console.log("총계 >>> " + totalAmount);
+						
+					});
+					receiptListHTML += "<tr class='' id=''>";
+					receiptListHTML += "  <td colspan='2' class='text-center' style='vertical-align: middle'>총계</td>";
+					receiptListHTML += "  <td colspan='2' class='text-center' style='vertical-align: middle'>" + formatWonNumber(totalAmount) + "</td>";
+					receiptListHTML += "</tr>";
+					
+					
+				}
+				receiptListTable.html(receiptListHTML);
+				
+	 		}
+	 	});
+		
+		
+		
+		receiptListTable.on("click", ".oneReceipt", function(){
+			
+			
+			console.log("영수증 클릭,,,!!!");
+			
+			
+			
+			
+			
+		});
+		
+		
+		
+		
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+});
+
+
+
+</script>
+
+
+
+
+	

@@ -1,0 +1,29 @@
+package kr.or.ddit.patient.vo;
+
+import lombok.Data;
+
+@Data
+public class PatientVO {
+
+	private String patntNo;
+	private String patntNm;
+	private int patntRrno1;
+	private int patntRrno2;
+	private String patntTelno;
+	private int patntZip;
+	private String patntAdres1;
+	private String patntAdres2;
+	private int patntAge;
+	private String patntSexdstn;
+	private String prtctorNm;
+	private String prtctorTelno;
+	private String patntAgre;
+	private int patntHeight;
+	private int patntBdwgh;
+	private String patntBdp;
+	private String patntHlthinsAt;
+	private String patntMemo;
+	private String patientHsptlzAt;
+	
+	
+}

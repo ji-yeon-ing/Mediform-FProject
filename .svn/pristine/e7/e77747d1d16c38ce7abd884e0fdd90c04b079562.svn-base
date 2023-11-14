@@ -1,0 +1,48 @@
+package kr.or.ddit.administration.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.administration.service.IVoiceOutService;
+import kr.or.ddit.common.vo.VoiceOutputVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class VoiceController {
+
+	@Inject
+	private IVoiceOutService voiceOutService;
+	
+	
+	@RequestMapping(value="/voiceout", method=RequestMethod.GET)
+	public String voiceout() {
+		
+		log.info("voiceout() 실행!!!");
+		
+		
+		return "admin/voiceout";
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/voiceOutput/list", method=RequestMethod.POST)
+	public List<VoiceOutputVO> voiceList(){
+		
+		log.info("voiceList() 실행!!!");
+		
+		List<VoiceOutputVO> voiceList = voiceOutService.voiceList(); 
+		
+		return voiceList;
+		
+	}
+	
+	
+}

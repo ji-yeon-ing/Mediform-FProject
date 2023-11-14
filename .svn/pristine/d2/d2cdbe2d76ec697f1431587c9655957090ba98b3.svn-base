@@ -1,0 +1,20 @@
+package kr.or.ddit.calender.service;
+
+import java.util.List;
+
+import kr.or.ddit.calender.vo.ModuleCalenderVO;
+
+public interface IModuleCanlenderService {
+	
+	// 저장
+	public int moduleCalenderInsert(ModuleCalenderVO moduleCalenderVO);
+
+	// DB에 저장되어 있는 스케쥴 가지고오기
+	public List<ModuleCalenderVO> moduleCalenderList();
+
+	// 스케쥴 삭제하기
+	public int moduleCalenderDelete(String startDate);
+	
+	// 스케쥴 수정하기
+	public int moduleCalenderUpdate(ModuleCalenderVO moduleCalenderVO);
+}

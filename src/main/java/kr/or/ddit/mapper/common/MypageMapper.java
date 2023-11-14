@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper.common;
+
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface MypageMapper {
+
+	int employeeUpdate(EmployeeVO employeeVO);
+
+	EmployeeVO selectInfo(String id);
+
+
+}

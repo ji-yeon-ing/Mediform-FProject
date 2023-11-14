@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.XrayVoiceMapper">
+
+
+	<select id="voiceList" resultType="voiceOutputVO">
+	
+		select VOICE_OTPT_CD, VOICE_OTPT_NM, VOICE_OTPT_CN
+		from voice_output
+		where voice_otpt_se = 'n'
+		order by voice_otpt_cd
+	
+	</select>
+
+	<insert id="voiceInsert" parameterType="Map">
+	
+		insert into voice_output(
+			VOICE_OTPT_CD, VOICE_OTPT_CN, VOICE_OTPT_SE, VOICE_OTPT_NM
+		)values(
+			seq_voice_otpt_cd.nextval, #{voiceOtptCn}
+			, 'n', #{voiceOtptNm}
+		)
+	
+	
+	</insert>
+	
+	
+	<select id="voiceSelect" parameterType="Map" resultType="voiceOutputVO">
+	
+		select voice_otpt_Cn
+		from voice_output
+		where voice_otpt_cd = #{voiceOtptCd}
+	
+	</select>
+
+	<update id="voiceUpdate" parameterType="Map">
+	
+		update voice_output
+		set
+			voice_otpt_cn = #{voiceOtptCn}
+		where voice_otpt_cd = #{voiceOtptCd}
+	
+	</update>
+	
+	<delete id="voiceDelete" parameterType="Map">
+	
+		delete voice_output
+		where voice_otpt_cd = #{voiceOtptCd}
+	
+	
+	</delete>
+
+
+</mapper>

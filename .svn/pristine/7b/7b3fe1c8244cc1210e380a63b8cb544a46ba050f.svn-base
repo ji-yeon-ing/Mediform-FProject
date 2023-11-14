@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.patient.PatientMapper">
+	
+	<resultMap type="patientVO" id="patientMap">
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="patntNo" column="PATNT_NO"/>
+		<result property="patntNm" column="PATNT_NM"/>
+		<result property="patntRrno1" column="PATNT_RRNO1"/>
+		<result property="patntRrno2" column="PATNT_RRNO2"/>
+		<result property="patntTelno" column="PATNT_TELNO"/>
+		<result property="patntZip" column="PATNT_ZIP"/>
+		<result property="patntAdres1" column="PATNT_ADRES1"/>
+		<result property="patntAdres2" column="PATNT_ADRES2"/>
+		<result property="patntAge" column="PATNT_AGE"/>
+		<result property="patntSexdstn" column="PATNT_SEXDSTN"/>
+		<result property="prtctorNm" column="PRTCTOR_NM"/>
+		<result property="prtctorTelno" column="PRTCTOR_TELNO"/>
+		<result property="patntAgre" column="PATNT_AGRE"/>
+		<result property="patntHeight" column="PATNT_HEIGHT"/>
+		<result property="patntBdwgh" column="PATNT_BDWGH"/>
+		<result property="patntBdp" column="PATNT_BDP"/>
+		<result property="patntHlthinsAt" column="PATNT_HLTHINS_AT"/>
+		<result property="patntMemo" column="PATNT_MEMO"/>
+		<result property="patientHsptlzAt" column="PATIENT_HSPTLZ_AT"/>
+	</resultMap>
+	
+	<!-- 환자 list 조회 -->
+	<select id="selectPatientList" resultType="patientVO">
+		select
+		    PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATIENT_HSPTLZ_AT
+		from patient
+		order by PATNT_NO desc
+	</select>
+
+	<select id="patientSearch" parameterType="Map" resultType="patientVO">
+		select
+    		PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_AGE
+		from patient
+		where PATNT_NM like '%'||#{keyword}||'%'
+		order by PATNT_NO asc
+			
+	</select>
+	
+
+	<select id="selectPatient" parameterType="Map" resultType="patientVO">
+		select
+		    PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATIENT_HSPTLZ_AT
+		from patient
+		where PATNT_NO = #{patntNo}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

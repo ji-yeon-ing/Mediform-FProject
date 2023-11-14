@@ -1,0 +1,15 @@
+package kr.or.ddit.mapper.administration;
+
+import java.util.List;
+
+import kr.or.ddit.administration.vo.ReceiveVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+
+public interface ReceiveMapper {
+
+	int selectReceiveCount(PaginationInfoVO<ReceiveVO> pagingVO);
+
+	List<ReceiveVO> receiveList(PaginationInfoVO<ReceiveVO> pagingVO);
+
+
+}

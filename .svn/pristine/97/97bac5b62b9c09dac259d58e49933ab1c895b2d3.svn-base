@@ -1,0 +1,225 @@
+package kr.or.ddit.administration.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.administration.service.IReservationService;
+import kr.or.ddit.calender.vo.VacationVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.common.vo.ReservationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class ReservationController {
+
+	@Inject
+	private IReservationService reservationService;
+	
+	// 예약 정보 조회 (예약 환자 1명에 대한 예약 리스트 조회 메서드)
+	@ResponseBody
+	@RequestMapping(value="/reservation/list", method=RequestMethod.POST)
+	public List<ReservationVO> reservationList(@RequestBody Map<String, String> map, Model model) {
+		
+		log.info("reservationList() 실행");;
+		
+		List<ReservationVO> reservationList = reservationService.selectList(map);
+		
+		log.info("reservationList : " + reservationList);
+		
+		
+		
+		
+		return reservationList;
+		
+	}
+	
+	
+	// 예약 정보 조회 (예약 환자 1명에 대한 예약 리스트 조회 메서드)
+	@ResponseBody
+	@RequestMapping(value="/reservation/date/list", method=RequestMethod.POST)
+	public List<ReservationVO> reservationDateList(@RequestBody Map<String, String> map) {
+			
+		log.info("reservationDateList() 실행");;
+			
+		List<ReservationVO> reservationList = reservationService.selectDateList(map);
+			
+		log.info("reservationList : " + reservationList);
+			
+		return reservationList;
+			
+	}
+	
+	// 예약환자 리스트 조회
+	@ResponseBody
+	@RequestMapping(value = "/reservation/scheduler/list")
+	public List<Map<String,Object>> reservationScheduler() {
+		log.info("reservationScheduler() 실행중...!");
+		
+		JSONObject jsonObj = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		List<ReservationVO> reservationList = reservationService.reservationSchedulerList();
+		
+		for(ReservationVO reservation : reservationList) {
+			map.put("id", reservation.getRsvtNo()); 								// 예약 번호
+			String time = reservation.getRpatntTime();
+			map.put("title", reservation.getRpatntTime() + " " + reservation.getPatntNm()); // 캘린더 제목
+			
+			if(reservation.getRsvtResn() != null && reservation.getRsvtResn() != "") {
+				map.put("description", reservation.getRsvtResn());						// 캘린더 내용
+			}
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String ymd = sdf.format(reservation.getRpatntDttm());
+			map.put("start", ymd);										// 예약일시
+			String color = null;
+			String empno = reservation.getEmpNo().substring(0,1);
+			
+			if(empno.equals("t")) {
+				color = ".bg-success-subtle";
+			}else if(empno.equals("d")) {
+				color = ".bg-success-subtle";
+			}else {
+				color = ".bg-warning-subtle";
+			}
+			map.put("className", color);	
+			
+			jsonObj = new JSONObject(map);
+			jsonArr.add(jsonObj);
+			
+			log.info("제이슨 배열", jsonArr);
+		}
+
+		return jsonArr;
+		
+	}
+	
+	@RequestMapping(value = "/reservation/main")
+	public String reservationMain(
+							@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+							@RequestParam(required = false, defaultValue = "patient") String searchType,
+							@RequestParam(required = false) String searchWord,
+							Model model
+								) {
+		
+		log.info("reservationMain() 실행!!");
+		
+		
+		PaginationInfoVO<ReservationVO> pagingVO = new PaginationInfoVO<ReservationVO>();
+
+		if(StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+			
+		}
+		
+		
+		
+		pagingVO.setCurrentPage(currentPage); // startRow, endRow, startPage, endPage가 결정
+		int totalRecord = reservationService.selectReservationCount(pagingVO);
+		
+		pagingVO.setTotalRecord(totalRecord);
+		List<ReservationVO> dataList = reservationService.selectListAll(pagingVO);
+		pagingVO.setDataList(dataList);
+		
+		if(searchType.equals( "patient")) {
+			model.addAttribute("searchTypePatient", searchWord);
+		}else if(searchType.equals("date")) {
+			model.addAttribute("searchTypeDate", searchWord);
+		}
+		
+		log.info("### searchType :" + searchType);
+		log.info("### searchWord :" + searchWord);
+		
+		model.addAttribute("menuSelected", "reservation");
+		model.addAttribute("pagingVO", pagingVO);
+		
+		log.info("pagingVO : " + pagingVO);
+		
+		return "admin/reservationMain";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reservation/insert", method = RequestMethod.POST)
+	public List<ReservationVO> reservationInsert(
+												@RequestBody Map<String, String> map
+												){
+		
+		log.info("reservationInsert() 실행!!");
+		
+		ServiceResult result = reservationService.reservationInsert(map);
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("예약 인서트 성공!!!!");
+		}else {
+			log.info("예약 인서트 실패!!!");
+		}
+		
+		
+		List<ReservationVO> reservationList = null;
+		
+		return reservationList;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reservation/select", method = RequestMethod.POST)
+	public ReservationVO reservationSelect(
+												@RequestBody Map<String, String> map
+												){
+		
+		log.info("reservationSelect() 실행!!");
+		
+		ReservationVO reservationVO = reservationService.reservationSelect(map);
+		
+		return reservationVO;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reservation/delete", method = RequestMethod.POST)
+	public ServiceResult reservationDelete(
+												@RequestBody Map<String, String> map
+												){
+		
+		log.info("reservationDelete() 실행!!");
+		
+		ServiceResult result = reservationService.reservationDelete(map);
+		
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reservation/update", method = RequestMethod.POST)
+	public ServiceResult reservationUpdate(
+												@RequestBody Map<String, Object> map
+												){
+		
+		log.info("reservationUpdate() 실행!!");
+		log.info("시간 : " + map.get("rpatntDttm"));
+		
+		ServiceResult result = reservationService.reservationUpdate(map);
+		
+		return result;
+	}
+	
+}

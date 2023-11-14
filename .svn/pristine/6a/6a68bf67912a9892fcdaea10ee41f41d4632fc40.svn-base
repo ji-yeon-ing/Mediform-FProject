@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper.therapist;
+
+import java.util.List;
+
+import kr.or.ddit.common.vo.RceptVO;
+
+public interface TherapistReceiptMapper {
+
+	 List<RceptVO> waitingList();
+		 
+
+}

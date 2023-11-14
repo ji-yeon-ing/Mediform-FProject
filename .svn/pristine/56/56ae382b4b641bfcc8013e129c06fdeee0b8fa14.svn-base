@@ -1,0 +1,62 @@
+package kr.or.ddit.administration.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class ReceiveVO {
+	
+	private String rcivNo; // 수납코드
+	private String rcivAt; // 수납 여부
+	private Date rcivDttm; // 수납 일시
+	private int rcivAmount; // 납부금액(납부한 금액) 
+	private int prearngeAmount; // 보험 적용된 금액
+	private int recivTotamt; // 보험 적용 안된 금액
+	private String recivMemo; // 수납 메모
+
+	private String patntNo; // 환자 번호
+	private String patntNm; // 환자 이름
+	private String patntSexdstn; // 환자 성별
+	private String patntRrno1; // 환자 생년월일
+	private String patntTelno; // 환자 전화번호
+	private String patntZip; // 환자 우편번호
+	private String patntAdres1; // 환자 주소1
+	private String patntAdres2; // 환자 주소2
+	private String patntAge; // 환자 나이
+	private String prtctorNm; // 보호자 이름
+	private String prtctorTelno; // 보호자 이름
+	private String patntHeight; // 환자 키
+	private String patntBdwgh; // 환자 몸무게
+	private String patntBdp; // 환자 혈액형
+	private String patntHlthinsAt; // 환자 보험여부
+	
+	
+	private String rceptNo; //접수번호
+	private String rceptSttus; // 접수 상태
+	
+	private String clnicNo; // 진료 번호
+	private String empNo; // 담당의사 번호
+	
+	private String empNm; // 담당의사 이름
+	
+	private Date clnicTime; // 진료일시
+	private String clnicCn; //진단 내역
+	private String clnicAt; // 진료 여부
+	private String hsptlzAt; // 입원여부
+	private String clnicMemo; // 메모 사항
+	private Date atfssDt; // 발병일
+	private int clnicFe; // 진료비
+	
+	private String hsptlzCd; // 입원코드
+	private String hsptlzSckrm; // 배정병실
+	private String hsptlzSckbd; // 배정병상
+	private Date hsptlzDe; // 입원일자
+	private Date realLhstl; // 실제퇴원일
+	
+	
+	
+	
+	
+	
+}

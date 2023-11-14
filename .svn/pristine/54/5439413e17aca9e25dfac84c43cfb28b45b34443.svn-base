@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerEmployeeMapper">
+	<select id="ApplicationList" resultType="employeeVO">
+		select * from employee where emp_confm IS NULL
+	</select>
+	
+	<select id="getEmployee" parameterType="string" resultType="employeeVO">
+		select * from employee 
+		where emp_no = #{empNo}
+	</select>
+	
+	<update id="rejectUpdate" parameterType="employeeVO">
+		update employee 
+		set 
+			rjct_resn = #{RjctResn}, 
+			emp_confm = 'N'
+		where emp_no = #{empNo}
+	</update>
+	
+	<update id="agreeEmployee" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_confm = 'Y', 
+			emp_pw = #{empPw}
+		where emp_no = #{empNo}
+	</update>
+</mapper>

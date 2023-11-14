@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.ActingMapper">
+	
+	
+	<!-- 바이탈 조회 -->
+	<select id="selectVitalList" parameterType="Map" resultType="VitalVO">
+		SELECT VITAL_CD, HGHRK_HHPRS, LWTRK_HHPRS, BDHEAT, EMP_NO, PATNT_NO, VITAL_DATE
+		FROM VITALS
+		where PATNT_NO = #{patntNo}
+		ORDER BY VITAL_DATE DESC
+	</select>
+	
+	
+	<!-- 바이탈 등록  수정수정수정수저우!!!!!!!!!!--> 
+	<insert id="vitalResultInsert" parameterType="Map" >
+		<selectKey keyProperty="vitalCd" resultType="String" order="BEFORE">
+		    SELECT 'VI' || SEQ_VITALS.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		insert into vitals
+		(
+			VITAL_CD, HGHRK_HHPRS, LWTRK_HHPRS, BDHEAT, EMP_NO, PATNT_NO, VITAL_DATE
+		)values(
+			#{vitalCd}, #{hghrkHhprs}, #{lwtrkHhprs}, #{bdheat}, #{empNo}, #{patntNo}, SYSDATE
+		)
+	</insert>
+	
+	
+	<!-- 	 검사결과 insert -->
+	<insert id="examResultInsert" parameterType="Map">
+	    <selectKey keyProperty="mecCd" resultType="String" order="BEFORE">
+	        SELECT 'MEO' || SEQ_MEDICAL_EXAMINATION_ORDER.NEXTVAL FROM DUAL
+	    </selectKey>
+	    
+	    insert into medical_examination_order
+	    (
+	        MEC_CD, CLNIC_NO, RCEPT_NO, HLTHCHKP_CD, HLTHCHKP_DT, HLTHCHKP_RESULT, BODY_CD		
+	    )values(
+	        #{mecCd}, #{clnicNo}, #{rceptNo}, #{hlthchkpCd}, SYSDATE, #{hlthchkpResult}, ' '	
+	    )
+		
+	</insert>
+	
+</mapper>

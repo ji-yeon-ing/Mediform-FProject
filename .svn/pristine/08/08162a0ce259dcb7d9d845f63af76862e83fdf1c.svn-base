@@ -1,0 +1,522 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 | 행정관리자</title>
+<style type="text/css">
+.subMenu:hover {
+	border-color: #3f51b5;
+	background-color: rgba(63, 81, 181, 0.1);
+}
+
+.subMenu {
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.subCardHeader{
+	background-color: #3737833d;
+    height: 40px;
+    padding-top: 10px;
+
+}
+
+</style>
+
+<!-- ECharts  -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.0/dist/echarts.min.js"></script> -->
+<script src="${pageContext.request.contextPath }/resources/vendors/echarts/echarts.min.js"></script>
+
+
+<!-- chart.js -->
+<script src="${pageContext.request.contextPath }/resources/vendors/chart/chart.min.js"></script>
+</head>
+<body>
+	<!-- 서브 메뉴 -->
+	<ul class="navbar-nav d-flex flex-row"
+		style="margin-bottom: 15px; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed;">
+		<li style="margin-left: 15px;"></li>
+		<li class="subMenu nav-item"><a class="nav-link"
+			href="/mediform/manager/patient/statistics/select" role="button"
+			id="">&nbsp; 환자 &nbsp;</a></li>
+		<li class="subMenu nav-item"><a class="nav-link"
+			href="/mediform/manager/revenue/statistics/select" role="button"
+			id="">&nbsp; 매출 &nbsp;</a></li>
+		<li class="subMenu nav-item"><a class="nav-link"
+			href="/mediform/manager/audit/statistics/select" role="button"
+			id="">&nbsp; 감사 &nbsp;</a></li>
+	</ul>
+	<!-- 서브 메뉴 -->
+
+	<!-- 부모 카드 -->
+	<div class="card" style="height: 680px;" id="pdfDiv">
+		<div class="card-header border-bottom" style="background-color: midnightblue">
+			<div class="row flex-between-end">
+				<div class="col-auto align-self-center">
+					<h5 class="mb-0 text-white fw-semi-bold" id="header">감사 통계</h5>
+				</div>
+			</div>
+		</div>
+		<!-- 부모 카드 body -->
+		<div class="card-body ml-3 bg-body-tertiary" style="padding: initial !important;">
+			<!-- 첫번째 줄 -->
+			<div class="row mt-4" style=" margin-left: 120px;">
+				<!-- 첫째줄 첫번째 카드 -->
+				<div class="subCardBody col-6" >
+					<div class="card" style="height: 550px;">
+						<div class="subCardHeader card-header border-bottom">
+							<div class="row flex-between-end">
+								<div class="col-auto align-self-center" >
+									<span class="mb-0 fw-semi-bold text-black" style="height: 15px;" id="header">최다 조회 TOP5</span>
+								</div>
+							</div>
+						</div>
+						<div class="card-body" style="padding-bottom: 20px; padding-top: 50px; padding-left: 37px;">
+						    <div>
+						        <ul class="nav nav-tabs" id="myTab" role="tablist">
+						            <li class="nav-item text-center col-3" role="presentation">
+						                <a class="nav-link fw-semi-bold active" id="dayTab" data-bs-toggle="tab" href="#day" role="tab" aria-controls="day" aria-selected="true">DAY</a>
+						            </li>
+						            <li class="nav-item text-center col-3" role="presentation">
+						                <a class="nav-link fw-semi-bold" id="weekTab" data-bs-toggle="tab" href="#week" role="tab" aria-controls="week" aria-selected="false" tabindex="-1">WEEK</a>
+						            </li>
+						            <li class="nav-item text-center col-3" role="presentation">
+						                <a class="nav-link fw-semi-bold" id="monthTab" data-bs-toggle="tab" href="#month" role="tab" aria-controls="month" aria-selected="false" tabindex="-1">MONTH</a>
+						            </li>
+						            <li class="nav-item text-center col-3" role="presentation">
+						                <a class="nav-link fw-semi-bold" id="yearTab" data-bs-toggle="tab" href="#year" role="tab" aria-controls="year" aria-selected="false" tabindex="-1">YEAR</a>
+						            </li>
+						        </ul>
+						    </div>
+						    <div class="tab-content border border-top-0 p-3">
+						        <div class="tab-pane fade active show" id="day" role="tabpanel" aria-labelledby="day-tab">
+						            <div class="dayChartDom" style="min-height: 300px;" data-echart-responsive="true"></div>
+						        </div>
+						        <div class="tab-pane fade" id="week" role="tabpanel" aria-labelledby="week-tab">
+						            <div class="weekChartDom" style="min-height: 300px;" data-echart-responsive="true"></div>
+						        </div>
+						        <div class="tab-pane fade" id="month" role="tabpanel" aria-labelledby="month-tab">
+						            <div class="monthChartDom" style="min-height: 300px;" data-echart-responsive="true"></div>
+						        </div>
+						        <div class="tab-pane fade" id="year" role="tabpanel" aria-labelledby="year-tab">
+						            <div class="yearChartDom" style="min-height: 300px;" data-echart-responsive="true"></div>
+						        </div>
+						    </div>
+						</div>
+
+					</div>
+			    </div>
+			    
+			    <!-- 첫째줄 두번째 카드 -->
+				<div class="subCardBody col-5"  >
+					<div class="card" style="height: 550px;">
+						<div class="subCardHeader card-header border-bottom">
+							<div class="row flex-between-end">
+								<div class="col-auto align-self-center" >
+									<span class="mb-0 fw-semi-bold text-black" style="height: 15px;" id="header">접속률 </span>
+								</div>
+							</div>
+						</div>
+						<div class="card-body" style="padding-bottom: 20px; padding-top: 20px; ">
+							<div class="accessChartDom" style="min-height: 300px; margin-top: 30px;" data-echart-responsive="true"></div>
+				        </div>
+					</div>
+			    </div>
+			</div>
+			<!-- 바디 첫째줄 끝 -->
+			
+			
+	</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	
+	/* ==============================일별 비교============================== */
+	// json형태의 string으로 넘겨 보낸 값
+	var dayJsonList = ${dayJsonList};
+	// uri 데이터 받을 배열
+	var dayUriArr = [];
+	// count 데이터 받을 배열
+	var dayCountArr = [];
+	
+	$.each(dayJsonList, function(index, item) {
+		dayUriArr.push(item.auditAtnddu); 
+		dayCountArr.push(item.count);      
+// 	    console.log("Index: " + index + ", uri : " + item.auditAtnddu + ", count : " + item.count);
+	});
+	
+	
+	$("#dayTab").on("click", function () {
+    var dayChartDom = $('.dayChartDom'); 
+    var dayChart = echarts.init(dayChartDom[0]); 
+    var dayOption;
+
+    dayOption = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b} <br/> : {c}회'
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        legend: {
+            data: [dayUriArr[0], dayUriArr[1], dayUriArr[2], dayUriArr[3], dayUriArr[4]]
+        },
+        series: [
+            {
+                name: 'Funnel',
+                type: 'funnel',
+                left: '10%',
+                top: 60,
+                bottom: 60,
+                width: '80%',
+                minSize: '0%',
+                maxSize: '100%',
+                sort: 'descending',
+                gap: 2,
+                label: {
+                    show: true,
+                    position: 'inside'
+                },
+                labelLine: {
+                    length: 10,
+                    lineStyle: {
+                        width: 1,
+                        type: 'solid'
+                    }
+                },
+                itemStyle: {
+                    borderColor: '#fff',
+                    borderWidth: 1
+                },
+                emphasis: {
+                    label: {
+                        fontSize: 20
+                    }
+                },
+                data: [
+                    { value: dayCountArr[0], name: dayUriArr[0] },
+                    { value: dayCountArr[1], name: dayUriArr[1] },
+                    { value: dayCountArr[2], name: dayUriArr[2] },
+                    { value: dayCountArr[3], name: dayUriArr[3] },
+                    { value: dayCountArr[4], name: dayUriArr[4] }
+                ]
+            }
+        ]
+    };
+
+    dayOption && dayChart.setOption(dayOption);
+	});
+
+	/* ==============================일별 비교============================== */
+	
+	/* ==============================주별 비교============================== */
+	// json형태의 string으로 넘겨 보낸 값
+	var weekJsonList = ${weekJsonList};
+	// uri 데이터 받을 배열
+	var weekUriArr = [];
+	// count 데이터 받을 배열
+	var weekCountArr = [];
+	
+	$.each(weekJsonList, function(index, item) {
+		weekUriArr.push(item.auditAtnddu); 
+		weekCountArr.push(item.count);      
+// 	    console.log("Index: " + index + ", uri : " + item.auditAtnddu + ", count : " + item.count);
+	});
+	
+	
+	
+	$("#weekTab").on("click", function () {
+	    var weekChartDom = $('.weekChartDom')[0]; 
+	    var weekChart = echarts.init(weekChartDom); 
+	    var weekOption;
+
+	    weekOption = {
+	        tooltip: {
+	            trigger: 'item',
+	            formatter: '{b} <br/> : {c}회'
+	        },
+	        toolbox: {
+	            feature: {
+	                saveAsImage: {}
+	            }
+	        },
+	        legend: {
+	            data: [ weekUriArr[0], weekUriArr[1], weekUriArr[2], weekUriArr[3], weekUriArr[4] ]
+	        },
+	        series: [
+	            {
+	                name: 'Funnel',
+	                type: 'funnel',
+	                left: '10%',
+	                top: 60,
+	                bottom: 60,
+	                width: '80%',
+	                minSize: '0%',
+	                maxSize: '100%',
+	                sort: 'descending',
+	                gap: 2,
+	                label: {
+	                    show: true,
+	                    position: 'inside'
+	                },
+	                labelLine: {
+	                    length: 10,
+	                    lineStyle: {
+	                        width: 1,
+	                        type: 'solid'
+	                    }
+	                },
+	                itemStyle: {
+	                    borderColor: '#fff',
+	                    borderWidth: 1
+	                },
+	                emphasis: {
+	                    label: {
+	                        fontSize: 20
+	                    }
+	                },
+	                data: [
+	                	{ value: weekCountArr[0], name: weekUriArr[0] },
+	                    { value: weekCountArr[1], name: weekUriArr[1] },
+	                    { value: weekCountArr[2], name: weekUriArr[2] },
+	                    { value: weekCountArr[3], name: weekUriArr[3] },
+	                    { value: weekCountArr[4], name: weekUriArr[4] }
+	                ]
+	            }
+	        ]
+	    };
+
+	    weekOption && weekChart.setOption(weekOption);
+		});	
+
+		
+	/* ==============================주별 비교============================== */
+	
+	/* ==============================월별 비교============================== */
+	var monthJsonList = ${monthJsonList};
+	// uri 데이터 받을 배열
+	var monthUriArr = [];
+	// count 데이터 받을 배열
+	var monthCountArr = [];
+	
+	$.each(monthJsonList, function(index, item) {
+		monthUriArr.push(item.auditAtnddu); 
+		monthCountArr.push(item.count);      
+// 	    console.log("Index: " + index + ", uri : " + item.auditAtnddu + ", count : " + item.count);
+	});
+	
+    $("#monthTab").on("click", function () {
+	    var monthChartDom = $('.monthChartDom')[0]; 
+	    var monthChart = echarts.init(monthChartDom); 
+	    var monthOption;
+
+	    monthOption = {
+	        tooltip: {
+	            trigger: 'item',
+	            formatter: '{b} <br/> : {c}회'
+	        },
+	        toolbox: {
+	            feature: {
+	                saveAsImage: {}
+	            }
+	        },
+	        legend: {
+	            data: [ monthUriArr[0], monthUriArr[1], monthUriArr[2], monthUriArr[3], monthUriArr[4] ]
+	        },
+	        series: [
+	            {
+	                name: 'Funnel',
+	                type: 'funnel',
+	                left: '10%',
+	                top: 60,
+	                bottom: 60,
+	                width: '80%',
+	                minSize: '0%',
+	                maxSize: '100%',
+	                sort: 'descending',
+	                gap: 2,
+	                label: {
+	                    show: true,
+	                    position: 'inside'
+	                },
+	                labelLine: {
+	                    length: 10,
+	                    lineStyle: {
+	                        width: 1,
+	                        type: 'solid'
+	                    }
+	                },
+	                itemStyle: {
+	                    borderColor: '#fff',
+	                    borderWidth: 1
+	                },
+	                emphasis: {
+	                    label: {
+	                        fontSize: 20
+	                    }
+	                },
+	                data: [
+	                	{ value: monthCountArr[0], name: monthUriArr[0] },
+	                    { value: monthCountArr[1], name: monthUriArr[1] },
+	                    { value: monthCountArr[2], name: monthUriArr[2] },
+	                    { value: monthCountArr[3], name: monthUriArr[3] },
+	                    { value: monthCountArr[4], name: monthUriArr[4] }
+	                ]
+	            }
+	        ]
+	    };
+
+	    monthOption && monthChart.setOption(monthOption);
+		});	
+	/* ==============================월별 비교============================== */
+	
+	/* ==============================연별 비교============================== */
+	var yearJsonList = ${yearJsonList};
+	// uri 데이터 받을 배열
+	var yearUriArr = [];
+	// count 데이터 받을 배열
+	var yearCountArr = [];
+	
+	$.each(yearJsonList, function(index, item) {
+		yearUriArr.push(item.auditAtnddu); 
+		yearCountArr.push(item.count);      
+// 	    console.log("Index: " + index + ", uri : " + item.auditAtnddu + ", count : " + item.count);
+	});
+	
+    $("#yearTab").on("click", function () {
+	    var yearChartDom = $('.yearChartDom')[0]; 
+	    var yearChart = echarts.init(yearChartDom); 
+	    var yearOption;
+
+	    yearOption = {
+	        tooltip: {
+	            trigger: 'item',
+	            formatter: '{b} <br/> : {c}회'
+	        },
+	        toolbox: {
+	            feature: {
+	                saveAsImage: {}
+	            }
+	        },
+	        legend: {
+	            data: [ yearUriArr[0], yearUriArr[1], yearUriArr[2], yearUriArr[3], yearUriArr[4] ]
+	        },
+	        series: [
+	            {
+	                name: 'Funnel',
+	                type: 'funnel',
+	                left: '10%',
+	                top: 60,
+	                bottom: 60,
+	                width: '80%',
+	                minSize: '0%',
+	                maxSize: '100%',
+	                sort: 'descending',
+	                gap: 2,
+	                label: {
+	                    show: true,
+	                    position: 'inside'
+	                },
+	                labelLine: {
+	                    length: 10,
+	                    lineStyle: {
+	                        width: 1,
+	                        type: 'solid'
+	                    }
+	                },
+	                itemStyle: {
+	                    borderColor: '#fff',
+	                    borderWidth: 1
+	                },
+	                emphasis: {
+	                    label: {
+	                        fontSize: 20
+	                    }
+	                },
+	                data: [
+	                	{ value: yearCountArr[0], name: yearUriArr[0] },
+	                    { value: yearCountArr[1], name: yearUriArr[1] },
+	                    { value: yearCountArr[2], name: yearUriArr[2] },
+	                    { value: yearCountArr[3], name: yearUriArr[3] },
+	                    { value: yearCountArr[4], name: yearUriArr[4] }
+	                ]
+	            }
+	        ]
+	    };
+
+	    yearOption && yearChart.setOption(yearOption);
+		});	
+    
+	/* ==============================연별 비교============================== */
+	
+	/* ==============================접속률 비율=============================== */
+	var accessAuditJsonList = ${accessAuditJsonList};
+	var accessChartDom = $('.accessChartDom')[0];
+	var accessChart = echarts.init(accessChartDom);
+	var accessOption;
+// 	console.log("accessAuditJsonList : " +  accessAuditJsonList);
+// 	console.log(accessAuditJsonList);
+	// 색상을 변수로 관리
+	var colors = ['#f6aaab', '#f4c396', '#12555d', '#14874c', '#8fc062', '#ecc859'];
+	
+	accessOption = {
+	    toolbox: {
+	        feature: {
+	            saveAsImage: {}
+	        }
+	    },
+	    tooltip: {
+	        trigger: 'item',
+	        formatter: '{a} <br/>{b}: {c}회 ({d}%)'
+	    },
+	    legend: {
+	        orient: 'vertical',
+	        left: 'left'
+	    },
+	    series: [
+	        {
+	            name: '접속률',
+	            type: 'pie',
+	            radius: '80%',
+	            data: 
+	            	accessAuditJsonList
+	            ,
+	            itemStyle: {
+	                normal: {
+	                    // 색상을 변수에서 가져오기
+	                    color: function(params) {
+	                        return colors[params.dataIndex];
+	                    }
+	                }
+	            },
+	            emphasis: {
+	                itemStyle: {
+	                    shadowBlur: 10,
+	                    shadowOffsetX: 0,
+	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	                }
+	            }
+	        }
+	    ]
+	};
+	
+	accessOption && accessChart.setOption(accessOption);
+
+	/* ==============================접속률 비율=============================== */
+	// 페이지 로드시 가장 먼저 실행 될 놈
+	$("#dayTab").click();
+});
+</script>
+</body>
+</html>

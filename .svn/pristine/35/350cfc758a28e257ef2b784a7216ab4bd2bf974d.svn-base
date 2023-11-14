@@ -1,0 +1,52 @@
+package kr.or.ddit.patient.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.patient.PatientMapper;
+import kr.or.ddit.patient.ServiceResult;
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+
+@Service
+public class PatientImpl implements IPatientService{
+
+	@Inject
+	private PatientMapper patientMapper;
+
+	@Override
+	public List<PatientVO> selectPatientList() {
+		return patientMapper.selectPatientList();
+	}
+
+	@Override
+	public List<PatientVO> patientSearch(Map<String, String> map) {
+		return patientMapper.patientSearch(map);
+	}
+
+	@Override
+	public PatientVO selectPatient(Map<String, String> map) {
+		return patientMapper.selectPatient(map);
+	}
+
+	@Override
+	public ServiceResult patientInsert(PatientVO patientVO) {
+		ServiceResult result = null;
+		
+		int status = patientMapper.patientInsert(patientVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+	
+	
+}

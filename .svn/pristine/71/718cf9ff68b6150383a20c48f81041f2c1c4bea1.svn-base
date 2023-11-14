@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.doctor.vo.ClinicVO;
+
+public interface CertificatesMapper {
+	
+	// 진단서 폼 ajax
+	public List<ClinicVO> selectCertificatesList(Map<String, String> map);
+
+}

@@ -1,0 +1,19 @@
+package kr.or.ddit.doctor.vo;
+
+import lombok.Data;
+
+// 처방 오더 컬럼
+@Data
+public class PrescriptionOrderVO {
+	
+	private String clnicNo;
+	private String rceptNo;
+	private String medcinCd;
+	private String prscrptnNm;
+	private long mdctnCpcty;
+	private String mdctnUnit;
+	private int mdctnCo;
+	private String mdctnPd;
+	private String mdctnCoursUsage;
+	
+}

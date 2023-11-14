@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.RoomMapper">
+	
+	<resultMap type="HospitalizationVO" id="HospitalizationVO">
+		<id property="hsptlzCd" column="HSPTLZ_CD"/>
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="hsptlzSckrm" column="HSPTLZ_SCKRM"/>
+		<result property="hsptlzSckbd" column="HSPTLZ_SCKBD"/>
+		<result property="hsptlzDe" column="HSPTLZ_DE"/>
+		<result property="prarndeLhstl" column="PRARNDE_LHSTL"/>
+		<result property="realLhstl" column="REAL_LHSTL"/>
+		<result property="empNm" column="EMP_NM"/>
+	</resultMap>
+	
+	<resultMap type="NurseRecordVO" id="NurseRecordVO">
+		<id property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="clnicNo" column="CLNIC_NO"/>
+		<result property="rceptNo" column="RCEPT_NO"/>
+		<result property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<result property="nrsRcordDe" column="NRS_RCORD_DE"/>
+		<result property="nrsRcordWrter" column="NRS_RCORD_WRTER"/>
+		<result property="nrsRcordCn" column="NRS_RCORD_CN"/>
+		<result property="nrsRcordMemo" column="NRS_RCORD_MEMO"/>
+	</resultMap>
+	
+	<select id="patntClnicList" parameterType="Map" resultType="ClinicVO" >
+		select c.CLNIC_NO, c.EMP_NO, e.EMP_NM, c.CLNIC_TIME, c.CLNIC_CN, p.PATNT_NM,p.PATNT_HLTHINS_AT, c.HSPTLZ_AT, c.CLNIC_MEMO, c.ATFSS_DT
+		from clinic c
+		JOIN EMPLOYEE e ON c.EMP_NO = e.EMP_NO
+		JOIN PATIENT p ON c.PATNT_NO = p.PATNT_NO
+		where p.PATNT_NO = #{patntNo}
+		order by c.CLNIC_TIME desc
+	</select>
+	
+	<!-- 환자 상세 조회-->
+	<select id="patientHospitaldetail" parameterType="String" resultType="HospitalizationVO">
+		SELECT  c.CLNIC_NO, e.EMP_NM, h.HSPTLZ_CD, h.HSPTLZ_DE, h.PRARNDE_LHSTL, h.HSPTLZ_SCKRM, h.HSPTLZ_SCKBD
+		FROM 
+		  CLINIC c
+		JOIN 
+		  EMPLOYEE e ON c.EMP_NO = e.EMP_NO
+		JOIN 
+		  HOSPITALIZATION h ON c.CLNIC_NO = h.CLNIC_NO
+		WHERE 
+		  c.CLNIC_NO = #{clnicNo}
+	</select>
+	
+	<!-- 인수인계 조회  -->
+	<select id="selectTakeOverList" parameterType="Map" resultMap="NurseRecordVO">
+		select 
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN
+		from nurse_record 
+		where PATNT_NO = #{patntNo}
+		order by NRS_RCORD_DE asc
+	</select>
+	
+<!-- 	<select id="selectTakeOverCount" parameterType="int" resultMap="NurseRecordVO"> -->
+<!-- 		SELECT COUNT(NRS_RCORD_CN)  -->
+<!-- 		FROM nurse_record -->
+<!-- 		where PATNT_NO = #{patntNo} -->
+<!-- 	</select> -->
+	
+	<!-- 인수인계 등록 -->
+	<insert id="takeOverinsert" parameterType="NurseRecordVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="nrsRcordCd" resultType="String" order="BEFORE">
+	        SELECT 'NRC' || SEQ_RECORD.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO NURSE_RECORD
+		(
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN, PATNT_NO
+		)VALUES(
+			#{nrsRcordCd}, SYSDATE, #{nrsRcordWrter}, #{nrsRcordCn}, #{patntNo}
+		)
+	</insert>
+	
+	<!-- 식이 조회 -->
+	<select id="selectmealList" parameterType="Map" resultType="MealVO">
+		SELECT MEAL_CD, MEAL_NM, MEAL_TIME, MEAL_PRICE, EMP_NO, HSPTLZ_CD, PATNT_NO, MEAL_DATE
+		FROM MEAL
+		where PATNT_NO = #{patntNo}
+	</select>
+	
+	<!-- I/O 조회 -->
+	<select id="selectIoList" parameterType="Map" resultType="IoVO">
+		SELECT IO_CD, EMP_NO, IO_OUT, IO_NTK, HSPTLZ_CD, PATNT_NO, IO_OUT_ML, IO_NTK_ML, IO_DATE
+		FROM IO
+		where PATNT_NO = #{patntNo}
+	</select>
+	
+	<!-- 식이 등록 -->
+	<insert id="mealInsert" parameterType="MealVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="mealCd" resultType="String" order="BEFORE">
+	        SELECT 'ME' || SEQ_MEAL.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO MEAL
+		(
+			MEAL_CD, MEAL_NM, MEAL_TIME, MEAL_PRICE, EMP_NO, HSPTLZ_CD, PATNT_NO, MEAL_DATE
+		)VALUES(
+			#{mealCd}, #{mealNm}, #{mealTime}, #{mealPrice}, #{empNo}, #{hsptlzCd}, #{patntNo}, #{mealDate}
+		)
+	</insert>
+	
+	<!-- I/O 등록 -->
+	<insert id="ioInsert" parameterType="IoVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="ioCd" resultType="String" order="BEFORE">
+	        SELECT 'IO' || SEQ_IO.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO IO
+		(
+			IO_CD, EMP_NO, IO_OUT, IO_NTK, HSPTLZ_CD, PATNT_NO, IO_OUT_ML, IO_NTK_ML, IO_DATE
+		)VALUES(
+			#{ioCd}, #{empNo}, #{ioOut}, #{ioNtk}, #{hsptlzCd},#{patntNo},#{ioOutMl}, #{ioNtkMl}, #{ioDate}
+		)
+	</insert>
+
+	
+	
+</mapper>

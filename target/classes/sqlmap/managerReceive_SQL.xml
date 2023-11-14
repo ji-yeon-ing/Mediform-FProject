@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerReceiveMapper">
+
+<sql id="receiveSearch">
+	<if test='searchType != null and searchType == "all"' >
+		<if test='searchWord != null'>
+			and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "com"' >
+		and E.PREARNGE_AMOUNT = COALESCE(R.IPOCD_AMOUNT_BEFORE, 0) + COALESCE(R.IPOCD_AMOUNT, 0)
+		<if test='searchWord != null'>
+			and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "part"' >
+		and E.PREARNGE_AMOUNT > COALESCE(R.IPOCD_AMOUNT_BEFORE, 0) + COALESCE(R.IPOCD_AMOUNT, 0)
+		<if test='searchWord != null'>
+			and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+		</if>
+	</if>
+</sql>
+
+
+<select id="receiveCount" parameterType="pagingVO" resultType="int">
+	select count(rcipt_no) 
+	FROM receipt R
+	JOIN receive E ON R.RCIV_NO = E.RCIV_NO
+	JOIN patient P ON E.PATNT_NO = P.PATNT_NO
+	where 1=1
+	and R.IPOCD_DTTM BETWEEN #{startDate} and #{endDate}+1
+	<include refid="receiveSearch"/>
+</select>
+
+
+<select id="receiveList" parameterType="pagingVO" resultType="managerReceiveVO">
+    select 
+        b.*
+    from (
+        select 
+            a.*, row_number() over (order by a.IPOCD_DTTM desc) rnum
+        from (
+            SELECT
+              R.RCIPT_NO,
+              R.RCIV_NO,
+              R.IPOCD_DTTM,
+              R.IPOCD_AMOUNT,
+              R.IPOCD_AMOUNT_BEFORE, 
+              E.PREARNGE_AMOUNT, 
+              CASE
+                WHEN R.PAYMTHD = 1 THEN '카드'
+                WHEN R.PAYMTHD = 2 THEN '현금'
+                ELSE '기타'
+              END AS PAYMTHD,
+              E.RCIV_AT,
+              P.PATNT_NM
+            FROM receipt R
+            JOIN receive E ON R.RCIV_NO = E.RCIV_NO
+            JOIN patient P ON E.PATNT_NO = P.PATNT_NO 
+            where 1=1 
+                and R.IPOCD_DTTM BETWEEN #{startDate} and #{endDate} + 1
+            <include refid="receiveSearch"/>
+            order by R.IPOCD_DTTM desc
+        ) a
+    ) b
+    <![CDATA[
+        where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+    ]]>
+</select>
+
+<select id="getReceive" parameterType="string" resultType="managerReceiveVO">
+	SELECT
+      P.PATNT_NM,              
+      P.PATNT_SEXDSTN,         
+      P.PATNT_RRNO1,           
+      P.PATNT_AGE,              
+      P.PATNT_ADRES1,          
+      P.PATNT_ADRES2,         
+      P.PATNT_TELNO,      
+      P.PATNT_HLTHINS_AT,      
+      E.RCIV_AT,              
+      E.RECIV_TOTAMT,         
+      E.PREARNGE_AMOUNT,
+      COALESCE(R.IPOCD_AMOUNT_BEFORE, 0) + R.IPOCD_AMOUNT as ipocdAmountBefore,       
+      R.IPOCD_AMOUNT,           
+      E.RCIV_AMOUNT,            
+      E.PREARNGE_AMOUNT - COALESCE(R.IPOCD_AMOUNT_BEFORE, 0) - R.IPOCD_AMOUNT as missingAmount, 
+      R.IPOCD_DTTM,            
+      E.RCIV_DTTM,              
+      E.RECIV_MEMO          
+     
+	FROM receipt R
+	JOIN receive E ON R.RCIV_NO = E.RCIV_NO
+	JOIN patient P ON E.PATNT_NO = P.PATNT_NO
+	where R.RCIPT_NO = #{rciptNo}
+
+</select>
+
+
+
+<sql id="unpaidSearch">
+	<if test='searchType != null and searchType == "unpaid"' >
+		<if test='searchWord != null'>
+			and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+		</if>
+	</if>
+
+</sql>
+
+
+
+
+<select id="unpaidCount" parameterType="pagingVO" resultType="int">
+	SELECT
+	    COUNT(R.RCIV_NO)
+	FROM RECEIVE R
+	JOIN PATIENT P ON R.PATNT_NO = P.PATNT_NO 
+	JOIN CLINIC C ON C.CLNIC_NO = R.CLNIC_NO
+	WHERE 1=1
+	AND R.RCIV_AT = 0
+	<include refid="unpaidSearch"/>
+</select>
+
+<select id="unpaidList" parameterType="pagingVO" resultType="managerReceiveVO">
+    select 
+        b.*
+    from (
+        select 
+            a.*, row_number() over (order by a.CLNIC_TIME desc) rnum
+        from (
+            SELECT
+			    R.RCIV_NO,      
+			    R.RCIV_AT,       
+			    P.PATNT_NM,         
+			    P.PATNT_SEXDSTN,    
+			    C.CLNIC_TIME, 
+			    R.PREARNGE_AMOUNT - R.RCIV_AMOUNT as missingAmount 
+			FROM RECEIVE R
+			JOIN PATIENT P ON R.PATNT_NO = P.PATNT_NO 
+			JOIN CLINIC C ON C.CLNIC_NO = R.CLNIC_NO
+			WHERE 1=1
+			AND R.RCIV_AT = 0
+            and C.CLNIC_TIME BETWEEN #{startDate} and #{endDate}+1
+            <include refid="unpaidSearch"/>
+            order by C.CLNIC_TIME desc
+        ) a
+    ) b
+    <![CDATA[
+        where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+    ]]>
+
+</select>
+
+<select id="getUnpaid" parameterType="string" resultType="managerReceiveVO">
+	SELECT
+	    P.PATNT_NM, 
+	    P.PATNT_SEXDSTN, 
+	    P.PATNT_RRNO1, 
+	    P.PATNT_AGE, 
+	    P.PATNT_ADRES1, 
+	    P.PATNT_ADRES2, 
+	    P.PATNT_TELNO, 
+	    PATNT_HLTHINS_AT,
+	    R.RCIV_NO, 
+	    P.PRTCTOR_NM, 
+	    P.PRTCTOR_TELNO,
+	    C.CLNIC_TIME,   
+	    R.RECIV_TOTAMT,         
+	    R.PREARNGE_AMOUNT, 
+	    (R.PREARNGE_AMOUNT - R.RCIV_AMOUNT) as missingAmount, 
+	    P.PATNT_MEMO, 
+	    R.RECIV_MEMO
+	FROM RECEIVE R
+	JOIN PATIENT P ON R.PATNT_NO = P.PATNT_NO 
+	JOIN CLINIC C ON C.CLNIC_NO = R.CLNIC_NO
+	WHERE 1=1
+	AND R.RCIV_AT = 0
+	AND R.RCIV_NO = #{rcivNo}
+</select>
+
+
+
+
+
+
+</mapper>

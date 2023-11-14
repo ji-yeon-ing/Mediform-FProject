@@ -1,0 +1,263 @@
+package kr.or.ddit.calender.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.calender.service.IVacationService;
+import kr.or.ddit.calender.vo.VacationVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/mediform/vacation")
+@Controller
+public class VacationController {
+	
+	@Inject
+	private IVacationService vacationService;
+	
+	// 로그인별로 페이지 이동 jsp
+	public String goPage(CustomUser customUser) {
+		log.info("구분 : " + customUser.getEmployee().getEmpSe());
+
+		String goPage = "";
+		if(customUser.getEmployee().getEmpSe().equals("a")) {
+			goPage = "admin/vacation";
+		}else if(customUser.getEmployee().getEmpSe().equals("n")) {
+			goPage = "nurse/vacation";
+		}else if(customUser.getEmployee().getEmpSe().equals("d")) {
+			goPage = "doctor/vacation";
+		}else if(customUser.getEmployee().getEmpSe().equals("t")) {
+			goPage = "therapist/vacation";
+		}else if(customUser.getEmployee().getEmpSe().equals("m")) {
+			goPage = "manager/vacation";
+		}else if(customUser.getEmployee().getEmpSe().equals("k")) {
+			goPage = "manager/vacation";
+		}
+
+		return goPage;
+	}
+	
+	// 로그인별로 페이지 이동 jsp
+		public String goPage2(CustomUser customUser) {
+			log.info("구분 : " + customUser.getEmployee().getEmpSe());
+
+			String goPage2 = "";
+			if(customUser.getEmployee().getEmpSe().equals("a")) {
+				goPage2 = "admin/scheduler";
+			}else if(customUser.getEmployee().getEmpSe().equals("n")) {
+				goPage2 = "nurse/scheduler";
+			}else if(customUser.getEmployee().getEmpSe().equals("d")) {
+				goPage2 = "doctor/scheduler";
+			}else if(customUser.getEmployee().getEmpSe().equals("t")) {
+				goPage2 = "therapist/scheduler";
+			}else if(customUser.getEmployee().getEmpSe().equals("m")) {
+				goPage2 = "manager/scheduler";
+			}else if(customUser.getEmployee().getEmpSe().equals("k")) {
+				goPage2 = "manager/scheduler";
+			}
+
+			return goPage2;
+		}
+	
+	// 리스트 조회
+	@RequestMapping("/main")
+	public String vacationMain(VacationVO vacationVO, Model model, Authentication authentication) {
+		log.info("vacationMain() 실행중...!");
+		
+		List<VacationVO> dataList = vacationService.selectVacationList(vacationVO);
+		List<VacationVO> signupList = vacationService.selectSignupList(vacationVO);
+		List<VacationVO> approvalList = vacationService.selectApprovalList(vacationVO);
+		List<VacationVO> rejectList = vacationService.selectRejectList(vacationVO);
+		
+		model.addAttribute("dataList", dataList);
+		model.addAttribute("signupList", signupList);
+		model.addAttribute("approvalList", approvalList);
+		model.addAttribute("rejectList", rejectList);
+		
+		// 메뉴바 선택 CSS를 위한 model
+	    model.addAttribute("menuSelected", "schedule");
+		model.addAttribute("subMenuSelected", "holidaySchedule");
+		
+		CustomUser customUser = (CustomUser) authentication.getPrincipal();
+		String goPage = goPage(customUser);
+		return goPage;
+	}
+	
+	// 캘린더 리스트 조회
+	@ResponseBody
+	@GetMapping("/list")
+	public List<Map<String, Object>> vacationList(){
+		log.info("vacationList() 실행중...!");
+		
+		JSONObject jsonObj = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		List<VacationVO> vacationList = vacationService.vacationMapList();
+		
+		for(VacationVO vacation : vacationList) {
+			map.put("id", vacation.getVcatnCd()); 								// 휴가 코드
+			
+			String title = null;
+			if(vacation.getVcatnSelfEmpse().equals("a")) {
+				title = "원무과";
+			}else if(vacation.getVcatnSelfEmpse().equals("d")) {
+				title = "의사과";
+			}else if(vacation.getVcatnSelfEmpse().equals("n")) {
+				title = "간호과";
+			}else if(vacation.getVcatnSelfEmpse().equals("t")) {
+				title = "치료과";
+			}else if(vacation.getVcatnSelfEmpse().equals("m")) {
+				title = "관리자";
+			}else if(vacation.getVcatnSelfEmpse().equals("k")) {
+				title = "병원장";
+			}
+			map.put("title", title + " " + vacation.getVcatnSelfEmpnm()); 		// 캘린더 제목
+			
+			String cl = null;
+			if(vacation.getVcatnCl().equals("1")) {
+				cl = "연차휴가";
+			}else if(vacation.getVcatnCl().equals("2")) {
+				cl = "오전반차";
+			}else if(vacation.getVcatnCl().equals("3")) {
+				cl = " 반차";
+			}else if(vacation.getVcatnCl().equals("4")) {
+				cl = "기타";
+			}else if(vacation.getVcatnCl().equals("5")) {
+				cl = "공가";
+			}else if(vacation.getVcatnCl().equals("6")) {
+				cl = "병가";
+			}else if(vacation.getVcatnCl().equals("7")) {
+				cl = "경조휴가";
+			}else if(vacation.getVcatnCl().equals("8")) {
+				cl = "출산휴가";
+			}
+			
+			String description = vacation.getVcatnSelfEmpnm() + "\t" + cl + "\t" + vacation.getVcatnResn();
+			map.put("description", description);								// 캘린더 내용
+			map.put("vcatnSelfEmpse", vacation.getVcatnSelfEmpse());			// 부서
+			map.put("vcatnResn", vacation.getVcatnResn());						// 사유
+			map.put("vcatnCl", vacation.getVcatnCl());							// 분류
+			map.put("vcatnSelfEmpno", vacation.getVcatnSelfEmpno());			// 휴가자 사번
+			map.put("vcatnSelfEmpnm", vacation.getVcatnSelfEmpnm());			// 휴가자 이름
+			map.put("vcatnSelfEmpclsf", vacation.getVcatnSelfEmpclsf());		// 휴가자 직위
+			map.put("vcatnYrycCo", vacation.getVcatnYrycCo());					// 사용수
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			map.put("pstgDt", sdf.format(vacation.getVcatnRqstdt()));			// 신청일시
+			map.put("start", vacation.getVcatnBgndt()); 						// 휴가 시작 일시
+			map.put("end", vacation.getVcatnEnddt()); 							// 휴가 종료 일시
+			
+			map.put("backgroundColor", "lightyellow");							// 배경 색깔
+			map.put("textColor", vacation.getVcatnColor());						// 글자 색깔
+			
+			jsonObj = new JSONObject(map);
+			jsonArr.add(jsonObj);
+			
+			log.info("제이슨 배열", jsonArr);
+		}
+
+		return jsonArr;
+	}
+	
+	// 휴가 신청
+	@PostMapping(value = "/insert")
+	public String vacationInsert(VacationVO vacationVO, Authentication authentication) {
+		log.info("vacationInsert() 실행중...!");
+		
+		CustomUser customUser = (CustomUser) authentication.getPrincipal();
+		String goPage = goPage(customUser);
+		
+		ServiceResult status = vacationService.vacationInsert(vacationVO);
+		if(status.equals(ServiceResult.OK)) {
+			log.info("등록 성공!!!");
+			goPage = "redirect:/mediform/scheduler/main";
+		}else {
+			log.info("등록 실패!!!");
+			goPage = goPage2(customUser);
+		}
+		
+		return goPage;
+	}
+	
+	// 직원 상세
+	@ResponseBody
+	@PostMapping("/detail/emp")
+	public List<VacationVO> vacationDetailEmp(@RequestBody String searchEmpWord){
+		log.info("vacationDetailEmp() 실행중...!");
+		
+		List<VacationVO> vacationList = vacationService.vacationDetailEmp(searchEmpWord);
+		
+		return vacationList; 
+	}
+	
+	// 휴가 상세
+	@ResponseBody
+	@PostMapping("/detail")
+	public List<VacationVO> vacationDetailList(@RequestBody Map<String, String> map) {
+		log.info("vacationDetail() 실행중...!");
+		
+		String vcatnCd = map.get("vcatnCd");
+		String vcatnSelfEmpno = map.get("vcatnSelfEmpno");
+		
+		VacationVO vacationVO = new VacationVO();
+		if(vcatnCd != null && vcatnCd != "") {
+			vacationVO.setVcatnCd(vcatnCd);
+		}else if(vcatnSelfEmpno != null && vcatnSelfEmpno != "") {
+			vacationVO.setVcatnSelfEmpno(vcatnSelfEmpno);
+		}
+		List<VacationVO> vacationList = vacationService.vacationDetail(vacationVO);
+		
+		return vacationList;
+	}
+	
+	// 승인
+	@ResponseBody
+	@PostMapping("/update/approval")
+	public ServiceResult vacationUpdateApproval(@RequestBody Map<String, String> map) {
+		log.info("vacationUpdateApproval() 실행중...!");
+		
+		ServiceResult result = null;
+		String empNo = map.get("vcatnReprsntEmpno");
+		String empNoLast = map.get("vcatnConfirmerEmpno");
+		log.info("map>>>" + map);
+		
+		if(empNo != null && empNoLast == null) {
+			result = vacationService.vacationUpdate(map);			// 1차 승인
+		}else if(empNo == null && empNoLast != null) {
+			result = vacationService.vacationUpdateLast(map);		// 2차 승인
+		}
+		
+		return result;
+	}
+	
+	// 반려
+	@ResponseBody
+	@PostMapping("/update/reject")
+	public ServiceResult vacationUpdateReject(@RequestBody Map<String, String> map) {
+		log.info("vacationUpdateReturn() 실행중...!");
+		
+		ServiceResult result = vacationService.vacationUpdateReject(map);
+		
+		return result;
+	}
+	
+}

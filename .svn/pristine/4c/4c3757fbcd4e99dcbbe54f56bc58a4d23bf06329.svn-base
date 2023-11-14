@@ -1,0 +1,33 @@
+package kr.or.ddit.doctor.vo;
+
+import java.util.Date;
+
+import kr.or.ddit.common.vo.RceptVO;
+import lombok.Data;
+
+// 진료차트 컬럼
+@Data
+public class ClinicVO {
+	
+	private String clnicNo;
+	private String rceptNo;
+	private String patntNo;
+	private String empNo;
+	private Date clnicTime;
+	private String clnicCn;
+	private String clnicAt;
+	private String beforeClnicNo;
+	private String hsptlzAt;
+	private String clnicMemo;
+	
+	// 처방 오더 VO
+	private PrescriptionOrderVO prescriptionOrderVO;
+	// 상병 VO 
+	private SickAndWoundedVO sickAndWoundedVO;
+	// 치료 오더 VO
+	private MedicalTreatmentRecordVO medicalTreatmentRecordVO;
+	// 검사 오더 VO
+	private MedicalExaminationOrderVO medicalExaminationOrderVO;
+	// 접수 VO
+	private RceptVO rceptVO;
+}

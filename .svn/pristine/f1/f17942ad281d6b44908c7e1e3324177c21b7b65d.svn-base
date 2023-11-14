@@ -1,0 +1,940 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<style>
+.table thead {
+	position: sticky;
+	top: 0;
+	z-index: 1; /* 다른 콘텐츠 위로 표시하기 위해 z-index를 설정합니다. */
+}
+</style>
+
+
+<div class="row">
+	<div class="col-7">
+		<div class="card border border-secondary" style="height: 390px;">
+			<div class="card-header border-bottom"
+				style="height: 50px; background-color: midnightblue">
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h5 class="text-white mb-0 fw-semi-bold" id="header">문자</h5>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row card-body pt-0">
+				<div class="tab-content">
+
+
+					<!-- 							문자형식 -->
+					<div class="row">
+
+						<div class="col-4">
+
+							<br>
+							<div class="card border h-100 border-secondary"
+								style="height: 250px;">
+								<div class="bg-light card-header border-bottom">
+									<div class="row flex-between-end">
+										<div class="col-auto align-self-center">
+											<h6 class="text-dark mb-0 fw-semi-bold" id="header">문자형식</h6>
+										</div>
+									</div>
+								</div>
+
+								<div class="row card-body pt-0">
+									<div class="table-container"
+										style="overflow-y: auto; max-height: 160px;">
+										<table
+											class="table table-sm mb-0 overflow-hidden data-table fs--1"
+											data-datatables='{"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"language":{"info":"_START_ to _END_ Items of _TOTAL_"}}'>
+
+											<tbody class="list" id="smsList">
+
+
+											</tbody>
+										</table>
+										<input type="hidden" id="hiddenId" value="" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-8">
+
+							<br>
+
+							<div class="card border h-100 border-secondary"
+								style="height: 20px;">
+								<div class="bg-light card-header border-bottom">
+									<div class="row flex-between-end">
+										<div class="align-self-center">
+											<h6 class="text-dark mb-0 fw-semi-bold" id="header">문자내용</h6>
+										</div>
+									</div>
+								</div>
+
+								<div class="row card-body pt-0">
+
+									<textarea class="form-control" id="smsOutTextArea" rows="5"></textarea>
+
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="card-footer clearfix">
+				<div class="col-auto align-self-end">
+					<button id="insertSmsBtn" class="btn btn-outline-primary me-1 mb-1"
+						type="button">추가</button>
+					&nbsp;
+					<button id="updateSmsBtn" class="btn btn-outline-primary me-1 mb-1"
+						type="button">수정</button>
+					&nbsp;
+					<button id="deleteSmsBtn" class="btn btn-outline-primary me-1 mb-1"
+						type="button">삭제</button>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<div>
+						<br> <br>
+					</div>
+				</div>
+			</div>
+
+
+
+
+		</div>
+
+		<br>
+		<!-- 		환자조회 -->
+		<div class="card border border-secondary" style="height: 330px;">
+			<div class="card-header border-bottom"
+				style="height: 50px; background-color: midnightblue">
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h5 class="text-white mb-0 fw-semi-bold" id="header">환자 조회</h5>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="card-body pt-0">
+
+				<!-- 검색 row -->
+				<div class="row">
+					<div class="col-4">
+
+						
+						<div class="input-group">
+							<input
+								class="fw-semi-bold col-4 bg-secondary-subtitle text-black text-center form-control"
+								id="" name="" type="text" value="구분" disabled />
+							<div class="col-8 input-group-append p-0 m-0">
+								<select class="form-select" aria-label="Default select example"
+									id="selectOption">
+									<option selected="" value="">구분</option>
+									<option value="1">환자 검색</option>
+									<option value="2">예약 검색</option>
+								</select>
+							</div>
+						</div>
+
+
+						
+
+					</div>
+
+					<div class="col-3"></div>
+					<div class="col-5">
+
+
+						<!-- 환자 검색 창 -->
+						<div id="patientSearch" style="display: none;">
+							<div class="input-group">
+								<button type="button" id="searchAll"
+									class="btn btn-outline-secondary" style="height: 40px">
+									전체조회</button>
+								<input type="text" name="searchWord" id="searchPatientInput"
+									value="" class="form-control float-right"
+									placeholder="환자명" style="height: 40px;">
+								<div class="input-group-append">
+									<button id="searchPatientBtn" type="button"
+										class="btn btn-outline-secondary" style="height: 40px">
+										&nbsp;<i class="fas fa-search"></i>&nbsp;
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- 환자 검색 창 끝 -->
+
+
+
+						<!-- 예약 날짜 검색 창 -->
+						<div id="reservationSearch" style="display: none;">
+							<div class="input-group">
+								<input class="form-control datetimepicker" id="searchReservationInput"
+									name="searchWord" type="text" placeholder="일자"
+									value="" data-options='{"disableMobile":true}'
+									style="height: 40px;" />
+								<div class="input-group-append">
+									<button id="searchReservationBtn" type="button"
+										class="btn btn-outline-secondary" style="height: 40px">
+										&nbsp;<i class="fas fa-search"></i>&nbsp;
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- 예약 날짜 검색 창 끝 -->
+						
+						
+						
+					</div>
+
+				</div>
+				<!-- 검색 row -->
+
+
+				<!-- 환자 검색 시 -->
+				<div id="patientTable" class="table-container row" style="display: none; overflow-y: auto; max-height: 200px;">
+					<table class="table table-hover mb-0 fs--4" style="height: 180px;"
+						data-datatables='data-datatables {"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"language":{"info":"_START_ to _END_ Items of _TOTAL_"}}'>
+						<thead class="bg-200">
+							<tr>
+								<th class="col-1 text-900 align-middle text-center">
+									<input class="form-check-input" type="checkbox" id="selectPatientAll" value="" data-bulk-select-row="data-bulk-select-row" />
+								</th>
+								<th class="col-2 text-900 align-middle text-center">이름</th>
+								<th class="col-2 text-900 align-middle text-center">생년월일</th>
+								<th class="col-2 text-900 align-middle text-center">나이</th>
+								<th class="col-1 text-900 align-middle text-center">성별</th>
+								<th class="col-4 text-900 align-middle text-center">전화번호</th>
+							</tr>
+						</thead>
+
+
+						<tbody class="list" id="patientSearchResult" style="overflow-y: auto; max-height: 180px;">
+
+
+							
+							
+
+
+						</tbody>
+					</table>
+				</div>
+				<!-- 환자 검색 시 -->
+
+
+
+
+
+
+				<!-- 예약환자 검색 시 -->
+				<div id="reservationTable" class="table-container row" style="display: none; overflow-y: auto; max-height: 200px;">
+					<table class="table table-hover mb-0 fs--4" style="height: 180px;"
+						data-datatables='data-datatables {"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"language":{"info":"_START_ to _END_ Items of _TOTAL_"}}'>
+						<thead class="bg-200">
+							<tr>
+								<th class="col-1 text-900 align-middle text-center">
+									<input class="form-check-input" type="checkbox" id="selectReservationAll" value="" data-bulk-select-row="data-bulk-select-row" />
+								</th>
+								<th class="col-2 text-900 align-middle text-center">이름</th>
+								<th class="col-2 text-900 align-middle text-center">예약날짜</th>
+								<th class="col-2 text-900 align-middle text-center">예약시간</th>
+								<th class="col-1 text-900 align-middle text-center">담당의</th>
+								<th class="col-4 text-900 align-middle text-center">전화번호</th>
+							</tr>
+						</thead>
+
+
+						<tbody class="list" id="reservationSearchResult" style="overflow-y: auto; max-height: 180px;">
+
+
+							<tr id="" class="onePatient btn-reveal-trigger">
+								<td class="align-middle text-center">
+									<input class="form-check-input" type="checkbox" id="" value="" data-bulk-select-row="data-bulk-select-row" />
+								</td>
+								<td class="align-middle text-center">오재원씨</td>
+								<td class="align-middle text-center">2023.10.19</td>
+								<td class="align-middle text-center">16:30</td>
+								<td class="align-middle text-center">우태원</td>
+								<td class="align-middle text-center">010-0000-0000</td>
+							</tr>
+							
+							
+
+
+						</tbody>
+					</table>
+				</div>
+				<!-- 예약환자 검색 시 -->
+
+
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+
+	<c:set var="today" value="<%=new java.util.Date()%>" />
+	<fmt:formatDate value="${today}" pattern="yyyy-MM-dd"
+		var="formattedDate" />
+
+
+	<div class="col-5">
+
+		<div class="card border border-secondary" style="height: 390px;">
+			<div class="card-header border-bottom"
+				style="height: 50px; background-color: midnightblue">
+				<div class="row">
+					<div class="col-8 align-self-center">
+						<h5 class="text-white mb-0 fw-semi-bold" id="header">발송 내역</h5>
+					</div>
+					<div class="col-4">
+						<div class="input-group">
+							<input class="form-control datetimepicker" id="empEncpn"
+								name="empEncpn" type="text" placeholder="${formattedDate }"
+								data-options='{"disableMobile":true}' style="height: 30px" />
+							<div class="input-group-append">
+								<button type="button" class="btn btn-falcon-default"
+									style="height: 30px">
+									&nbsp;<i class="fas fa-search"></i>&nbsp;
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row card-body pt-0">
+				<div class="tab-content">
+					<div class="tab-pane preview-tab-pane active" role="tabpanel"
+						aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+						id="dom-1123d529-5101-4101-b597-dac496b93923">
+
+						<br>
+						<div class="table-container"
+							style="overflow-y: auto; max-height: 280px;">
+							<table class="table table-sm table-striped"
+								style="height: 250px;">
+								<thead>
+									<tr id="" class="bg-light">
+										<th class="col-2 text-center" scope="col">발송일</th>
+										<th class="col-2 text-center" scope="col">수신인</th>
+										<th class="col-8 text-center" scope="col">내용</th>
+									</tr>
+								</thead>
+								<tbody style="overflow-y: auto; max-height: 200px;">
+									<tr class="oneBoard" id="">
+										<td class="text-center" style="vertical-align: middle">2023.10.06</td>
+										<td class="text-center" style="vertical-align: middle">홍길동씨</td>
+										<td class="text-center" style="vertical-align: middle">
+											안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가
+										</td>
+									</tr>
+									<tr class="oneBoard" id="">
+										<td class="text-center" style="vertical-align: middle">2023.10.06</td>
+										<td class="text-center" style="vertical-align: middle">홍길동씨</td>
+										<td class="text-center" style="vertical-align: middle">
+											안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가
+										</td>
+									</tr>
+									<tr class="oneBoard" id="">
+										<td class="text-center" style="vertical-align: middle">2023.10.06</td>
+										<td class="text-center" style="vertical-align: middle">홍길동씨</td>
+										<td class="text-center" style="vertical-align: middle">
+											안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가
+										</td>
+									</tr>
+									<tr class="oneBoard" id="">
+										<td class="text-center" style="vertical-align: middle">2023.10.06</td>
+										<td class="text-center" style="vertical-align: middle">홍길동씨</td>
+										<td class="text-center" style="vertical-align: middle">
+											안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가
+										</td>
+									</tr>
+									<tr class="oneBoard" id="">
+										<td class="text-center" style="vertical-align: middle">2023.10.06</td>
+										<td class="text-center" style="vertical-align: middle">홍길동씨</td>
+										<td class="text-center" style="vertical-align: middle">
+											안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가안녕하세요방가방가
+										</td>
+									</tr>
+
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<br>
+
+		<div class="card border border-secondary" style="height: 330px;">
+			<div class="card-header border-bottom"
+				style="height: 50px; background-color: midnightblue">
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h5 class="text-white mb-0 fw-semi-bold" id="header">발송</h5>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row card-body pt-0">
+				<div class="tab-content">
+
+
+					<!-- 							문자형식 -->
+					<div class="row">
+
+						<div class="col-4">문자 형식</div>
+
+						<div class="col-8">문자 내용</div>
+
+					</div>
+
+
+				</div>
+			</div>
+
+			<div class="col-auto align-self-end">
+				<button onclick="location.href='/mediform/admin/board/insert'"
+					class="btn btn-outline-primary me-1 mb-1" type="button">새글작성</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+</div>
+
+
+
+<!-- sms 양식 추가 모달 -->
+<div class="modal fade" id="smsWordInsertModal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="width: 650; max-width: 650px; height: 450px; max-height: 450px;">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 py-3 ps-4 pe-6"
+					style="background-color: midnightblue">
+					<h4 class="mb-1 text-white" id="modalExampleDemoLabel">안내문자 등록</h4>
+				</div>
+				<div class="p-4 pb-0">
+
+					<div class="row">
+						<h4 class="fw-semi-bold">제목</h4>
+					</div>
+
+					<div class="row">
+						<input type="text" class="form-control" id="smsWordTitle" />
+					</div>
+
+					<br>
+
+					<div class="row">
+						<h4 class="fw-semi-bold">내용</h4>
+					</div>
+
+					<div class="row">
+						<textarea class="form-control" id="smsWordContent" rows="20"></textarea>
+					</div>
+
+				</div>
+				<br>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" id="smsWordInsertBtn" type="button">등록</button>
+				<button class="btn btn-secondary" type="button"
+					data-bs-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- sms 양식 추가 모달 끝 -->
+
+
+
+
+
+
+
+<script src="/resources/assets/js/flatpickr.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
+	
+	document.getElementById('selectOption').addEventListener('change',function() {
+		// 선택한 옵션의 값 가져오기
+		var selectedValue = this.value;
+	
+		// 아래에 표시될 영역 숨기기
+		document.getElementById('patientSearch').style.display = 'none';
+		document.getElementById('reservationSearch').style.display = 'none';
+		document.getElementById('patientTable').style.display = 'none';
+		document.getElementById('reservationTable').style.display = 'none';
+	
+		// 선택한 옵션 값에 따라 해당하는 영역 표시
+		if (selectedValue === '1') {
+			document.getElementById('patientSearch').style.display = 'block';
+			document.getElementById('patientTable').style.display = 'block';
+			
+		} else if (selectedValue === '2') {
+			document.getElementById('reservationSearch').style.display = 'block';
+			document.getElementById('reservationTable').style.display = 'block';
+		} 
+	
+
+	});
+	
+	// 예약 검색 버튼 클릭 이벤트
+	var searchReservationBtn = $("#searchReservationBtn");
+	searchReservationBtn.on("click", function(){
+		
+		var reservatrionSearchResult = $("#patientSearchResult");
+		
+		var searchReservationInput = $("#searchReservationInput").val();
+		
+		console.log("검색 값 >>>>>>> " + searchReservationInput);
+		
+		var ReservationObject = {
+				
+			rpatntDttm : searchReservationInput
+				
+		}
+		
+		$.ajax({
+	 		type : "post",
+			url : "/mediform/admin/reservation/date/list",
+			data : JSON.stringify(ReservationObject),
+	 		contentType : "application/json; charset=utf-8",
+	 		async: false,
+	        beforeSend : function(xhr){            
+	            xhr.setRequestHeader(header,token);
+	        },
+	 		success : function(res) {
+	 			
+	 			
+	 			
+				console.log("");
+	 		}
+	 	});
+		
+		
+		
+		
+	});
+	// 예약 검색 버튼 클릭 이벤트 끝
+	
+	
+	
+	// 환자 검색 버튼 클릭 이벤트
+	var searchPatientBtn = $("#searchPatientBtn");
+	$("#searchPatientInput").on("keyup",function(){
+		
+		var patientSearchResult = $("#patientSearchResult");
+		
+		
+		var searchPatientInput = $("#searchPatientInput").val();
+		
+		console.log("검색 값 >>>>> " + searchPatientInput);
+		var patientObject = {
+				
+				keyword : searchPatientInput
+		}
+		
+		$.ajax({
+			type : "post",
+			url  : "/mediform/patient/search",
+			data : JSON.stringify(patientObject),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				var searchResultsHtml = "";
+				console.log(res.length);
+				// 받아온 데이터가 없을 때 
+				// 환자 정보 없음은 h5로 설정(h6로 설정 시 클릭하면 환자 정보 테이블에 들어가지기 때문)
+				if(res.length == 0){
+					console.log("데이터 없음");
+				}else{
+					// 받아온 값을 뿌리는 역할
+		            $(res).each(function(){
+						console.log(this.patntNm + "  " + this.patntAge);
+						console.log("전화번호 >>> " + this.patntTelno)
+						var gender = ""
+						
+						if(this.patntSexdstn === "F"){
+							gender = "여";
+						}else if(this.patntSexdstn = "M"){
+							gender = "남";
+						}
+				        
+						
+				        searchResultsHtml += "<tr id='" + this.patntNo + "' class='onePatient btn-reveal-trigger'>";
+				        searchResultsHtml += "  <td class='align-middle text-center'>";
+				        searchResultsHtml += "    <input class='checkPatient form-check-input' type='checkbox' id='" + this.patntNo + "' value='" + this.patntTelNo +"' data-bulk-select-row='data-bulk-select-row' />";
+				        searchResultsHtml += "  </td>";
+				        searchResultsHtml += "  <td class='align-middle text-center'>" + this.patntNm + "</td>";
+				        searchResultsHtml += "  <td class='align-middle text-center'>" + this.patntRrno1 + "</td>";
+				        searchResultsHtml += "  <td class='align-middle text-center'>" + this.patntAge +"</td>";
+				        searchResultsHtml += "  <td class='align-middle text-center'>" + gender + "</td>";
+				        searchResultsHtml += "  <td class='align-middle text-center'>" + this.patntTelno + "</td>";
+				        searchResultsHtml += "</tr>";
+				        
+				        
+			        
+		       		});
+				}
+				patientSearchResult.html(searchResultsHtml);
+				},
+			error : function(err){
+				console.log("err에러 : " + err);
+			}
+		});
+		
+	});
+	// 환자 검색 버튼 클릭 이벤트 끝!
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	var smsList = $("#smsList");
+	
+	var insertSmsBtn = $("#insertSmsBtn");
+	var updateSmsBtn = $("#updateSmsBtn");
+	var deleteSmsBtn = $("#deleteSmsBtn");
+	var hiddenId = $("#hiddenId");
+	
+	var smsWordInsertModal = $("#smsWordInsertModal");
+	
+	var smsOutTextArea = $("#smsOutTextArea");
+	
+	printList();
+	
+	// 문자 양식 리스트를 출력해주는 함수
+	function printList(){
+		
+		
+		var smsWordListHtml = "";
+		// 함수가 실행되면 해당 영역을 초기화 -> 아래 ajax에서 데이터를 쏘아줌
+		smsList.html(smsWordListHtml);
+		
+		// 문자 양식 리스트 데이터를 가져오는 ajax
+		$.ajax({
+	 		type : "post",
+			url : "/mediform/admin/sms/list",
+	 		contentType : "application/json; charset=utf-8",
+	 		async: false,
+	        beforeSend : function(xhr){            
+	            xhr.setRequestHeader(header,token);
+	        },
+	 		success : function(res) {
+				
+	 			if(res.length == 0){
+	 				console.log("sms 양식 리스트 없음!!");
+	 			}else{
+	 				console.log("sms 양식 리스트 있음!!");
+	 				
+	 				
+	 				var inx = 1;
+	 				$(res).each(function(){
+	 					
+	 					console.log("문자 Id >>> " + this.smsWordsNo);
+	 					console.log("문자 제목 >>> " + this.smsCl);
+	 					console.log("문자 내용 >>> " + this.smsCn);
+	 					
+	 					smsWordListHtml += "<tr id='" + this.smsWordsNo + "' class='oneSms btn-reveal-trigger'>";
+	 					smsWordListHtml += "	<td class='align-middle white-space-nowrap fw-semi-bold text-center'>";
+	 					smsWordListHtml += inx;
+	 					smsWordListHtml += "	</td>";
+	 					smsWordListHtml += "	<td class='align-middle white-space-nowrap fw-semi-bold text-center'>";
+	 					smsWordListHtml += this.smsCl;
+	 					smsWordListHtml += "	</td>";
+	 					smsWordListHtml += "</tr>";
+	 					
+	 					inx += 1;
+	 					
+	 				});
+	 				
+	 				smsList.html(smsWordListHtml);
+	 				
+	 			}
+	 			
+	 		}
+	 	});
+		// 문자 양식 리스트 데이터를 가져오는 ajax 끝
+		
+	}
+	// 문자 양식 리스트 출력해주는 함수 끝
+	
+	// 삭제버튼 클릭 이벤트
+	deleteSmsBtn.on("click", function(){
+		
+		
+		var deleteId = hiddenId.val();
+		console.log(deleteId);
+		
+		
+		Swal.fire({
+		      icon: 'warning',
+		      title: 'SMS 문구 삭제',
+		      text: '해당 SMS 문구를 삭제하시겠습니까?',
+		      confirmButtonText: '확인',
+		      confirmButtonColor: 'midnightblue',
+		    }).then(result => {
+		    	if(result.isConfirmed){
+			    	
+		    		var deleteObj = {
+		    				
+		    			smsWordsNo : deleteId
+		    				
+		    		}
+		    		
+		    		// 음성 방송 삭제 기능 아작스
+		    		$.ajax({
+				 		type : "post",
+						url : "/mediform/admin/sms/delete",
+						data : JSON.stringify(deleteObj),
+				 		contentType : "application/json; charset=utf-8",
+				 		async: false,
+				        beforeSend : function(xhr){            
+				            xhr.setRequestHeader(header,token);
+				        },
+				 		success : function(result) {
+							
+				 			Swal.fire({
+							      icon: 'success',
+							      title:'SMS 문구 삭제 완료',
+							      text: 'SMS 문구 삭제가 완료 되었습니다',
+							      confirmButtonText: '확인',
+							      confirmButtonColor: 'midnightblue',
+							    })
+				 			
+				 		}
+				 	});
+		    		// 음성 방송 삭제 기능 아작스 끝
+		    		printList();
+		    		
+		    	}
+		    	});
+		
+	});
+	// 삭제버튼 클릭 이벤트 끝
+	
+	
+	
+	
+	
+	
+	
+	// 문자 양식 수정 버튼 클릭 이벤트 ("해당 아이디랑 textarea에 있는 데이터 바탕으로 수정")
+	updateSmsBtn.on("click", function(){
+		
+		var updateId = hiddendId.val();
+		console.log("업데이트 아이디 >> " + updateId);
+		
+		var updateContent = $("#smsOutTextArea").val();
+		
+		var updateObj = {
+				
+			smsWordsNo : updateId,
+			smsCn : updateContent
+				
+		}
+		
+		// 문자 양식 업데이트 아작스
+		$.ajax({
+	 		type : "post",
+			url : "/mediform/admin/sms/update",
+			data : JSON.stringify(updateObj),
+	 		contentType : "application/json; charset=utf-8",
+	 		async: false,
+	        beforeSend : function(xhr){            
+	            xhr.setRequestHeader(header,token);
+	        },
+	 		success : function(result) {
+				
+	 			Swal.fire({
+				      icon: 'success',
+				      title:'SMS 문구 수정 완료',
+				      text: 'SMS 문구 수정이 완료 되었습니다',
+				      confirmButtonText: '확인',
+				      confirmButtonColor: 'midnightblue',
+				    })
+	 			
+	 		}
+	 	});
+		// 문자 양식 업데이트 아작스 끝
+		
+		
+	});
+	// 문자 양식 수정 버튼 클릭 이벤트 끝
+	
+	
+	
+	
+	
+	
+	// 문자 양식 추가 버튼 눌렀을 때 이벤트 (모달 띄워주기 -> 추가버튼 다시 눌렀을 때 아작스로 insert)
+	insertSmsBtn.on("click", function(){
+		
+		
+		var smsWordInsertBtn = $("#smsWordInsertBtn");
+		
+		smsWordInsertModal.modal("show");
+		
+		
+		// 모달창안에서 등록 버튼을 눌렀을 떄 이벤트
+		smsWordInsertBtn.on("click", function(){
+			
+			var smsWordTitle = $("#smsWordTitle").val();
+			var smsWordContent = $("#smsWordContent").val();
+
+			var smsWordObj = {
+				smsCl : smsWordTitle,
+				smsCn : smsWordContent
+			}
+			
+			// 문자 양식 등록 기능 ajax
+			$.ajax({
+		 		type : "post",
+				url : "/mediform/admin/sms/insert",
+				data : JSON.stringify(smsWordObj),
+		 		contentType : "application/json; charset=utf-8",
+		 		async: false,
+		        beforeSend : function(xhr){            
+		            xhr.setRequestHeader(header,token);
+		        },
+		 		success : function(res) {
+		 			
+		 			console.log("성공");
+					
+		 			Swal.fire({
+					      icon: 'success',
+					      title:'SMS 문구 등록 완료',
+					      text: 'SMS 문구 등록이 완료 되었습니다',
+					      confirmButtonText: '확인',
+					      confirmButtonColor: 'midnightblue',
+					    }).then(result => {
+							
+					    	smsWordInsertModal.modal("hide");
+					    	$("#smsWordTitle").val("");
+							$("#smsWordContent").val("");
+				 			printList();
+							    	
+					    });
+		 			
+		 			
+		 			
+		 		}
+		 	});
+			// 문자 양식 등록 기능 ajax 끝
+			
+		});
+		// 모달창안에서 등록 버튼을 눌렀을 떄 이벤트
+		
+	});
+	// 문자 양식 추가 버튼 눌렀을 때 이벤트 끝
+	
+	
+	// sms 양식 list 중 하나를 클릭하면 옆 텍스트 area에 문자 내용 출력하기
+	var oneSms = $(".oneSms");
+	
+	oneSms.on("click", function(){
+		
+		hiddenId.val("");
+		console.log("sms문구 클릭!!!");
+		
+		var smsId = $(this).attr("id");
+		
+		hiddenId.val(smsId);
+		console.log("클릭한 SMS ID >>>> " + smsId);
+		
+		var smsIdObj = {
+			smsWordsNo : smsId
+		}
+		
+		// 클랙했을 때 해당 아이디에 해당하는 내용을 가져오는 ajax
+		$.ajax({
+	 		type : "post",
+			url : "/mediform/admin/sms/select",
+			data : JSON.stringify(smsIdObj),
+	 		contentType : "application/json; charset=utf-8",
+	 		async: false,
+	        beforeSend : function(xhr){            
+	            xhr.setRequestHeader(header,token);
+	        },
+	 		success : function(res) {
+				console.log("출력할 내용(ajax 에서 가져옴)>>> " + res.smsCn);
+				smsOutTextArea.val(res.smsCn);
+	 		}
+	 	});
+		// 클릭했을 때 해당 아이디에 해당하는 내용 가져오는 ajax 끝!
+		
+	});
+	// sms 양식 list 중 하나를 클릭하면 옆 텍스트 area에 문자 내용 출력하기 끝
+	
+	
+});
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,155 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="search-box" data-list='{"valueNames":["title"]}'>
+  <form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+    <input class="form-control search-input fuzzy-search" type="search" placeholder="검색할 환자 이름을 입력해주세요." aria-label="Search" id="searchInput" />
+    <span class="fas fa-search search-box-icon"></span>
+  </form>
+  <div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+    <button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+  </div>
+  <div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100" id="search-results">
+    <div class="scrollbar list py-3" style="max-height: 24rem;">
+    </div>
+    <div class="text-center mt-n3">
+      <p class="fallback fw-bold fs-1 d-none">환자 정보가 존재하지 않습니다.</p>
+    </div>
+  </div>
+</div>
+<div>
+	<table border="1">
+		<tbody id="patientTbody">
+		</tbody>
+	</table>
+</div>
+</body>
+<meta id="_csrf" name="_csrf" content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" content="${_csrf.headerName}"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	// 시큐리티 토큰 관련 2개
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	// 검색 input요소
+	var searchInput = $("#searchInput");
+	// 드롭다운 요소(결과를 뿌려줄 곳)
+	var searchRes = $("#search-results");
+	// 환자 정보를 담을 테이블
+	var patientTbody = $("patientTbody");
+	
+	// 환자 검색 시 키보드를 한글자씩 눌렀다가 떼는 순간 이벤트 발생
+	searchInput.on("keyup",function(){
+		console.log("1");
+		var keyword = searchInput.val();
+		console.log("keyword : " + keyword);
+		var searchObj = { 
+				keyword : keyword
+				};
+		
+		// 검색 환자 정보
+		$.ajax({
+			type : "post",
+			url  : "/mediform/patient/search",
+			data : JSON.stringify(searchObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				var searchResultsHtml = "";
+				console.log(res.length);
+				// 받아온 데이터가 없을 때 
+				if(res.length == 0){
+					console.log("빈 거 들어오긴 하니?");
+					searchResultsHtml += '<div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow w-100" id="search-results">';
+			        searchResultsHtml += '<div class="scrollbar list py-3" style="max-height: 24rem;">';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '<div class="text-center mt-n3">';
+			        searchResultsHtml += '<p class="fallback fw-bold fs-1 d-none">환자 정보가 존재하지 않습니다.</p>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+				}else{
+					// 받아온 값을 뿌리는 역할
+		            $(res).each(function(){
+					console.log(this.patntNm + " " + this.patntAge);
+					searchResultsHtml += '<div class="dropdown-item px-x1 py-2">';
+			        searchResultsHtml += '<div class="d-flex align-items-center">';
+			        searchResultsHtml += '<div class="flex-1">';
+			        searchResultsHtml += ' <h6 class="mb-0 title">' + this.patntNo + '  |  ' + this.patntNm + '  |  ' + this.patntAge + '세  |  ' + this.patntRrno1 + '</h6>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+		       		});
+				}
+				$(searchRes).html(searchResultsHtml);
+				},
+			error : function(xhr){
+				console.log("xhr에러 : " + xhr);
+			}
+		});
+	});
+	// 위에서 뿌려준 환자 정보를 클릭시 (드롭다운 div 안에 있는 <h6>태그 요소를 전부 가져와 클릭 이벤트 발생 시 작동)
+	$(searchRes).on("click","h6",function(event){
+		// 클릭된 h6 태그
+		var clickTarget = $(event.target);
+		// h6 태그 안에 있는 환자 정보 텍스트
+		var patientInfo = clickTarget.text();
+		console.log(clickTarget.text());
+		// 환자 정보 텍스트를 공백 기준으로 나누기
+		var patientSplit = patientInfo.split(' ');
+		console.log(patientSplit);
+		// 환자 번호(환자 정보 텍스트를 공백 기준으로 나누고 나서 0번째 요소)
+		var patntNo = patientSplit[0];
+		console.log(patntNo);
+		var patientObj = {
+				patntNo : patntNo
+				}
+		// tbody 태그에 담을 곳
+		var tbodyInsertHtml = "";
+		
+		$.ajax({
+			type : "post",
+			url  : "/mediform/patient/info",
+			data : JSON.stringify(patientObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				console.log("patntNo : "+res.patntNo+" | patntNM : "+res.patntNm +" | patntTelno : "+res.patntTelno);
+				tbodyInsertHtml += '<tr>';
+				tbodyInsertHtml += '<td> ';
+				tbodyInsertHtml += '<tr>';
+				tbodyInsertHtml += '<tr>';
+				tbodyInsertHtml += '<tr>';
+				tbodyInsertHtml += '<tr>';
+				
+				
+				
+			$(patientTbody).html(tbodyInsertHtml);
+			},
+			error : function(xhr){
+				console.log("xhr에러 : " + xhr);
+			}
+			
+		});
+	});
+});
+
+
+</script>
+</html>

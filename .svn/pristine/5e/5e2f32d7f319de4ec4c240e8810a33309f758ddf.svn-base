@@ -1,0 +1,24 @@
+package kr.or.ddit.common.service;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.mapper.common.LoginMapper;
+
+@Service
+public class LoginServiceImpl implements ILoginService {
+
+	@Inject
+	private LoginMapper loginMapper;
+	
+	@Override
+	public EmployeeVO loginCheck(EmployeeVO employee) {
+		
+		return loginMapper.loginCheck(employee);
+	}
+
+	
+	
+}

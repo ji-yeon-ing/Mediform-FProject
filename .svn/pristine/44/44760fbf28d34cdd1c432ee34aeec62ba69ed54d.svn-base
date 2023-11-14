@@ -1,0 +1,14 @@
+package kr.or.ddit.calender.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/mediform/calender")
+public class CalenderController {
+	
+	@RequestMapping("/main")
+	public String main() {
+		return "/calender/calender";
+	}
+}

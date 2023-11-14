@@ -1,0 +1,29 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.ChattingRoomVO;
+import kr.or.ddit.common.vo.ChattingVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface ChattingMapper {
+
+	List<EmployeeVO> friendList();
+
+	int createRoom(String roomName);
+
+	void insertChattMember(ChattingRoomVO chattingRoomVO);
+
+	List<ChattingRoomVO> selectChattingRoomList(Map<String, String> map);
+
+	void insertFirstInvite();
+
+	int chattingInsert(Map<String, String> map);
+
+	List<ChattingVO> chattingList(Map<String, Object> map);
+
+
+
+}

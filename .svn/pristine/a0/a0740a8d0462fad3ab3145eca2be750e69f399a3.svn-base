@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.LoginMapper">
+
+	<resultMap type="employeeVO" id="employeeMap">
+		<id property="empNo" column="EMP_NO"/>
+		<result property="empNo" column="EMP_NO"/>
+		<result property="empPw" column="EMP_PW"/>
+		<result property="empNm" column="EMP_NM"/>
+		<result property="empDep" column="EMP_DEP"/>
+		<result property="empProfile" column="EMP_PROFILE"/>
+		<result property="empAuthor" column="EMP_AUTHOR"/>
+ 		<result property="empSe" column="EMP_SE"/>
+		<result property="empConfm" column="EMP_CONFM"/>
+		<collection property="authList" resultMap="employeeAuthMap"/>	
+	</resultMap>
+	<resultMap type="authorityVO" id="employeeAuthMap">
+      <result property="empNo" column="EMP_NO"/>
+      <result property="authorNm" column="AUTHOR_NM"/>
+   </resultMap>
+
+	<select id="loginCheck" parameterType="employeeVO" resultType="employeeVO">
+		select
+			EMP_NO, EMP_PW, EMP_NM, EMP_RRNO1, EMP_RRNO2, EMP_TELNO, EMP_ZIP, 
+			EMP_ADRES1, EMP_ADRES2, EMP_EMAIL, EMP_SEXDSTN, EMP_BRTHDY, EMP_DEP, 
+			EMP_ENCPN, EMP_RETIRE, EMP_EXP, EMP_RGSDE, EMP_UPDDE, EMP_HFFC_AT, 
+			EMP_PROFILE, EMP_AUTHOR, EMP_SIGN, EMP_LCNS, EMP_DOCTR_LCNS, EMP_SE, 
+			EMP_CLSF, EMP_YRYC_USE, EMP_YRYC_REMNDR, EMP_OFFHOD_USE, EMP_OFFHOD_REMNDR, 
+			EMP_CONFM, EMP_RQSTR, RJCT_RESN
+		from employee
+		where emp_no = #{empNo}
+		and emp_pw = #{empPw}
+	</select>
+
+
+	<select id="readByUserId" parameterType="string" resultMap="employeeMap">
+		select
+			e.EMP_NO, EMP_PW, EMP_NM, EMP_DEP, EMP_PROFILE, EMP_AUTHOR,
+			EMP_SE, EMP_CONFM, a.author_nm
+		from employee e left outer join authority a on(e.emp_no = a.emp_no)
+		where e.emp_no = #{empNo}
+	</select>
+
+
+</mapper>

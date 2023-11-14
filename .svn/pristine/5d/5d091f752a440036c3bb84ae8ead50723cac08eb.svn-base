@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+   <settings>
+      <setting name="mapUnderscoreToCamelCase" value="true"/>
+   </settings>
+   
+   <typeAliases>
+   
+      <typeAlias type="kr.or.ddit.common.vo.EmployeeVO" alias="employeeVO"/>
+
+      <typeAlias type="kr.or.ddit.patient.vo.PatientVO" alias="patientVO"/>
+
+      <typeAlias type="kr.or.ddit.common.vo.AuthorityVO" alias="authorityVO"/>
+
+      <typeAlias type="kr.or.ddit.administration.vo.NoticeBoardVO" alias="noticeBoardVO"/>
+
+      <typeAlias type="kr.or.ddit.common.vo.PaginationInfoVO" alias="pagingVO"/>
+
+      <typeAlias type="kr.or.ddit.common.vo.FileVO" alias="fileVO"/>
+      
+      <typeAlias type="kr.or.ddit.doctor.vo.ClinicVO" alias="ClinicVO"/>
+      
+      <typeAlias type="kr.or.ddit.doctor.vo.MedicalExaminationOrderVO" alias="MedicalExaminationOrderVO"/>
+      
+      <typeAlias type="kr.or.ddit.doctor.vo.MedicalTreatmentRecordVO" alias="MedicalTreatmentRecordVO"/>
+      
+      <typeAlias type="kr.or.ddit.doctor.vo.PrescriptionOrderVO" alias="PrescriptionOrderVO"/>
+      
+      <typeAlias type="kr.or.ddit.doctor.vo.SickAndWoundedVO" alias="SickAndWoundedVO"/>
+      
+	  <typeAlias type="kr.or.ddit.nurse.vo.MedicineVO" alias="medicineVO"/>
+
+      <typeAlias type="kr.or.ddit.common.vo.SchedulerVO" alias="schedulerVO"/>
+      
+      <typeAlias type="kr.or.ddit.common.vo.ReservationVO" alias="reservationVO"/>
+
+      <typeAlias type="kr.or.ddit.common.vo.RceptVO" alias="rceptVO"/>
+      
+      
+      
+      
+   </typeAliases>
+   
+</configuration>

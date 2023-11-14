@@ -1,0 +1,29 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.doctor.vo.MedicalExaminationOrderVO;
+import kr.or.ddit.nurse.vo.VitalVO;
+
+public interface IActingService {
+
+	// 바이탈 조회 ajax
+	public List<VitalVO> selectVitalList(Map<String, String> map);
+
+	//검사결과 insert
+	public ServiceResult examResultInsert(Map<String, String> map);
+
+	//바이탈 insert
+	public ServiceResult vitalResultInsert(Map<String, String> map);
+
+	public List<MedicalExaminationOrderVO> vitalResultselect(Map<String, String> map);
+
+	public ServiceResult insertXray(HttpServletRequest req, MedicalExaminationOrderVO meoVO);
+
+
+
+}

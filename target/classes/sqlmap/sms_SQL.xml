@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.SmsMapper">
+
+	<insert id="saveSms" parameterType="Map">
+	
+		insert into sms_sndng_cn(
+			sms_no, sms_rcvr, sms_sndng_dt, sms_cn
+		)values(
+			seq_sms_no.nextval, #{name}, sysdate, #{content}
+		)
+	
+	</insert>
+
+	<select id="smsWordList" resultType="smsWordVO">
+	
+		select 
+			sms_words_no, sms_cl, sms_cn
+		from sms_words
+		order by sms_words_no
+	
+	</select>
+
+	<insert id="smsWordInsert" parameterType="Map">
+	
+		insert into sms_words(
+			sms_words_no, sms_cl, sms_cn
+		)values(
+			seq_sms_words_no.nextval, #{smsCl}, #{smsCn}
+		
+		)
+
+	</insert>
+
+	<select id="smsSelect" parameterType="Map" resultType="smsWordVO">
+	
+		select 
+			sms_cl, sms_cn
+		from sms_words
+		where sms_words_no = #{smsWordsNo}
+	
+	</select>
+
+
+	<update id="smsUpdate" parameterType="Map">
+	
+		update sms_words
+		set
+			sms_cn = #{smsCn}
+		where sms_words_no = #{smsWordsNo}
+	
+	</update>
+
+	<delete id="smsDelete" parameterType="Map">
+	
+		delete sms_words
+		where sms_words_no = #{smsWordsNo}
+	
+	
+	</delete>
+	
+	<select id="sendSmsList" parameterType="Map" resultType="smsSndingCnVO">
+		
+		select 
+			sms_no, sms_rcvr, sms_sndng_dt, sms_cn
+		from sms_sndng_cn
+		where sms_sndng_dt = #{smsSndngDt}
+	
+	</select>
+
+
+
+</mapper>

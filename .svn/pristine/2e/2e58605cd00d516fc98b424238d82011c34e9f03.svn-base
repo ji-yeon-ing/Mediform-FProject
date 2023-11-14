@@ -1,0 +1,20 @@
+package kr.or.ddit.nurse.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class HospitalizationVO {
+	
+	private String hsptlzCd;
+	private String clnicNo;
+	private String rceptNo;
+	private String patntNo;
+	private String hsptlzSckrm;
+	private String hsptlzSckbd;
+	private Date hsptlzDe;
+	private Date prarndeLhstl;
+	private Date realLhstl;
+	
+}

@@ -1,0 +1,18 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.ChattingRoomVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface IChattingService {
+
+	List<EmployeeVO> friendList();
+
+	ServiceResult insertChattMember(String roomName, List<String> selectedFriendValues);
+
+	List<ChattingRoomVO> selectChattingRoomList(Map<String, String> map);
+
+}

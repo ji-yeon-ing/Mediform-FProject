@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PatientList</title>
+</head>
+<body>
+<h3>환자 목록</h3>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>환자번호</th>
+				<th>이름</th>
+				<th>주민번호</th>
+				<th>연락처</th>
+				<th>우편번호</th>
+				<th>주소</th>
+				<th>나이</th>
+				<th>성별</th>
+				<th>보호자이름</th>
+				<th>보호자연락처</th>
+				<th>개인정보동의여부</th>
+				<th>키(cm)</th>
+				<th>몸무게(kg)</th>
+				<th>혈액형</th>
+				<th>보험여부</th>
+				<th>메모사항</th>
+				<th>입원여부</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:set value="${patientList }" var="patientList"/>
+			<c:choose>
+				<c:when test="${empty patientList }">
+					<tr>
+						<td colspan="17" align="center">환자정보가 존재하지 않습니다.</td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<c:forEach items="${patientList }" var="patient">
+						<tr>
+							<td>${patient.patntNo }</td>
+							<td>${patient.patntNm }</td>
+							<td>${patient.patntRrno1 } - ${patient.patntRrno2 }</td>
+							<td>${patient.patntTelno }</td>
+							<td>${patient.patntZip }</td>
+							<td>${patient.patntAdres1 } ${patient.patntAdres2 }</td>
+							<td>${patient.patntAge }</td>
+							<td>${patient.patntSexdstn }</td>
+							<td>${patient.prtctorNm }</td>
+							<td>${patient.prtctorTelno }</td>
+							<td>${patient.patntAgre }</td>
+							<td>${patient.patntHeight }</td>
+							<td>${patient.patntBdwgh }</td>
+							<td>${patient.patntBdp }</td>
+							<td>${patient.patntHlthinsAt }</td>
+							<td>${patient.patntMemo }</td>
+							<td>${patient.patientHsptlzAt }</td>
+						</tr>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+		</tbody>
+	</table>
+
+<!-- 신규 환자 등록 modal(정적) 시작 -->
+
+<!-- 신규 환자 등록 modal(정적) 끝 -->
+
+<script type="text/javascript">
+// 신규환자등록(Modal창)
+
+</script>
+
+</body>
+</html>
+
+
+
+

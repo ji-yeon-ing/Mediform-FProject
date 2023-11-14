@@ -1,0 +1,82 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.HospitalCertificatesVO;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.doctor.vo.MedicalExaminationOrderVO;
+import kr.or.ddit.doctor.vo.MedicalTreatmentRecordVO;
+import kr.or.ddit.doctor.vo.SelectAllMedicalTreatmentRecordVO;
+import kr.or.ddit.doctor.vo.SickAndWoundedVO;
+import kr.or.ddit.mapper.common.CertificatesMapper;
+
+// 제증명 서비스
+@Service
+public class CertificatesServiceImpl implements ICertificatesService {
+	
+	@Inject
+	private CertificatesMapper certificatesMapper;
+
+	// 진단서 폼 ajax
+	@Override
+	public ClinicVO selectCertificatesList(Map<String, String> map) {
+		
+		// 진단서 상병 조회
+		List<SickAndWoundedVO> sickAndWoundedVOList = certificatesMapper.selectCertificatesSAW(map);
+		// 진단서 검사 조회
+		List<MedicalExaminationOrderVO> medicalExaminationOrderVOList = certificatesMapper.selectCertificatesMEO(map);
+		
+		for(int i = 0; i < medicalExaminationOrderVOList.size(); i++) {
+			if(!medicalExaminationOrderVOList.get(0).getMecCd().equals(null) && !medicalExaminationOrderVOList.get(0).getMecCd().equals("")) {
+				String hlthchkpCd = "";
+				hlthchkpCd = medicalExaminationOrderVOList.get(i).getHlthchkpCd();
+				if(hlthchkpCd.equals("HC003")) {
+					int file = certificatesMapper.selectFileExist(medicalExaminationOrderVOList.get(i).getMecCd());
+					if(file > 0) {
+						medicalExaminationOrderVOList.get(i).setHlthchkpResult("검사 완료");
+					}
+				}
+			}
+		}
+		
+		// 진단서 치료 조회
+		List<SelectAllMedicalTreatmentRecordVO> selectMedicalTreatmentRecordVOList = certificatesMapper.selectCertificatesMTR(map);
+		// 진단서 진료 조회
+		ClinicVO clinicVO = certificatesMapper.selectCertificatesClinic(map);
+		
+		clinicVO.setSickAndWoundedVOList(sickAndWoundedVOList);
+		clinicVO.setMedicalExaminationOrderVOList(medicalExaminationOrderVOList);
+		clinicVO.setSelectMedicalTreatmentRecordVOList(selectMedicalTreatmentRecordVOList);;
+		
+		return clinicVO;
+	}
+
+	@Override
+	public ServiceResult cdInsert(HospitalCertificatesVO hospitalCertificatesVO) {
+		
+		ServiceResult result = null;
+		
+		int status = certificatesMapper.cdInsert(hospitalCertificatesVO);
+
+		if(status > 0) {
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<ClinicVO> selectMtcList(Map<String, String> map) {
+		return certificatesMapper.selectMtcList(map);
+	}
+	
+	
+}

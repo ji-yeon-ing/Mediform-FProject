@@ -1,0 +1,145 @@
+package kr.or.ddit.manager.controller;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.manager.service.IManagerService;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping(value="/mediform/manager/employee")
+public class ManagerEmployeeController {
+
+	@Inject
+	private IManagerService managerService; 
+	
+		// 회원가입 신청 내역 확인 페이지
+		@GetMapping(value="/select")
+		public String employeeConfirm(Model model) {
+			log.info("employeeConfirm() 실행");
+			List<EmployeeVO> empList = managerService.EmployeeList();
+			List<EmployeeVO> confirmList = managerService.ApplicationList();
+			model.addAttribute("empList", empList);
+			model.addAttribute("confirmList", confirmList);
+			return "manager/empConfirm";
+		}
+		
+		// 선택 된 버튼에 따른 값 변경
+		// 목적성 잃은 POSTMAPPING
+		// 추후 수정
+		@ResponseBody
+		@PostMapping(value="/select")
+		public ResponseEntity<String> employeeManagementPage(@RequestParam Map<String, String> map, Model model) {
+			String thisPage = map.get("thisPage");
+			log.info("thisPage : " + thisPage);
+			if(thisPage != null && thisPage.equals("empList")) {
+				// 직원 전체 조회시
+//				resultPage = "empList";
+				model.addAttribute("thisPage", "empList");
+			}else if(thisPage != null && thisPage.equals("confirmList")) {
+				// 신청 내역 조회시	
+//				resultPage = "confirmList";
+				model.addAttribute("thisPage", "confirmList");
+			}else if(thisPage != null && thisPage.equals("completedList")) {
+				// 처리 내역 조회시
+				model.addAttribute("thisPage", "completedList");
+//				String option = map.get("approval");
+//				model.addAttribute("empList", );
+			}
+			return new ResponseEntity<String>("OK", HttpStatus.OK);
+		}
+		
+		// 상세 조회
+		@PostMapping(value="/getEmployee")
+		public ResponseEntity<EmployeeVO> getEmployee(@RequestBody Map<String, String>map){
+			log.info("getEmployee() 실행");
+			String empNo = map.get("empNo");
+			EmployeeVO empVO = managerService.getEmployee(empNo);
+			
+			return new ResponseEntity<EmployeeVO>(empVO, HttpStatus.OK); 
+		}
+		
+		// 반려 처리
+		@PostMapping(value="/rejectUpdate")
+		public String rejectUpdate(EmployeeVO empVO, RedirectAttributes ra, Model model) throws MessagingException, UnsupportedEncodingException{
+			log.info("rejectUpdate() 실행");
+			ServiceResult result = managerService.rejectUpdate(empVO);
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("msg", "정상적으로 처리 되었습니다.");
+				ra.addFlashAttribute("thisPage", "confirmList");
+			}else {
+				ra.addFlashAttribute("msg", "해당 요청 실행 중 오류가 발생했습니다.");
+			}
+			return "redirect:/mediform/manager/employee/select";
+		}
+		
+		// 승인 처리
+		@PostMapping(value="/agree")
+		public String agreeEmployee(EmployeeVO empVO, RedirectAttributes ra, Model model) throws UnsupportedEncodingException, MessagingException {
+			log.info("agreeEmployee() 실행");
+			ServiceResult result = managerService.agreeEmployee(empVO);
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("msg", "정상적으로 처리 되었습니다.");
+				ra.addFlashAttribute("thisPage", "confirmList");
+			}else {
+				ra.addFlashAttribute("msg", "해당 요청 실행 중 오류가 발생했습니다.");
+			}
+			return "redirect:/mediform/manager/employee/select";
+		}
+		
+		// 회원 수정
+		@PostMapping(value="update")
+		public String employeeUpdate(@RequestBody Map<String, String> map, RedirectAttributes ra) {
+			log.info("employeeUpdate() 실행");
+			String check = map.get("retireCheck");
+			EmployeeVO empVO = new EmployeeVO();
+			empVO.setEmpNo(map.get("empNo"));
+			empVO.setEmpClsf(map.get("empClsf"));
+			int deleteAuthRst = 0;
+			int deleteEmpRst = 0;
+			int updateResult = 0;
+			
+			if(check != null && check.equals("Y")) {
+				empVO.setEmpHffcAt("0");
+				// 퇴직 직원 권한 삭제
+				deleteAuthRst = managerService.deleteAuth(empVO);
+				deleteEmpRst = managerService.retireEmp(empVO);
+			}else{
+				empVO.setEmpHffcAt("1");
+				updateResult = managerService.updateEmp(empVO);
+			}
+			if(deleteAuthRst > 0 || updateResult > 0) {
+				ra.addFlashAttribute("msg", "정상적으로 처리 되었습니다.");
+			}else {
+				ra.addFlashAttribute("msg", "해당 요청 실행 중 오류가 발생했습니다.");
+			}
+			return "redirect:/mediform/manager/employee/select";
+		}
+		
+		@GetMapping(value="/temp")
+		public String tempPage() {
+			return "manager/temp";
+		}
+		
+		
+	
+}

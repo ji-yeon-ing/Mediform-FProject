@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.ReservationMapper">
+
+
+	<select id="selectList" parameterType="Map" resultType="reservationVO">
+	
+		select a.patnt_no, patnt_nm, rpatnt_dttm, recpt_clnc
+				, a.emp_no, emp_nm, rsvt_resn
+		from resve_patient a, patient b, employee c
+		where a.patnt_no = #{patntNo}
+			 and a.emp_no = c.emp_no
+			 and a.patnt_no = b.patnt_no
+			 
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

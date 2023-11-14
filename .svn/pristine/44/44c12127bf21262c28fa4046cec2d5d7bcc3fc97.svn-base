@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	
+	<definition name="administrationMainTemplate" template="/WEB-INF/views/administration/mainTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/administration/tiles/header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/views/administration/tiles/footer.jsp"/>
+	</definition>
+	
+	<definition name="admin/*" extends="administrationMainTemplate">
+		<put-attribute name="content" value="/WEB-INF/views/administration/{1}.jsp"/>
+	</definition>
+	
+	<definition name="managerMainTemplate" template="/WEB-INF/views/manager/mainTemplate.jsp">
+		<put-attribute name="managerHeader" value="/WEB-INF/views/manager/tiles/header.jsp"/>
+		<put-attribute name="managerFooter" value="/WEB-INF/views/manager/tiles/footer.jsp"/>
+	</definition>
+	
+	<definition name="manager/*" extends="managerMainTemplate">
+		<put-attribute name="managerContent" value="/WEB-INF/views/manager/{1}.jsp"/>
+	</definition>
+	
+	<definition name="patientMainTemplate" template="/WEB-INF/views/patient/mainTemplate.jsp">
+		<put-attribute name="patientHeader" value="/WEB-INF/views/patient/tiles/header.jsp"/>
+		<put-attribute name="patientFooter" value="/WEB-INF/views/patient/tiles/footer.jsp"/>
+	</definition>
+	
+	<definition name="patient/*" extends="patientMainTemplate">
+		<put-attribute name="patientContent" value="/WEB-INF/views/patient/{1}.jsp"/>
+	</definition>
+	
+	<definition name="doctorMainTemplate" template="/WEB-INF/views/doctor/mainTemplate.jsp">
+		<put-attribute name="doctorHeader" value="/WEB-INF/views/doctor/tiles/header.jsp"/>
+		<put-attribute name="doctorFooter" value="/WEB-INF/views/doctor/tiles/footer.jsp"/>
+	</definition>
+	
+	<definition name="doctor/*" extends="doctorMainTemplate">
+		<put-attribute name="doctorContent" value="/WEB-INF/views/doctor/{1}.jsp"/>
+	</definition>
+	
+	<definition name="nurseMainTemplate" template="/WEB-INF/views/nurse/mainTemplate.jsp">
+		<put-attribute name="nurseHeader" value="/WEB-INF/views/nurse/tiles/header.jsp"/>
+		<put-attribute name="nurseFooter" value="/WEB-INF/views/nurse/tiles/footer.jsp"/>
+	</definition>
+	
+	<definition name="nurse/*" extends="nurseMainTemplate">
+		<put-attribute name="nurseContent" value="/WEB-INF/views/nurse/{1}.jsp"/>
+	</definition>
+		
+	
+
+	
+	
+
+</tiles-definitions>
+
+
+

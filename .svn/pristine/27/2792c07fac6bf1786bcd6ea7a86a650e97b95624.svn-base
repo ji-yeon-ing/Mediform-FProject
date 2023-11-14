@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<context:component-scan base-package="kr.or.ddit">
+<!-- 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
+<!-- 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/> -->
+<!-- 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/> -->
+	</context:component-scan>
+	
+	
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="2" />
+	</beans:bean>
+	
+	
+	<!-- Tiles 설정 시작 -->
+	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"></beans:property>
+		<beans:property name="order" value="1"/>
+	</beans:bean>
+	
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<beans:property name="definitions">
+			<beans:list>
+				<beans:value>/WEB-INF/spring/tiles-config.xml</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- 메일 bean 추가 시작 -->
+	<!-- GMAIL 이용시 -->
+	<beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">	<!-- java mail 추가 -->
+    <beans:property name="host" value="smtp.gmail.com"/>										<!-- Gmail -->
+    <beans:property name="port" value="587" />													<!-- 포트 번호 -->
+    <beans:property name="username" value="nammj0419@gmail.com"/>									<!-- 보내는 사람 이메일 주소 -->
+    <beans:property name="password" value="cfaselxhxgdkgzke"/>												<!-- 2차 인증번호 권유 -->
+    <beans:property name="javaMailProperties">
+        <beans:props>
+            <beans:prop key="mail.smtp.transport.protocol">SMTP</beans:prop>					<!-- SMTP 이용 -->
+            <beans:prop key="mail.smtp.auth">true</beans:prop>									<!-- 권한 true로 설정 -->
+            <beans:prop key="mail.smtp.starttls.enable">true</beans:prop>						<!-- TLS 사용 -->
+            <beans:prop key="mail.smtp.ssl.protocols">TLSv1.2</beans:prop>						<!-- TLS 프로토콜 버전 설정 -->
+            <beans:prop key="mail.debug">true</beans:prop>
+        </beans:props>
+    </beans:property>
+	</beans:bean>
+	<!-- 메일 bean 추가 끝 -->
+	
+	<!-- 감사기록을 위한 인터셉터 설정 -->
+	<beans:bean id="auditInterceptor" class="kr.or.ddit.common.interceptor.AuditInterceptor"></beans:bean>
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<!-- 예외 처리할 페이지 -->
+			<exclude-mapping path="/resources/**"/>
+			<!-- 로그인 관련 -->
+			<exclude-mapping path="/mediform/login"/>
+			<exclude-mapping path="/mediform/logout"/>
+			<exclude-mapping path="/mediform/password/**"/>
+			<exclude-mapping path="/mediform/main"/>
+			<exclude-mapping path="/mediform/scheduler/**"/>
+			<!-- 채팅 관련 -->
+			<exclude-mapping path="/mediform/common/chattingroom/**"/>
+			<exclude-mapping path="/mediform/common/chatting/**"/>
+			
+			<!-- 환자 -->
+			<exclude-mapping path="/mediform/patient/**"/>
+			<beans:ref bean="auditInterceptor"/>
+		</interceptor>
+	</interceptors>
+	<!-- 감사기록을 위한 인터셉터 설정 -->
+	
+	<!-- 소켓 핸들러 -->
+	<beans:bean id="chattingHandler" class="kr.or.ddit.common.controller.ChattingHandler"/>
+	
+ 	<websocket:handlers>
+	    <websocket:mapping handler="chattingHandler" path="/chatting/**"/>
+<!-- 	    <websocket:sockjs/> -->
+	</websocket:handlers>
+	<!-- 소켓 핸들러 -->
+	
+	<security:global-method-security pre-post-annotations="enabled" secured-annotations="enabled"/>
+	
+</beans:beans>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.ReceiptMapper">
+
+	<insert id="receiptInsert" parameterType="rceptVO">
+	
+		<selectKey keyProperty="rceptNo" resultType="String" order="BEFORE">
+			select seq_rcept_no.nextval from dual
+		
+		</selectKey>
+	
+		insert into rcept(
+			rcept_no, patnt_no, rcept_dt, rcept_reason,
+			rcept_sttus, rcept_priort, rcept_clnc
+		)values(
+			#{rceptNo}, #{patntNo}, sysdate, #{rceptReason},
+			0, #{rceptPriort}, #{rceptClnc}
+		)
+	
+	</insert>
+
+
+
+
+
+
+
+</mapper>

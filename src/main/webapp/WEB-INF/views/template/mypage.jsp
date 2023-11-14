@@ -1,0 +1,438 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+
+<script>
+	var isRTL = JSON.parse(localStorage.getItem('isRTL'));
+	if (isRTL) {
+		var linkDefault = document.getElementById('style-default');
+		var userLinkDefault = document.getElementById('user-style-default');
+		linkDefault.setAttribute('disabled', true);
+		userLinkDefault.setAttribute('disabled', true);
+		document.querySelector('html').setAttribute('dir', 'rtl');
+	} else {
+		var linkRTL = document.getElementById('style-rtl');
+		var userLinkRTL = document.getElementById('user-style-rtl');
+		linkRTL.setAttribute('disabled', true);
+		userLinkRTL.setAttribute('disabled', true);
+	}
+</script>
+<c:set var="customUser" value="${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal}" />
+
+
+<form action="/mediform/common/mypage/update" id="updateForm"
+	method="post" enctype="multipart/form-data">
+	
+	<input type="hidden" name="empNo" value="${customUser.employee.empNo}"/>
+	
+	<div class="card border border-secondary mb-3">
+		<div class="card-header bg-secondary">
+			<div class="row flex-between-end">
+				<div class="col-auto align-self-center">
+					<h5 class="text-white mb-0 fw-semi-bold" data-anchor="data-anchor">회원정보</h5>
+				</div>
+			</div>
+		</div>
+		<div class="card-body bg-body-tertiary">
+			<div class="tab-content">
+				<div class="tab-pane preview-tab-pane active" role="tabpanel"
+					aria-labelledby="tab-dom-a5ed76cd-9697-4ee4-b6d5-4d29bc251807"
+					id="dom-a5ed76cd-9697-4ee4-b6d5-4d29bc251807">
+
+					<div class="row">
+						
+						<div class="col-2">
+						
+						
+						</div>
+
+						<div class="col-4">
+							<div class="row">
+
+								<div class="col-6">
+									<label class="form-label" for="dateInputmask">이름</label> <input
+										class="form-control" id="empNm" name="empNm"
+										value="${customUser.employee.empNm}" type="text" />
+								</div>
+
+								<div class="col-6">
+									<label class="form-label" for="dateInputmask">성별</label> <select
+										class="form-select" id="empSexdstn" name="empSexdstn"
+										aria-label="Default select example">
+										<option selected="">성별</option>
+										<option value="M">남자</option>
+										<option value="F">여성</option>
+									</select>
+								</div> 
+							</div>
+
+							<br>
+
+							<div class="row">
+								<div class="col-6">
+									<label class="row form-label" for="dateInputmask">&nbsp;&nbsp;&nbsp;&nbsp;주민등록번호</label>
+									<input class="form-control" id="empRrno1" name="empRrno1"
+										value="${customUser.employee.empRrno1}" type="text" />
+								</div>
+
+								<div class="col-6">
+									<label class="row form-label" for="dateInputmask">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+									<input class="form-control" id="empRrno2" name="empRrno2"
+										value="${customUser.employee.empRrno2}" type="text" />
+								</div>
+							</div>
+
+							<br>
+
+							<div class="row">
+								<div class="col-12">
+									<label class="form-label" for="dateInputmask">휴대폰번호</label> <input
+										class="form-control" id="empTelno" name="empTelno"
+										value="${customUser.employee.empTelno}" type="text" />
+								</div>
+
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-6">
+									<label class="form-label" for="dateInputmask">이메일</label> <input
+										class="form-control" id="empEmail" name="empEmail"
+										value="${customUser.employee.empEmail}" type="text" />
+								</div>
+
+								<div class="col-6">
+									<label class="form-label" for="dateInputmask">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+
+									<select class="form-select" aria-label="Default select example"
+										id="empEmail2" name="empEmail2">
+										<option selected="">주소</option>
+										<option value="@naver.com">naver.com</option>
+										<option value="@gmail.com">gmail.com</option>
+										<option value="@daum.net">daum.net</option>
+										<option value="@hanmail.com">hanmail.com</option>
+									</select>
+
+								</div>
+							</div>
+
+
+							<div class="row">
+								<div class="col-6">
+									<label class="form-label" for="dateInputmask">우편번호</label> <input
+										class="form-control" id="empZip" name="empZip"
+										data-input-mask='{"alias":"datetime","inputFormat":"dd/mm/yyyy"}'
+										value="${customUser.employee.empZip}" type="text" />
+								</div>
+								<div class="col-6">
+									<label class="form-label" for="dateInputmask">&nbsp;&nbsp;</label><br>
+									<button type="button" onclick="DaumPostcode()"
+										class="btn btn-secondary btn-flat">우편번호 찾기</button>
+								</div>
+							</div>
+							<br>
+							<div class="mb-3">
+								<label class="form-label" for="dateInputmask">주소</label> <input
+									class="form-control" id="empAdres1" name="empAdres1"
+									value="${customUser.employee.empAdres1}" type="text" />
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label" for="dateInputmask">상세주소</label> <input
+									class="form-control" id="empAdres2" name="empAdres2"
+									value="${customUser.employee.empAdres2}" type="text" />
+							</div>
+						</div>
+
+
+
+						<div class="col-4">
+							<!-- 프로필 이미지, 경력사항 -->
+							<br><br><br><br><br>
+							
+							<div class="row">
+								<div class="col-3">
+								
+								</div>
+							
+								<div class="col-6">
+									<div class="input-group mb-3 text-center">
+										<div
+											class="avatar avatar-5xl avatar-profile shadow-sm img-thumbnail rounded-circle">
+											<div
+												class="h-100 w-100 rounded-circle overflow-hidden position-relative">
+												<img id="thumbnail" src="${customUser.employee.empProfile}"
+													width="200" alt="" data-dz-thumbnail="data-dz-thumbnail" />
+												<input class="d-none" name="imgFile" id="profileImage"
+													type="file" /> <label
+													class="mb-0 overlay-icon d-flex flex-center"
+													for="profileImage"> <span
+													class="bg-holder overlay overlay-0"></span> <span
+													class="z-1 text-white dark__text-white text-center fs--1">
+														<span class="fas fa-camera"></span> <span class="d-block">Update</span>
+												</span>
+												</label>
+											</div>
+										</div>
+									</div>
+								<div class="col-3">
+							
+								</div>
+							</div>
+						</div>
+						<br><br><br><br>
+						<div class="row">
+							<div class="col-2">
+							
+							</div>
+							<div class="col-8">
+								<span class="mb-0 fw-semi-bold">사번</span> &nbsp;&nbsp;&nbsp; ${customUser.employee.empNo}
+							</div>
+							<div class="col-2">
+								
+							</div>
+						</div>
+						
+						<c:if test = "${customUser.employee.empSe eq 'a'}">
+							<c:set value="원무과" var="dept"/>
+						</c:if>
+						<c:if test = "${customUser.employee.empSe eq 'd'}">
+							<c:set value="의사" var="dept"/>
+						</c:if>
+						<c:if test = "${customUser.employee.empSe eq 'n'}">
+							<c:set value="간호사" var="dept"/>
+						</c:if>
+						<c:if test = "${customUser.employee.empSe eq 't'}">
+							<c:set value="치료사" var="dept"/>
+						</c:if>
+						<c:if test = "${customUser.employee.empSe eq 'm'}">
+							<c:set value="관리자" var="dept"/>
+						</c:if>
+						<c:if test = "${customUser.employee.empSe eq 'k'}">
+							<c:set value="병원장" var="dept"/>
+						</c:if>
+						
+						<div class="row">
+							<div class="col-2">
+							
+							</div>
+							<div class="col-8">
+								<span class="mb-0 fw-semi-bold">소속</span> &nbsp;&nbsp;&nbsp; ${dept}
+							</div>
+							<div class="col-2">
+							
+							</div>
+						</div>
+						
+						
+						<div class="row">
+							<div class="col-2">
+							
+							</div>
+							<div class="col-8">
+								<span class="mb-0 fw-semi-bold">연차 잔여수</span> &nbsp;&nbsp;&nbsp; ${customUser.employee.empYrycRemndr}
+							</div>
+							<div class="col-2">
+								
+							</div>
+						</div>
+						
+						<hr>
+						
+						<div class="row">
+							<div class="col-2">
+									
+							</div>
+							<div class="col-8">
+								<h5 class="mb-0 fw-semi-bold">비밀번호 변경</h5>
+							</div>
+							<div class="col-2">
+									
+							</div>
+						
+						</div>
+						
+						<br>
+						
+						<div class="row">
+							<div class="col-2">
+									
+							</div>
+							<div class="col-7">
+								<label class="form-label" for="dateInputmask">기존 비밀번호</label> 
+								<input
+									class="form-control" id="pwBefore" name="pwBefore"
+									value="" type="text" />
+							</div>
+							<div class="col-3">
+									
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-2">
+									
+							</div>
+							<div class="col-7">
+								<label class="form-label" for="dateInputmask">새 비밀번호</label> 
+								<input
+									class="form-control" id="empPw" name="empPw"
+									value="" type="text" />
+							</div>
+							<div class="col-3">
+									
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-2">
+									
+							</div>
+							<div class="col-7">
+								<label class="form-label" for="dateInputmask">새 비밀번호 확인</label> 
+								<input
+									class="form-control" id="empPwCheck" name="empPwCheck"
+									value="" type="text" />
+							</div>
+							<div class="col-3">
+								<div style="height: 32px;"></div>
+								<button id="updateBtn" class="btn btn-primary">수정</button>
+							</div>
+						</div>
+						
+						
+		
+						
+						<div class="col-2">
+							
+						
+						</div>
+						
+								
+					</div>
+						
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<sec:csrfInput />
+
+</form>
+	<input type="hidden" id="empPwOrg" name="empPwOrg" value="${customUser.employee.empPw }"/>	
+	
+
+
+<script src="../../../vendors/popper/popper.min.js"></script>
+<script src="../../../vendors/bootstrap/bootstrap.min.js"></script>
+<script src="../../../vendors/anchorjs/anchor.min.js"></script>
+<script src="../../../vendors/is/is.min.js"></script>
+<script src="../../../vendors/inputmask/inputmask.min.js"></script>
+<script src="../../../vendors/prism/prism.js"></script>
+<script src="../../../vendors/fontawesome/all.min.js"></script>
+<script src="../../../vendors/lodash/lodash.min.js"></script>
+<script
+	src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+<script src="../../../vendors/list.js/list.min.js"></script>
+<script src="../../../assets/js/theme.js"></script>
+<script src="/resources/assets/js/flatpickr.js"></script>
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	$(function() {
+
+		var updateBtn = $("#updateBtn");
+		var updateForm = $("#updateForm");
+		var profileImage = $("#profileImage");
+		var pwBefore = $("#pwBefore");
+		var empPwOrg = $("#empPwOrg");
+		
+		
+		
+		updateBtn.on("click", function() {
+			
+			if(pwBefore == null || pwBefore == ""){
+				alert("ㅗㅗㅗ 모달로 바꾸기~");
+			}
+			if(pwBefore != empPwOrg){
+				alert("기존 비밀번호랑 다름");
+			}
+			
+			
+			updateForm.submit();
+		});
+
+		profileImage.on("change", function() {
+			var file = event.target.files[0];
+
+			if (isImageFile(file)) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$("#thumbnail").attr("src", e.target.result);
+				}
+				reader.readAsDataURL(file);
+			} else {
+				alert("이미지 파일을 선택해주세요");
+			}
+		});
+
+	})
+
+	function isImageFile(file) {
+		var ext = file.name.split(".").pop().toLowerCase(); // 파일명에서 확장자를 꺼낸다
+		return ($.inArray(ext, [ "jpg", "jpeg", "gif", "png" ]) === -1 ? false
+				: true);
+	}
+
+	function DaumPostcode() {
+		new daum.Postcode({
+			oncomplete : function(data) {
+				// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+				// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+				// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+				var addr = ''; // 주소 변수
+				var extraAddr = ''; // 참고항목 변수
+
+				//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+				if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+					addr = data.roadAddress;
+				} else { // 사용자가 지번 주소를 선택했을 경우(J)
+					addr = data.jibunAddress;
+				}
+
+				// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+				if (data.userSelectedType === 'R') {
+					// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+					// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+					if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+						extraAddr += data.bname;
+					}
+					// 건물명이 있고, 공동주택일 경우 추가한다.
+					if (data.buildingName !== '' && data.apartment === 'Y') {
+						extraAddr += (extraAddr !== '' ? ', '
+								+ data.buildingName : data.buildingName);
+					}
+					// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+					if (extraAddr !== '') {
+						extraAddr = ' (' + extraAddr + ')';
+					}
+				}
+
+				// 우편번호와 주소 정보를 해당 필드에 넣는다.
+				document.getElementById('empZip').value = data.zonecode;
+				document.getElementById("empAdres1").value = addr;
+				// 커서를 상세주소 필드로 이동한다.
+				document.getElementById("empAdres2").focus();
+			}
+		}).open();
+	}
+</script>
+
+
+
+

@@ -1,0 +1,921 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+#calendar .fc-day-sun{
+	color: lightcoral;
+}
+#calendar .fc-day-sat{
+	color: cornflowerblue;
+}
+.fc .fc-button-primary{
+	background-color: midnightblue;
+}
+.fc .fc-scrollgrid{
+	border: 1px #ddd solid
+}
+.form-select {
+	padding-right: 10px;
+}
+</style>
+<meta charset="UTF-8">
+<title>메디폼 | 관리자</title>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<script type="text/javascript">
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
+// 수정 flag
+var updateFlag = $("#updateFlag").val();
+console.log("처음 updateFlag: " + updateFlag);
+
+$(document).ready(function() {
+	tabList('scheduler-tab');
+
+    $('.nav-link').on('click', function() {
+        var tabId = $(this).attr('id');
+        console.log(tabId);
+        tabList(tabId);
+    });
+});
+
+function tabList(tabId){
+    var url;
+    console.log(tabId);
+    if (tabId === 'scheduler-tab') {
+        url = '/mediform/manager/scheduler/list';
+    } else if (tabId === 'vacation-tab') {
+        url = '/mediform/manager/vacation/list';
+    }
+    
+	$.ajax({
+		type: "GET",
+		url: url,
+		dataType: 'json',
+		contentType: "application/json; charset=utf-8",
+		beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function(param) {
+        	console.log(param);
+        	InitCalender(param);
+        },	// success
+        error: function(){
+        	console.log("에러발생");
+        }
+	});
+}
+
+function InitCalender(param){
+	if(calendar) {
+        calendar.destroy();
+    }
+	
+	var calendarEl = document.getElementById('calendar');
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'dayGridMonth',
+		headerToolbar : {
+			start: 'prev,next today',
+			center: 'title',
+			end: 'dayGridMonth,dayGridWeek,dayGridDay'
+		},
+		weekends: true,
+		buttonText: {
+			today: '오늘',
+			month: '월간',
+			week: '주간',
+			day: '일간'
+		},
+		views: {
+			dayGridMonth: {
+				titleFormat: {month: 'long', year: 'numeric'}
+			}
+		},
+		height: '700px',
+		navLinks : true, 				// 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
+		editable : true, 				// 수정 가능
+		selectable : true, 				// 달력 일자 드래그 설정 가능
+		droppable : true, 				// 드래그 앤 드롭
+		events : param,
+		locale : 'ko', 					// 한국어 설정
+		select: function(info){			// 날짜 클릭 및 드래그로 이벤트(일정 등록) 생성
+			NewSchedulerModal(info);
+		},
+		eventClick: function(info){		// 이벤트 클릭시 상세보기 & 수정 & 삭제
+			updateFlag = "T";
+			console.log("eventClick updateFlag: " + updateFlag);
+			detailModal(info, updateFlag);
+		},
+		eventDrop: function(info){		// 드래그 앤 드랍 수정
+			updateFlag = "T";
+			console.log("eventDrop updateFlag: " + updateFlag);
+			dragDropUpdate(info, updateFlag);
+		}
+	});
+	calendar.render();
+}
+</script>
+</head>
+<body>
+<div class="row" style="height: 900px;">
+	<!-- 캘린더 시작 -->
+	<div class="col-7">
+		<div class="card border border-secondary" >
+			<div class="">
+				<input class="fw-semi-bold col-12 text-white text-center form-control" id="calender" name="" type="text" value="일정" style="background-color: midnightblue" disabled />
+
+				<!-- 캘린더 시작 -->
+				<div style="display: flex; align-items: center; flex-direction: column;">
+					<div class="card" style="width: 100%">
+						<div class="card-body" style="background-color: aliceblue;">
+							<div id="calendar"></div>
+							<br/>
+						</div>
+					</div>
+				</div>
+				<!-- 캘린더 끝 -->
+				
+			</div>
+		</div>
+	</div>
+	<!-- 캘린더 끝 -->
+	
+	<!-- 일정 & 휴가 시작 -->
+	<div class="col-5">
+		<div class="card border border-secondary" style="height: 805px;">
+			
+			<!-- 일정 & 휴가 상단 탭 시작 -->
+			<div>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item text-center col-6">
+						<a class="nav-link active fw-semi-bold" id="scheduler-tab" data-bs-toggle="tab" href="#tab-scheduler" role="tab" aria-controls="tab-scheduler" aria-selected="true">일정</a>
+					</li>
+					<li class="nav-item text-center col-6">
+						<a class="nav-link fw-semi-bold" id="vacation-tab" data-bs-toggle="tab" href="#tab-vacation" role="tab" aria-controls="tab-vacation" aria-selected="false">휴가</a>
+					</li>
+				</ul>
+			</div>
+			<!-- 일정 & 휴가 상단 탭 끝 -->
+			
+			<!-- 탭 바디 시작 -->
+			<div class="row card-body pt-0">
+				<div class="tab-content" id="myTabContent">
+				
+					<!-- 일정 탭 시작 -->
+					<div class="col-12 tab-pane fade show active" id="tab-scheduler" role="tabpanel" aria-labelledby="scheduler-tab">
+						
+						<!-- 일정 등록 버튼 시작 -->
+						<div class="card-body pb-1 pt-3 pe-2">
+							<div class="col-12" style="display: flex; justify-content: flex-end;">
+								<button class="btn btn-falcon-primary btn-sm" type="button">
+									<span class="d-none d-sm-inline-block ms-1" data-bs-toggle="modal" data-bs-target="#new-scheduler-modal" id="newSchedulerBtn" style="color: midnightblue;"><span class="fas fa-plus me-2"></span>일정등록</span>
+								</button>
+							</div>
+						</div>
+						<!-- 일정등록 버튼 끝 -->
+						
+						<!-- 일정 필터 & 검색 시작 -->
+						<div class="card-body p-2">
+							<div class="row col-12" style="width: 722px; padding-bottom: 10px; padding-left: 16px">
+								<div class="col-6 p-0">
+									<div class="search-box">
+										<form class="col-6 col-sm-auto d-flex align-items-center pe-0" method="post" id="searchForm">
+											<input type="hidden" name="page" id="page" />
+											<div class="col-6 col-sm-auto d-flex align-items-center pe-0">
+												<select class="form-select form-select-sm" aria-label="Default select example" style="width: 90px;" name="searchType">
+													<option value="searchSchStart" <c:if test="${searchType eq 'searchSchStart' }">selected="selected"</c:if>>시작일</option>
+													<option value="searchSchEnd" <c:if test="${searchType eq 'searchSchEnd' }">selected="selected"</c:if>>종료일</option>
+												</select>
+											</div>
+											<div class="col-6 col-sm-auto d-flex align-items-center pe-0 search-Box">
+												<input class="form-control form-control-sm datetimepicker" type="text"
+													data-options='{"static":"true","format":"YYYY-MM-DD"}' placeholder="YYYY-MM-DD"
+													name="searchWord" id="searchWord" value="${searchWord }" style="width: 120px"/>
+												<button class="input-group-text" style="padding-right: 10px; padding-left: 10px;"><i class="fas fa-search"></i></button>
+											</div>
+											<sec:csrfInput />
+										</form>
+									</div>
+								</div>
+								<div class="col-6 p-0" style="display: flex; justify-content: flex-end;">
+									<button class="btn btn-falcon-default btn-sm me-1" type="button" id="allSchBtn" value="ALL" style="float: left;">전체일정</button>
+									<div class="dropdown font-sans-serif">
+										<button class="btn dropdown-toggle btn-sm btn-falcon-default me-1" id="dropSchBtn" type="button" data-bs-toggle="dropdown"
+											aria-haspopup="true" aria-expanded="false" style="float: left;">부서일정</button>
+										<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropSchBtn" style="--falcon-dropdown-min-width: 5.2rem; transform: translate(0px, 30px);">
+											<button class="dropdown-item filterBtn dropSchBtn" value="H">병원</button>
+											<button class="dropdown-item filterBtn dropSchBtn" value="A">원무과</button>
+											<button class="dropdown-item filterBtn dropSchBtn" value="D">의사</button>
+											<button class="dropdown-item filterBtn dropSchBtn" value="N">간호과</button>
+											<button class="dropdown-item filterBtn dropSchBtn" value="T">치료사</button>
+										</div>
+									</div>
+									<button class="btn btn-falcon-default btn-sm me-1" type="button" id="mySchBtn" value="MY" style="float: left;">내 일정</button>
+								</div>
+							</div>
+							<!-- 일정 필터 & 검색 끝 -->
+							
+							<!-- 일정 리스트 테이블 시작 -->
+							<div id="schedulerTable" >
+								<div class="table-responsive scrollbar" style="height: 620px;">
+									<table class="table table-sm data-table table-striped fs--1 mb-0 overflow-hidden" data-list='{"valueNames":["count","start","end"]}'>
+										<thead class="bg-200">
+											<tr>
+												<th class="text-900 sort pe-1" data-sort="count" style="text-align: center;">번호</th>
+												<th class="text-900 sort pe-1" style="text-align: center;">일정명</th>
+												<th class="text-900 sort pe-1" data-sort="start" style="text-align: center;">일정시작일</th>
+												<th class="text-900 sort pe-1" data-sort="end" style="text-align: center;">일정종료일</th>
+												<th class="text-900 sort pe-1" style="text-align: center; padding-right: 10px;">작성자</th>
+											</tr>
+										</thead>
+										<tbody class="list" id="table-purchase-body">
+										<c:set value="${pagingVO.dataList }" var="schList" />
+										<c:choose>
+											<c:when test="${empty schList }">
+												<tr>
+													<td colspan="17" align="center">일정정보가 존재하지 않습니다.</td>
+												</tr>
+											</c:when>
+											<c:otherwise>
+												<c:forEach items="${schList }" var="schList" varStatus="status">
+													<tr class="btn-reveal-trigger">
+														<td class="count align-middle white-space-nowrap" style="text-align: center;">${status.count}</td>
+														<td class="align-middle white-space-nowrap" style="text-align: center; white-space: nowrap;
+															overflow: hidden; text-overflow: ellipsis; max-width: 150px;">${schList.schdlNm }</td>
+														<td class="start align-middle white-space-nowrap" style="text-align: center;">${schList.schdlBgngDt }</td>
+														<td class="end align-middle white-space-nowrap" style="text-align: center;">${schList.schdlEndDt }</td>
+														<td class="align-middle white-space-nowrap" style="text-align: center; padding-right: 10px;">${schList.schdlEmpNo }</td>
+													</tr>
+												</c:forEach>
+											</c:otherwise>
+										</c:choose>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="p-0">
+								<div class="p-0 card-footer clearfix col-auto align-self-center pagingArea" id="pagingArea" style="display: flex; justify-content: center;">${pagingVO.pagingHTML }</div>
+							</div>
+							<!-- 일정 리스트 테이블 끝 -->
+						</div>
+					</div>
+					<!-- 일정 탭 끝 -->
+				
+					<!-- 휴가 탭 시작 -->
+					<div class="col-12 tab-pane fade" id="tab-vacation" role="tabpanel" aria-labelledby="vacation-tab">
+						
+						<!-- 휴가 서브탭 시작 -->
+						<div class="col-12 pt-3">
+							<ul class="nav nav-tabs" id="vacTab" role="tablist">
+								<li class="nav-item text-center col-3">
+									<a class="nav-link active text-white me-1" id="signup-tab" data-bs-toggle="tab" href="#tab-signup" role="tab" aria-controls="tab-signup" aria-selected="true" style="background: midnightblue;">신청내역</a>
+								</li>
+								<li class="nav-item text-center col-3">
+									<a class="nav-link text-white me-1" id="approval-tab" data-bs-toggle="tab" href="#tab-approval" role="tab" aria-controls="tab-approval" aria-selected="false" style="background: midnightblue;">승인</a>
+								</li>
+								<li class="nav-item text-center col-3">
+									<a class="nav-link text-white me-1" id="return-tab" data-bs-toggle="tab" href="#tab-return" role="tab" aria-controls="tab-return" aria-selected="false" style="background: midnightblue;">반려</a>
+								</li>
+								<li class="nav-item text-center col-3">
+									<a class="nav-link text-white" id="allvac-tab" data-bs-toggle="tab" href="#tab-allvac" role="tab" aria-controls="tab-allvac" aria-selected="false" style="background: midnightblue;">전체</a>
+								</li>
+							</ul>
+						</div>
+						<!-- 휴가 서브탭 끝 -->
+						
+						<!-- cotent border -->
+						<div class="p-0" style="border: solid midnightblue 2px; border-radius: 0px 0px 10px 10px;">
+
+							<!-- 휴가 등록 버튼 시작 -->
+<!-- 							<div class="card-body pb-1 pt-2 pe-3"> -->
+<!-- 								<div class="col-12" style="display: flex; justify-content: flex-end;"> -->
+<!-- 									<button class="btn btn-falcon-primary btn-sm" type="button"> -->
+<!-- 										<span class="d-none d-sm-inline-block ms-1" data-bs-toggle="modal" data-bs-target="#new-vacation-modal" id="newVacationBtn" style="color: midnightblue;"><span class="fas fa-plus me-2"></span>휴가신청</span> -->
+<!-- 									</button> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+							<!-- 휴가등록 버튼 끝 -->
+							
+							<!-- 휴가 필터 & 검색 시작 -->
+							<div class="card-body p-3 mt-2">
+								<div class="row col-12" style="width: 715px; padding-bottom: 15px;">
+									<div style="display: flex; justify-content: space-between; align-items: center;">
+										<div class="col-6 p-0">
+											<div class="search-box">
+												<form class="col-6 col-sm-auto d-flex align-items-center pe-0" method="post" id="searchForm">
+													<input type="hidden" name="page2" id="page2" />
+													<div class="col-6 col-sm-auto d-flex align-items-center pe-0">
+														<select class="form-select form-select-sm" aria-label="Default select example" style="width: 90px;">
+															<option value="" <c:if test="">selected="selected"</c:if>>신청내역</option>
+														</select>
+													</div>
+													<div class="col-6 col-sm-auto d-flex align-items-center pe-0 search-Box">
+														<div class="input-group input-group-sm">
+															<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" placeholder="검색할 휴가를 입력하세요." name="searchWord2" id="searchWord2" value="${searchWord }"/>
+															<button class="input-group-text" id="inputGroup-sizing-sm2"><i class="fas fa-search"></i></button>
+														</div>
+													</div>
+													<sec:csrfInput />
+												</form>
+											</div>
+										</div>
+										<div class="col-6 p-0" style="display: flex; justify-content: flex-end;">
+											<button class="btn btn-sm btn-falcon-default me-1" type="button" id="allVacBtn" value="ALL" style="float: left;">전체휴가</button>
+											<div class="dropdown font-sans-serif">
+												<button class="btn dropdown-toggle btn-sm btn-falcon-default me-1" id="dropVacBtn" type="button" data-bs-toggle="dropdown"
+													aria-haspopup="true" aria-expanded="false" style="float: left;">부서휴가</button>
+												<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropSchBtn" style="--falcon-dropdown-min-width: 5.2rem; transform: translate(0px, 30px);">
+													<button class="dropdown-item filterVacBtn dropVacBtn" value="H">병원</button>
+													<button class="dropdown-item filterVacBtn dropVacBtn" value="A">원무과</button>
+													<button class="dropdown-item filterVacBtn dropVacBtn" value="D">의사</button>
+													<button class="dropdown-item filterVacBtn dropVacBtn" value="N">간호과</button>
+													<button class="dropdown-item filterVacBtn dropVacBtn" value="T">치료사</button>
+												</div>
+											</div>
+											<button class="btn btn-sm filterBtn btn-falcon-default me-1" type="button" id="myVacBtn" value="MY" style="float: left;">내 휴가</button>
+										</div>
+										
+									</div>
+								</div>
+								<!-- 휴가 필터 & 검색 끝 -->
+								
+								<!-- 휴가 리스트 테이블 시작 -->
+								<div id="schedulerTable" >
+									<div class="table-responsive scrollbar" style="height: 560px;">
+										<table class="table table-sm data-table table-striped fs--1 mb-0 overflow-hidden" data-list='{"valueNames":["count","start","end"]}'>
+											<thead class="bg-200">
+												<tr>
+													<th class="text-900 sort pe-1" data-sort="count" style="text-align: center;">번호</th>
+													<th class="text-900 sort pe-1" style="text-align: center;">휴가명</th>
+													<th class="text-900 sort pe-1" data-sort="start" style="text-align: center;">휴가시작일</th>
+													<th class="text-900 sort pe-1" data-sort="end" style="text-align: center;">휴기종료일</th>
+													<th class="text-900 sort pe-1" style="text-align: center; padding-right: 10px;">신청자</th>
+												</tr>
+											</thead>
+											<tbody class="list" id="table-purchase-body">
+											<c:set value="${pagingVO.dataList }" var="schList" />
+											<c:choose>
+												<c:when test="${empty schList }">
+													<tr>
+														<td colspan="17" align="center">일정정보가 존재하지 않습니다.</td>
+													</tr>
+												</c:when>
+												<c:otherwise>
+													<c:forEach items="${schList }" var="schList" varStatus="status">
+														<tr class="btn-reveal-trigger">
+															<td class="count align-middle white-space-nowrap" style="text-align: center;">${status.count}</td>
+															<td class="align-middle white-space-nowrap" style="text-align: center; white-space: nowrap;
+																overflow: hidden; text-overflow: ellipsis; max-width: 150px;">${schList.schdlNm }</td>
+															<td class="start align-middle white-space-nowrap" style="text-align: center;">${schList.schdlBgngDt }</td>
+															<td class="end align-middle white-space-nowrap" style="text-align: center;">${schList.schdlEndDt }</td>
+															<td class="align-middle white-space-nowrap" style="text-align: center; padding-right: 10px;">${schList.schdlEmpNo }</td>
+														</tr>
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- 휴가 리스트 테이블 끝 -->
+							</div>
+
+								<div class="p-0 mt-2 mb-2">
+									<div class="p-0 card-footer clearfix col-auto align-self-center pagingArea" id="pagingArea" style="display: flex; justify-content: center;">${pagingVO.pagingHTML }</div>
+								</div>
+								
+								
+							<!-- content border -->								
+							
+						</div>
+					</div>
+					<!-- 휴가 탭 끝 -->
+				
+				</div>
+			</div>
+			<!-- 탭 바디 끝 -->
+			
+			
+		</div>
+	</div>
+</div>
+
+<!-- modal 시작 -->
+<div class="modal fade" id="new-scheduler-modal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content border-0">
+			<div class="position-absolute top-0 end-0 mt-3 me-3 z-1">
+				<button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base closeSchedulerBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 bg-body-tertiary py-3 ps-4 pe-6">
+					<h4 class="mb-1" id="textSchedulerTitle">일정 추가</h4>
+				</div>
+				<div class="p-4">
+					<input type="hidden" value="F" id="updateFlag"/>
+					<form action="/mediform/manager/scheduler/insert" method="POST" class="row g-3" id="insertSchedulerForm">
+						<input type="hidden" name="schdlAllDay" value="" id="allDay"/>
+						<input type="hidden" name="schdlCd" value="" id="schdlCd"/>
+						<div class="col-md-6" id="hiddenPstgDt" style="display: none;">
+							<label class="form-label" for="pstgDt">작성날짜</label>
+							<input class="form-control" type="text" id="pstgDt" name="pstgDt" value="" disabled="disabled"/>
+						</div>
+						<div class="col-md-6" id="hiddenSchdlUpdDt" style="display: none;">
+							<label class="form-label" for="schdlUpdDt">수정날짜</label>
+							<input class="form-control" type="text" id="schdlUpdDt" name="schdlUpdDt" value="" disabled="disabled"/>
+						</div>
+						<div class="col-md-2">
+							<label class="form-label" for="schdlDepartment">구분</label>
+						</div>
+						<div class="col-md-10">
+							<select class="form-select form-select-sm schdlDepartment" id="schdlDepartment" name="schdlDep" aria-label="Default select example">
+								<option class="" value="H" selected="selected">병원</option>
+								<option class="" value="A">원무과</option>
+								<option class="" value="D">의사</option>
+								<option class="" value="N">간호과</option>
+								<option class="" value="T">치료사</option>
+								<option class="" value="MY">내 일정</option>
+							</select>
+						</div>
+						<div class="col-md-12">
+							<label class="form-label" for="schdlNm">일정명</label>
+							<input class="form-control" id="schdlNm" name="schdlNm" type="text" placeholder="일정명을 입력하세요." required="required"/>
+						</div>
+						<div class="input-group">
+							<div class="col-md-5">
+								<div class="form-check form-switch">
+									<input class="form-check-input" id="schdlAllDay" type="checkbox" value=""/> 
+									<label class="form-label" for="schdlAllDay">하루종일</label>
+								</div>
+							</div>
+							<div class="col-md-1">
+								<label class="form-label" for="schdlColor">색상</label>
+							</div>
+							<div class="col-md-6">
+								<select class="form-select schdlColor" id="schdlColor" name="schdlColor" aria-label="Default select example">
+									<option class="bg-light" value="bg-light" selected="selected">White</option>
+									<option class="bg-primary-subtle" value="bg-primary-subtle">Blue</option>
+									<option class="bg-secondary-subtle" value="bg-secondary-subtle">Gray</option>
+									<option class="bg-success-subtle" value="bg-success-subtle">Green</option>
+									<option class="bg-info-subtle" value="bg-info-subtle">SkyBlue</option>
+									<option class="bg-warning-subtle" value="bg-warning-subtle">Orange</option>
+									<option class="bg-danger-subtle" value="bg-danger-subtle">Red</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label" for="schdlBgngDt">시작일</label>
+							<input class="form-control datetimepicker" id="schdlBgngDt" name="schdlBgngDt" type="text" data-options='{"static":"true","enableTime":"true","format":"YYYY-MM-DD h:m"}' placeholder="YYYY-MM-DD hh:mm" required="required"/>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label" for="schdlEndDt">종료일</label>
+							<input class="form-control datetimepicker" id="schdlEndDt" name="schdlEndDt" type="text" data-options='{"static":"true","enableTime":"true","format":"YYYY-MM-DD h:m"}' placeholder="YYYY-MM-DD hh:mm" required="required"/>
+						</div>
+						<div class="col-md-12">
+							<label class="form-label" for="schdlCn">일정 내용</label>
+							<textarea class="form-control" id="schdlCn" name="schdlCn" rows="3" placeholder="메모사항"></textarea>
+						</div>
+						<div class="col-md-12">
+							<div align="right">
+								<button class="btn btn-light btn-sm" type="reset" id="resetSchedulerBtn">초기화</button>
+								<button class="btn btn-primary btn-sm" type="button" id="insertSchedulerBtn">등록</button>
+								<button class="btn btn-secondary btn-sm closeSchedulerBtn" type="button" data-bs-dismiss="modal" id="closeSchedulerBtn">닫기</button>
+							</div>
+						</div>
+						<sec:csrfInput /> 
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- modal 끝 -->
+
+</body>
+
+<link href="${pageContext.request.contextPath }/resources/vendors/flatpickr/flatpickr.min.css" rel="stylesheet" />
+<script	src="${pageContext.request.contextPath }/resources/assets/js/flatpickr.js"></script>
+<script type="text/javascript">
+
+//////////////////////////////////////////////////////////////////
+// 캘린더 이벤트 스크립트 시작
+
+// 하루종일
+function allDayFunction(start, end){
+	$("#schdlAllDay").on("change",function(){
+		var schdlBgngDt = $("#schdlBgngDt");
+		var schdlEndDt = $("#schdlEndDt");
+		
+		if($(this).is(":checked")){
+			schdlBgngDt.readOnly = true;
+			schdlBgngDt.val((start.toString() + ' 00:00'));
+			schdlEndDt.readOnly = true;
+			schdlEndDt.val((end.toString() + ' 23:59'));
+			$(this).val("true");
+		}else{
+			schdlBgngDt.readOnly = false;
+			schdlBgngDt.val("");
+			schdlEndDt.readOnly = false;
+			schdlEndDt.val("");
+		}
+	});
+}
+
+// 일정 등록(버튼 클릭시)
+$("#newSchedulerBtn").on("click",function(){
+	console.log("수정이 아닐때 updateFlag : " + updateFlag);
+	$("#textSchedulerTitle").html("일정 추가");
+	$("#insertSchedulerBtn").html("등록");
+	$("#resetSchedulerBtn").html("초기화");
+	$("#resetSchedulerBtn").type = "reset";
+	$("#resetSchedulerBtn").removeClass("btn btn-danger btn-sm").addClass("btn btn-light btn-sm");
+	
+	$("#insertSchedulerForm")[0].reset();
+// 	$('#new-scheduler-modal').modal('show');
+    
+    var date = new Date();															// 현재시간
+    var year = date.getFullYear();     												// 연도
+    var month = (date.getMonth() + 1).toString().padStart(2,'0');					// 월
+    var day = date.getDate().toString().padStart(2,'0');  							// 일
+	var hour = date.getHours().toString().padStart(2,'0');							// 시간
+	var minute = date.getMinutes().toString().padStart(2,'0');						// 분
+	var currentTime = hour + ":" + minute; 											// 현재 시간
+
+	var start = year + "-" + month + "-" + day;								// 하루종일로 넘길 시작 시간
+	var end = year + "-" + month + "-" + day;								// 하루종일로 넘길 끝 시간
+	var startSet = start + ' ' + currentTime;								// 시작날짜 셋팅
+	var endSet = end + ' ' + currentTime;									// 종료날짜 셋팅
+
+	$("#schdlBgngDt").val(startSet);
+	$("#schdlBgngDt").flatpickr({
+	    enableTime: true,
+	    dateFormat: "Y-m-d H:i", 											// 날짜 및 시간 형식
+	    defaultDate: startSet 												// 시작일 값 설정
+	});
+	
+	$("#schdlEndDt").val(endSet);
+	$("#schdlEndDt").flatpickr({
+	    enableTime: true,
+	    dateFormat: "Y-m-d H:i", 											// 날짜 및 시간 형식
+	    defaultDate: endSet 												// 시작일 값 설정
+	});
+	
+	allDayFunction(start, end);
+	
+	$("#insertSchedulerBtn").on("click",function(){
+	    var schdlBgngDt = $("#schdlBgngDt").val();
+	    var schdlEndDt = $("#schdlEndDt").val();
+	    
+	    // 시작일자 > 종료일자 일때
+	    if(schdlBgngDt >= schdlEndDt){
+	    	alert("종료일자는 시작일자보다 이후여야합니다.");
+	    	return false;
+	    }
+
+		$("#allDay").val("false");
+	    if($("#schdlAllDay").is(":checked")){
+	    	$("#allDay").val("true");
+	    }
+	    
+	    $("#insertSchedulerForm").submit();
+	});
+});
+
+
+// 일정 등록(날짜 클릭시)
+function NewSchedulerModal(info){
+	console.log("수정이 아닐때 updateFlag : " + updateFlag);
+	$("#textSchedulerTitle").html("일정 추가");
+	$("#insertSchedulerBtn").html("등록");
+	$("#resetSchedulerBtn").html("초기화");
+	$("#resetSchedulerBtn").type = "reset";
+	$("#resetSchedulerBtn").removeClass("btn btn-danger btn-sm").addClass("btn btn-light btn-sm");
+	
+	$("#insertSchedulerForm")[0].reset();
+	$('#new-scheduler-modal').modal('show');
+    
+	var start = info.startStr; 											// 선택된 시작 날짜
+	var eventEnd1 = new Date(info.endStr); 								// 선택된 종료 날짜(+1)
+	var eventEnd = new Date(eventEnd1);
+	eventEnd.setDate(eventEnd1.getDate() - 1);							// 종료일자 - 1일
+	var end = eventEnd.toISOString().substring(0,10);					// allDay 함수로 넘길 종료일
+	
+	var currentHM = new Date();											// 시스템 시간
+	var hour = currentHM.getHours().toString().padStart(2,'0');
+	var minute = currentHM.getMinutes().toString().padStart(2,'0');
+	var currentTime = hour + ":" + minute; 								// 현재 시간
+
+	var startSet = start + ' ' + currentTime;							// 시작날짜 셋팅
+	var endSet = eventEnd.toISOString().substring(0,10) + ' ' + currentTime;// 종료날짜 셋팅
+
+	$("#schdlBgngDt").val(startSet);
+	$("#schdlBgngDt").flatpickr({
+	    enableTime: true,
+	    dateFormat: "Y-m-d H:i", 			// 날짜 및 시간 형식
+	    defaultDate: startSet 				// 시작일 값 설정
+	});
+	
+	$("#schdlEndDt").val(endSet);
+	$("#schdlEndDt").flatpickr({
+	    enableTime: true,
+	    dateFormat: "Y-m-d H:i", 			// 날짜 및 시간 형식
+	    defaultDate: endSet 				// 시작일 값 설정
+	});
+	
+	allDayFunction(start, end);
+	
+	$("#insertSchedulerBtn").on("click",function(){
+	    var schdlBgngDt = $("#schdlBgngDt").val();
+	    var schdlEndDt = $("#schdlEndDt").val();
+	    
+	    // 시작일자 > 종료일자 일때
+	    if(schdlBgngDt >= schdlEndDt){
+	    	alert("종료일자는 시작일자보다 이후여야합니다.");
+	    	return false;
+	    }
+
+		$("#allDay").val("false");
+	    if($("#schdlAllDay").is(":checked")){
+	    	$("#allDay").val("true");
+	    }
+	    
+	    $("#insertSchedulerForm").submit();
+	});
+}
+
+// 닫기 버튼 클릭시
+$(".closeSchedulerBtn").on("click", function(){
+	updateFlag = "F";
+	console.log("닫기 버튼 클릭 updateFlag : " + updateFlag);
+});
+
+// 일정 상세보기 & 수정 & 삭제
+function detailModal(info, updateFlag){
+	console.log("일정 상세보기 & 수정 & 삭제 updateFlag: " + updateFlag);
+	if(updateFlag == "T"){											// updateFlag가 "T"일때만 수정 실행
+		var id = info.event.id;
+		var pstgDt = info.event.extendedProps.pstgDt;
+		var schdlUpdDt = info.event.extendedProps.schdlUpdDt;
+		var dep = info.event.extendedProps.schdlDep;
+		var title = info.event.title;
+		var className = info.event.classNames;
+		var allDay = info.event.extendedProps.schdlAllDay;
+		var description = info.event.extendedProps.description;
+		
+		var start = info.event.start;								// 날짜 시작일
+		var yearStart = start.getFullYear();
+		var monthStart = (start.getMonth() + 1).toString().padStart(2,'0');
+		var dayStart = start.getDate().toString().padStart(2,'0');
+		var hoursStart = start.getHours().toString().padStart(2,'0');
+		var minutesStart = start.getMinutes().toString().padStart(2,'0');
+		var startFormat = yearStart + '-' + monthStart + '-' + dayStart + ' ' + hoursStart + ':' + minutesStart;		
+		
+		var end = info.event.end;								// 날짜 종료일
+		var yearEnd = end.getFullYear();
+		var monthEnd = (end.getMonth() + 1).toString().padStart(2,'0');
+		var dayEnd = end.getDate().toString().padStart(2,'0');
+		var hoursEnd = end.getHours().toString().padStart(2,'0');
+		var minutesEnd = end.getMinutes().toString().padStart(2,'0');
+		var endFormat = yearEnd + '-' + monthEnd + '-' + dayEnd + ' ' + hoursEnd + ':' + minutesEnd;		
+		
+		$("#new-scheduler-modal").modal('show');
+		$("#textSchedulerTitle").html("일정 상세");
+		$("#hiddenPstgDt").show();
+		$("#hiddenSchdlUpdDt").show();
+	    $("#resetBtn").hide();
+		
+		$("#schdlCd").val(id);
+		$("#pstgDt").val(pstgDt);
+		$("#schdlUpdDt").val(schdlUpdDt);
+		$("#schdlNm").val(title);
+		$("#schdlDepartment").val(dep).prop("selected", true);
+		$("#schdlCn").val(description);
+		$(".schdlColor").val(className).change();
+
+		if(allDay == "true") {
+			$("#schdlAllDay").prop("checked", true);
+		    $("#allDay").val("true");
+		} else {
+			$("#schdlAllDay").prop("checked", false);
+		    $("#allDay").val("false");
+		}
+		
+		// 하루종일 날짜
+		var startAllDay = new Date(start).toISOString().substring(0, 10);
+		var endAllDay = new Date(end).toISOString().substring(0, 10);
+		allDayFunction(startAllDay, endAllDay);
+
+		$("#schdlBgngDt").val(startFormat);
+		$("#schdlBgngDt").flatpickr({
+		    enableTime: true,
+		    dateFormat: "Y-m-d H:i", 				// 날짜 및 시간 형식
+		    defaultDate: startFormat 				// 시작일 값 설정
+		});
+		
+		$("#schdlEndDt").val(endFormat);
+		$("#schdlEndDt").flatpickr({
+		    enableTime: true,
+		    dateFormat: "Y-m-d H:i", 				// 날짜 및 시간 형식
+		    defaultDate: endFormat 					// 시작일 값 설정
+		});
+		
+	    $("#insertSchedulerBtn").html("수정");
+	    // 수정 버튼
+	    $("#insertSchedulerBtn").on("click",function(){
+	    	var schdlBgngDt = $("#schdlBgngDt").val();
+	 	    var schdlEndDt = $("#schdlEndDt").val();
+	 	    
+	 	    // 시작일자 > 종료일자 일때
+	 	    if(schdlBgngDt >= schdlEndDt){
+	 	    	alert("종료일자는 시작일자보다 이후여야합니다.");
+	 	    	return false;
+	 	    }
+	    	
+	    	$("#allDay").val("false");
+		    if($("#schdlAllDay").is(":checked")){
+		    	$("#allDay").val("true");
+		    }
+		    
+	    	var btnText = $(this).text();
+	    	if(btnText == "수정"){
+		    	if(confirm("'" + title +"'을 수정하시겠습니까?")){
+					var insertForm = $("#insertSchedulerForm");
+					insertForm.attr("action", "/mediform/manager/scheduler/update");	
+					insertForm.submit();
+		    	}else{
+		    		$("#new-scheduler-modal").modal('hide');
+					alert("수정을 취소하였습니다.");
+		    	}
+	    	}else{
+	    		alert("수정을 진행할 수 없습니다. 다시 시도해주세요!");
+	    		return false;
+	    	}
+	    	
+	    	updateFlag = "F";
+			console.log("수정 updateFlag : " + updateFlag);
+	    });
+	    
+	    $("#resetSchedulerBtn").html("삭제");
+	    $("#resetSchedulerBtn").type = "button";
+	    $("#resetSchedulerBtn").removeClass("btn btn-light btn-sm").addClass("btn btn-danger btn-sm");
+	    
+	    // 삭제 버튼
+		$("#resetSchedulerBtn").on("click",function(){
+			var btnText = $(this).text();
+	    	
+	    	if(btnText == "삭제"){
+				if(confirm("'" + info.event.title +"'을 삭제하시겠습니까?")){
+					
+					var insertForm = $("#insertSchedulerForm");
+					insertForm.attr("action", "/mediform/manager/scheduler/delete");
+					insertForm.submit();
+				}else{
+					$("#new-scheduler-modal").modal('hide');
+					alert("삭제를 취소하였습니다.");
+				}
+	    	}else{
+	    		alert("삭제를 진행할 수 없습니다. 다시 시도해주세요!");
+	    		return false;
+	    	}
+			updateFlag = "F";
+			console.log("삭제 updateFlag : " + updateFlag);
+		});
+	    
+	}else{ // 일정 상세보기 & 수정 & 삭제 updateFlag 'F'일때
+		console.log("일정 상세보기 & 수정 & 삭제 updateFlag 'F'일때: " + updateFlag);
+		alert("다시 시도해주세요.");
+		return false;
+		$("#textSchedulerTitle").html("일정 추가");
+		$("#insertSchedulerBtn").html("등록");
+		$("#resetSchedulerBtn").html("초기화");
+		$("#resetSchedulerBtn").type = "reset";
+		$("#resetSchedulerBtn").removeClass("btn btn-danger btn-sm").addClass("btn btn-light btn-sm");
+	}
+}
+
+// 드래그 앤 드롭 기능
+function dragDropUpdate(info, updateFlag) {
+	console.log("드래그 앤 드롭 기능 updateFlag : " + updateFlag);
+	if(updateFlag == "T"){					// updateFlag T일때
+		var id = info.event.id;
+		var title = info.event.title;
+		var dep = info.event.extendedProps.schdlDep;
+		var description = info.event.extendedProps.description;
+		var pstgDt = info.event.extendedProps.pstgDt;
+		var className = info.event.classNames;
+		var allDay = info.event.extendedProps.schdlAllDay;
+		
+		$("#schdlCd").val(id);
+		$("#schdlNm").val(title);
+		$("#schdlDepartment").val(dep).prop("selected", true);
+		$("#schdlCn").val(description);
+		$("#pstgDt").val(pstgDt);
+		$(".schdlColor").val(className).change();
+		
+		$("#allDay").val("false");
+	    if(allDay == "true"){
+	    	$("#allDay").val("true");
+	    }
+		
+// 		var oldStart = info.oldEvent.start;		// 이전 시작 시간
+// 		var oldEnd = info.oldEvent.end;			// 이전 종료 시간
+
+		// 형식에 맞춘 날짜
+		var start = info.event.start;								// 날짜 시작일
+		var yearStart = start.getFullYear();
+		var monthStart = (start.getMonth() + 1).toString().padStart(2,'0');
+		var dayStart = start.getDate().toString().padStart(2,'0');
+		var hoursStart = start.getHours().toString().padStart(2,'0');
+		var minutesStart = start.getMinutes().toString().padStart(2,'0');
+		var startFormat = yearStart + '-' + monthStart + '-' + dayStart + ' ' + hoursStart + ':' + minutesStart;		
+		
+		var end = info.event.end;								// 날짜 종료일
+		var yearEnd = end.getFullYear();
+		var monthEnd = (end.getMonth() + 1).toString().padStart(2,'0');
+		var dayEnd = end.getDate().toString().padStart(2,'0');
+		var hoursEnd = end.getHours().toString().padStart(2,'0');
+		var minutesEnd = end.getMinutes().toString().padStart(2,'0');
+		var endFormat = yearEnd + '-' + monthEnd + '-' + dayEnd + ' ' + hoursEnd + ':' + minutesEnd;
+		
+		console.log(startFormat);
+		console.log(endFormat);
+		$("#schdlBgngDt").val(startFormat);
+ 	    $("#schdlEndDt").val(endFormat);
+		
+	    if(confirm("'" + title +"'을 수정하시겠습니까?")){
+			var insertForm = $("#insertSchedulerForm");
+			insertForm.attr("action", "/mediform/manager/scheduler/update");	
+			insertForm.submit();
+		}else{
+    		$("#new-scheduler-modal").modal('hide');
+			alert("수정을 취소하였습니다.");
+    	}
+		
+		updateFlag = "F";
+		console.log("드래그앤드랍 수정 updateFlag : " + updateFlag);
+		
+	}else{ // 일정 상세보기 & 수정 & 삭제 updateFlag 'F'일때
+		console.log("일정 상세보기 & 수정 & 삭제 updateFlag 'F'일때: " + updateFlag);
+		alert("다시 시도해주세요.");
+		return false;
+		$("#textSchedulerTitle").html("일정 추가");
+		$("#insertSchedulerBtn").html("등록");
+		$("#resetSchedulerBtn").html("초기화");
+		$("#resetSchedulerBtn").type = "reset";
+		$("#resetSchedulerBtn").removeClass("btn btn-danger btn-sm").addClass("btn btn-light btn-sm");
+
+	}
+}
+// 캘린더 이벤트 스크립트 끝
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 일정 list 스크립트 시작
+
+$("#allSchBtn").on('click',function(){
+	location.href = "/mediform/manager/scheduler/main";
+});
+
+// 필터 적용(버튼필터)
+var html = "";
+var schedulerFlag = false;
+var schdlDep;
+
+$(".filterBtn").click(function() {
+	console.log($(this).val());
+    html = "<input type='hidden' name='schdlDep' id='schdlDep' value='" + $(this).val() + "'>";
+    schedulerFlag = true;
+	
+    if(schedulerFlag){
+		html += "<input type='hidden' name='filterFlag' value='true'>";
+    }
+	$("#searchForm").append(html);
+	console.log($("#searchForm").html());
+	
+	$("#searchForm").submit();
+});
+
+// 페이징
+$(function(){
+	var searchForm = $("#searchForm");
+	var pagingArea = $("#pagingArea");
+	
+	pagingArea.on("click", "a", function(event){
+		event.preventDefault();
+		var pageNo = $(this).data("page");
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+});
+
+// 일정 list 스크립트 끝
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+</script>
+</html>

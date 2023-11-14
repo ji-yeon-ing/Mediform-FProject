@@ -1,0 +1,80 @@
+package kr.or.ddit.administration.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.administration.service.IEmployeeService;
+import kr.or.ddit.common.vo.EmployeeVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class AdminEmployeeSanctionController {
+
+	@Inject
+	//@Resource()
+//	@Autowired
+//	@Qualifier()
+	private IEmployeeService employeeService;
+	
+	
+	// 직원 계정 승인 요청 화면 출력 메소드
+	@RequestMapping(value = "/employee/insert", method = RequestMethod.GET)
+	public String employeeInsertForm() {
+		
+		log.info("employeeInsertForm() 실행!!!");		
+		
+		return "admin/employeeInsertForm";
+	}
+	
+	// 직원 계정 승인 요청 메소드
+	@RequestMapping(value = "/employee/insert", method = RequestMethod.POST)
+	public String employeeInsert(
+			HttpServletRequest req,
+			EmployeeVO employeeVO, Model model) {
+		
+		log.info("employeeInsert() 실행!!!");
+		
+		String goPage = "";
+		
+//		Map<String, String> errors = new HashMap<String, String>();
+//		if(StringUtils.isBlank(employeeVO.getMemId())) {
+//			errors.put("memId", "아이디를 입력해주세요");
+//		}
+//		if(StringUtils.isBlank(employeeVO.getMemPw())) {
+//			errors.put("memPw", "비밀번호를 입력해주세요");
+//		}
+//		if(StringUtils.isBlank(employeeVO.getMemName())) {
+//			errors.put("memName", "이름를 입력해주세요");
+//		}
+		
+		
+		ServiceResult result = employeeService.employeeInsert(req, employeeVO);
+		if(result.equals(ServiceResult.OK)) {
+			log.info("#####################성공##################");
+			goPage = "redirect:/mediform/admin/home";
+		}else {
+			log.info("#####################실패##################");
+			model.addAttribute("employee", employeeVO);
+				
+		}
+		
+			return goPage;
+	}
+	
+	
+}

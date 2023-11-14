@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.MypageMapper">
+
+
+	<select id="selectInfo" parameterType="String" resultType="employeeVO">
+	
+		select
+			EMP_NO, EMP_PW, EMP_NM, EMP_RRNO1, EMP_RRNO2
+			, EMP_TELNO, EMP_ZIP, EMP_ADRES1, EMP_ADRES2
+			, EMP_EMAIL, EMP_SEXDSTN, EMP_PROFILE, EMP_SE, EMP_YRYC_REMNDR
+		from employee
+		where emp_no = #{id}
+		
+	</select>
+
+
+	<update id="employeeUpdate" parameterType="employeeVO">
+		update employee
+		set
+			EMP_NM = #{empNm}, 
+			EMP_PW = #{empPw}, 
+			EMP_RRNO1 = #{empRrno1}, 
+			EMP_RRNO2 = #{empRrno2}, 
+			EMP_TELNO = #{empTelno}, 
+			EMP_ZIP = #{empZip}, 
+			EMP_ADRES1 = #{empAdres1}, 
+			EMP_ADRES2 = #{empAdres2}, 
+			EMP_EMAIL = #{empEmail}, 
+			EMP_SEXDSTN = #{empSexdstn}, 
+			EMP_PROFILE = #{empProfile}
+		where emp_No = #{empNo}
+	</update>
+
+
+
+
+
+
+</mapper>

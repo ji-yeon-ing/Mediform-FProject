@@ -1,0 +1,22 @@
+package kr.or.ddit.common.service;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.SchedulerVO;
+import kr.or.ddit.mapper.common.SchedulerMapper;
+
+@Service
+public class SchedulerServiceImpl implements ISchedulerService {
+
+	@Inject
+	private SchedulerMapper schedulerMapper;
+	
+	@Override
+	public int schedulerinsert(SchedulerVO scheduler) {
+		
+		return schedulerMapper.schedulerinsert(scheduler);
+	}
+
+}

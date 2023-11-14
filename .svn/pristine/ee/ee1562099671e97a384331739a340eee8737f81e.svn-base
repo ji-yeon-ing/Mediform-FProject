@@ -1,0 +1,13 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+
+public interface RecordService {
+
+	public List<NurseRecordVO> selectRecordList(Map<String, String> map);
+	
+
+}

@@ -1,0 +1,9 @@
+package kr.or.ddit.mapper.administration;
+
+import java.util.Map;
+
+public interface ReceiptMapper {
+
+	int receiptInsert(Map<String, String> map);
+
+}

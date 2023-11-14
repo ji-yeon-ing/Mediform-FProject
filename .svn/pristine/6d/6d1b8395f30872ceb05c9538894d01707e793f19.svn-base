@@ -1,0 +1,20 @@
+package kr.or.ddit.doctor.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+// 검사오더 컬럼들
+@Data
+public class MedicalExaminationOrderVO {
+	
+	private String mecCd;
+	private String clnicNo;
+	private String rceptNo;
+	private String hlthchkpCd;
+	private Date hlthchkpDt;
+	private String hlthchkpResult;
+	private int hlthchkpSn;
+	private String bodyC;
+	
+}

@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper.administration;
+
+import java.util.List;
+
+import kr.or.ddit.common.vo.SickbedVO;
+
+public interface HoslitalizationMapper {
+
+	List<SickbedVO> selectSickbedList();
+
+}

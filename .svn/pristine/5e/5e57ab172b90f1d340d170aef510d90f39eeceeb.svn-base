@@ -1,0 +1,249 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<div class="row">
+
+	<div class="col-5">
+
+		<div class="card border border-secondary" style="height: 750px;">
+
+
+			<div class="">
+				<input
+					class="fw-semi-bold col-12 text-white text-center form-control"
+					id="" name="" type="text" value="환자조회"
+					style="background-color: midnightblue" disabled />
+			</div>
+
+
+			<div class="input-group search-box">
+				<form class="position-relative w-100" data-bs-toggle="search"
+					data-bs-display="static">
+					<input class="form-control search-input fuzzy-search" type="search"
+						placeholder="환자 이름을 입력해주세요." aria-label="Search" id="searchInput"
+						style="height: 40px" /> <span
+						class="fas fa-search search-box-icon"></span>
+				</form>
+				<div
+					class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none"
+					data-bs-dismiss="search">
+					<button class="btn btn-link btn-close-falcon p-0"
+						aria-label="Close"></button>
+				</div>
+
+				<div
+					class="dropdown-menu border font-base start-5 mt-2 py-0 overflow-hidden w-100"
+					style="top: 25px;">
+					<!-- 드롭다운 길이 수정 : max-height: 17rem;  	 -->
+					<div class="scrollbar list py-3" style="max-height: 17rem;"
+						id="search-results"></div>
+				</div>
+			</div>
+
+			<form>
+				<div class="row card-body pt-0">
+					<div class="tab-content">
+
+						<br>
+						<div class="row">
+							<div class="col-4">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-6 bg-secondary-subtitle-subtle text-black text-center form-control"
+										id="" name="" type="text" value="이름" disabled />
+									<div class="col-6 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white" id="patntNm"
+											name="patntNm" type="text" value="" disabled />
+									</div>
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="성별" disabled />
+									<div class="col-6 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white"
+											id="patntSexdstn" name="patntSexdstn" type="text" value=""
+											disabled />
+									</div>
+								</div>
+							</div>
+							<div class="col-5">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="생년월일" disabled />
+									<div class="col-6 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white"
+											id="patntRrno1" name="patntRrno1" type="text" value=""
+											disabled />
+									</div>
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-6">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-4 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="전화번호" disabled />
+									<div class="col-8 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white"
+											id="patntTelno" name="patntTelno" type="text" value=""
+											disabled />
+									</div>
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-6 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="나이" disabled />
+									<div class="col-6 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white" id="patntAge"
+											name="patntAge" type="text" value="" disabled />
+									</div>
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-9 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="건강보험" disabled />
+									<div class="col-3 input-group-append p-0 m-0">
+										<input
+											class="text-black text-center form-control px-0 bg-white"
+											id="patntHlthinsAt" name="patntHlthinsAt" type="text"
+											value="" disabled />
+									</div>
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-12">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-2 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="주소" disabled />
+									<div class="col-10 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white"
+											id="patntAdres1" name="patntAdres1" type="text" value=""
+											disabled />
+									</div>
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="row input-group">
+									<div class="col-2"></div>
+									<div class="col-10 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white"
+											id="patntAdres2" name="patntAdres2" type="text" value=""
+											disabled />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<br>
+						<div class="row">
+							<div class="col-12">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-2 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="메모" disabled />
+									<div class="col-10 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white" id="patntMemo"
+											name="patntMemo" type="text" value="" disabled />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<br>
+						<div class="row">
+							<div class="col-6">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-4 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="예약일" disabled />
+									<div class="col-8 input-group-append p-0 m-0">
+										<input class="form-control datetimepicker" id="rpatntDttm"
+											name="rpatntDttm" type="text" placeholder="예약일"
+											data-options='{"disableMobile":true}' />
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-4 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="예약시간" disabled />
+									<div class="col-8 input-group-append p-0 m-0">
+										<input class="text-black form-control bg-white"
+											id="rpatntTime" name="rpatntTime" placeholder="예약시간"
+											type="text" value="" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<br>
+
+						<div class="row">
+							<div class="col-12">
+								<div class="row input-group">
+									<input
+										class="fw-semi-bold col-2 bg-secondary-subtitle text-black text-center form-control"
+										id="" name="" type="text" value="호소증상" disabled />
+									<div class="col-10 input-group-append p-0 m-0">
+										<textarea class="form-control" rows="1" id="rsvtResn"
+											name="rsvtResn" placeholder="호소증상을 입력해주세요"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

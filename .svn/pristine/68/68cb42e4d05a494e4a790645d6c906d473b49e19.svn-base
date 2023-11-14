@@ -1,0 +1,17 @@
+package kr.or.ddit.patient.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface IPatientService {
+
+	// 환자 list 조회
+	public List<PatientVO> selectPatientList();
+
+	public List<PatientVO> patientSearch(Map<String, String> map);
+
+	public PatientVO selectPatient(Map<String, String> map);
+
+}

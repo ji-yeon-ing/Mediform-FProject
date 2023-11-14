@@ -1,0 +1,242 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<div class="search-box">
+  <form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+    <input class="form-control search-input fuzzy-search" type="search" placeholder="검색할 환자 이름을 입력해주세요." aria-label="Search" id="searchInput" />
+    <span class="fas fa-search search-box-icon"></span>
+  </form>
+  <div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+    <button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+  </div>
+  <div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100">
+    <div class="scrollbar list py-3" style="max-height: 24rem;" id="search-results">
+    	<h5 class="mb-0 title" align="center">환자 정보가 존재하지 않습니다.</h5>
+    </div>
+<!--     <div class="text-center mt-n3"> -->
+<!--       <p class="fallback fw-bold fs-1 d-none">환자 정보가 존재하지 않습니다.</p> -->
+<!--     </div> -->
+  </div>
+</div>
+<div style="height: 600px; width: 600px; background-color: silver;" id="patientInfoDiv">
+	<table border="1" id="patientTable">
+		<tr>
+			<td rowspan="5" width="80px;" align="center"></td>
+			<td colspan="2"></td>
+			<td></td>
+			<td align="center"></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td width="80px;"></td>
+			<td width="40px;"></td>
+			<td align="center"></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="4">접수메모(증상/내원 목적)</td>
+		</tr>
+		<tr>
+			<td rowspan="2" colspan="4"></td>
+		</tr>
+	</table>
+	
+	<table>
+		
+	</table>
+</div>
+<script type="text/javascript">
+$(function(){
+	// 시큐리티 토큰 관련 2개
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	// 검색 input요소
+	var searchInput = $("#searchInput");
+	// 드롭다운 요소(결과를 뿌려줄 곳)
+	var searchRes = $("#search-results");
+	// 환자 정보를 담을 테이블
+	var patientTable = $("#patientTable");
+	console.log(patientTable);
+	
+	
+	// 반만 작동중 수정해야함
+	// 검색창에 공백일 때 클릭 시 전체 리스트 출력
+	searchInput.focusin(function(){
+		console.log("focusin...!");
+		if(searchInput.val() == ""){
+			console.log("서치인풋 밸 : "+ searchInput.val());
+			$.ajax({
+				type : "post",
+				url : "/mediform/patient/searchList",
+				contentType : "application/json; charset=utf-8",
+				async: false,
+		        beforeSend : function(xhr){
+		           //ajax호출 중 처리
+		           //글로벌 변수로 설정한 csrf token 셋팅
+			       xhr.setRequestHeader(header,token);
+			    },
+				success : function(res){
+					var searchResultsHtml = "";
+					console.log(res.length);
+					$(res).each(function(){
+						console.log(this.patntNm + " " + this.patntAge);
+						searchResultsHtml += '<div class="dropdown-item px-x1 py-2">';
+						searchResultsHtml += '<div class="d-flex align-items-center">';
+						searchResultsHtml += '<div class="flex-1">';
+						searchResultsHtml += ' <h6 class="mb-0 title">' + this.patntNo + '  |  ' + this.patntNm + '  |  ' + this.patntAge + '세  |  ' + this.patntRrno1 + '</h6>';
+						searchResultsHtml += '</div>';
+						searchResultsHtml += '</div>';
+						searchResultsHtml += '</div>';
+					});
+					$(searchRes).html(searchResultsHtml);
+				},
+			   	error : function(err){
+					console.log("err에러 : " + err);
+				}
+			});
+		}
+	});
+	
+	// 환자 검색 시 키보드를 한글자씩 눌렀다가 떼는 순간 이벤트 발생
+	searchInput.on("keyup",function(){
+		var keyword = searchInput.val();
+		console.log("keyword : " + keyword);
+		var searchObj = { 
+				keyword : keyword
+				};
+		
+		// 검색 환자 정보
+		$.ajax({
+			type : "post",
+			url  : "/mediform/patient/search",
+			data : JSON.stringify(searchObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				var searchResultsHtml = "";
+				console.log(res.length);
+				// 받아온 데이터가 없을 때 
+				// 환자 정보 없음은 h5로 설정(h6로 설정 시 클릭하면 환자 정보 테이블에 들어가지기 때문)
+				if(res.length == 0){
+					console.log("받아온 데이터 없음");
+					searchResultsHtml += '<div class="dropdown-item px-x1 py-2">';
+			        searchResultsHtml += '<div class="d-flex align-items-center">';
+			        searchResultsHtml += '<div class="flex-1">';
+			        searchResultsHtml += '<h5 class="mb-0 title">환자 정보가 존재하지 않습니다.</h5>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+				}else{
+					// 받아온 값을 뿌리는 역할
+		            $(res).each(function(){
+					console.log(this.patntNm + " " + this.patntAge);
+					searchResultsHtml += '<div class="dropdown-item px-x1 py-2">';
+			        searchResultsHtml += '<div class="d-flex align-items-center">';
+			        searchResultsHtml += '<div class="flex-1">';
+			        searchResultsHtml += ' <h6 class="mb-0 title">' + this.patntNo + '  |  ' + this.patntNm + '  |  ' + this.patntAge + '세  |  ' + this.patntRrno1 + '</h6>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+			        searchResultsHtml += '</div>';
+		       		});
+				}
+				$(searchRes).html(searchResultsHtml);
+				},
+			error : function(err){
+				console.log("err에러 : " + err);
+			}
+		});
+	});
+	
+	// 위에서 뿌려준 환자 정보를 클릭시 (드롭다운 div 안에 있는 <h6>태그 요소를 전부 가져와 클릭 이벤트 발생 시 작동)
+	$(searchRes).on("click","h6",function(event){
+		// 클릭된 h6 태그
+		var clickTarget = $(event.target);
+		// h6 태그 안에 있는 환자 정보 텍스트
+		var patientInfo = clickTarget.text();
+		console.log(clickTarget.text());
+		// 환자 정보 텍스트를 공백 기준으로 나누기
+		var patientSplit = patientInfo.split(' ');
+		console.log(patientSplit);
+		// 환자 번호(환자 정보 텍스트를 공백 기준으로 나누고 나서 0번째 요소)
+		var patntNo = patientSplit[0];
+		console.log(patntNo);
+		var patientObj = {
+				patntNo : patntNo
+				}
+		// tbody 태그에 담을 곳
+		var tbodyInsertHtml = "";
+		var patntHlthinsAt = "";
+		var patientHsptlzAt = "";
+		
+		$.ajax({
+			type : "post",
+			url  : "/mediform/patient/info",
+			data : JSON.stringify(patientObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				console.log("patntNo : "+res.patntNo+" | patntNM : "+res.patntNm +" | patntTelno : "+res.patntTelno);
+				// 보험
+				if(res.patntHlthinsAt == "Y"){
+					patntHlthinsAt = "건강보험";
+				}else{
+					patntHlthinsAt = "보험 X";
+				}
+				// 입원여부
+				if(res.patientHsptlzAt == "Y"){
+					patientHsptlzAt = '<span class="fas fa-bed text-success fs-2"></span>';
+					
+				}else {
+					patientHsptlzAt = '<span class="fas fa-bed text-danger fs-2"></span>';
+				}
+				// 주민등록번호 앞자리를 문자열로 바꾼 후 앞에서 2개씩 끊어낸다.(생년월일에 사용하기 위해)
+				var patntRrno1 = res.patntRrno1.toString().match(/.{1,2}/g);
+				patntRrno1.splice(1, 0, ".");
+				patntRrno1.splice(3, 0, ".");
+				// 성별
+				var patntSexdstn = "";
+				if(res.patntSexdstn == "M"){
+					patntSexdstn = "남";
+				}else{
+					patntSexdstn = "여";
+				}
+				// 테이블 tr요소들 가져오기
+				var pTableTr = patientTable.find("tr");
+				console.log(pTableTr);
+				// 테이블 td요소들 가져오기
+				var pTableTd = pTableTr.find("td");
+				console.log(pTableTd);
+				
+				// 환자 간단 정보에 값 넣기
+				$(pTableTd[0]).html(res.patntNm);
+				$(pTableTd[1]).html(res.patntNo);
+				$(pTableTd[2]).html(patntHlthinsAt);
+				$(pTableTd[3]).html(patientHsptlzAt);
+				$(pTableTd[4]).html('<a href="/">특이사항</a>');
+				$(pTableTd[5]).html(patntRrno1);
+				$(pTableTd[6]).html(res.patntAge+"세");
+				$(pTableTd[7]).html(patntSexdstn);
+				$(pTableTd[8]).html(res.patntTelno);
+				$(pTableTd[10]).html(res.patntMemo);
+				
+			},
+			error : function(err){
+				console.log("err에러 : " + err);
+			}
+			
+		});
+	});
+});
+
+
+</script>

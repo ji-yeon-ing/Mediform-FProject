@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.ChattingMapper">
+
+
+	<insert id="fileInsert" parameterType="chattingVO">
+	
+		insert into chatting_contents(
+		
+			chtt_indx
+			, chtt_room_indx
+			, emp_no
+			, chtt_atchmnfl
+			, chtt_de
+			, chtt_room_no
+			, chtt_extsn
+			, chtt_cn
+			, chtt_file_nm
+		
+		)values(
+		
+			seq_chat_indx.nextval
+			, (select count(chtt_room_indx) from chatting_contents where chtt_room_no = #{chttRoomNo})
+			, #{empNo}
+			, #{chttAtchmnfl}
+			, sysdate
+			, #{chttRoomNo}
+			, #{chttExtsn}
+			, '파일'
+			, #{chttFileNm}
+		)
+		
+	</insert>
+
+	<insert id="chattingInsert" parameterType="Map">
+	
+		insert into chatting_contents(
+		
+			chtt_indx
+			, chtt_room_indx
+			, emp_no
+			, chtt_cn
+			, chtt_de
+			, chtt_room_no
+		
+		)values(
+		
+			seq_chat_indx.nextval
+			, (select count(chtt_room_indx) from chatting_contents where chtt_room_no = #{chttRoomNo})
+			, #{empNo}
+			, #{chttCn}
+			, sysdate
+			, #{chttRoomNo}
+		
+		)
+	
+	</insert>
+
+	<resultMap type="chattingRoomVO" id="roomMap">
+		<id property="chttRoomNo" column="chtt_room_no"/>
+		<result property="chttRoomNo" column="chtt_room_no"/>
+		<result property="chttRoomNm" column="chtt_room_nm"/>
+		<collection property="memberList" resultMap="memberMap"/>	
+	</resultMap>
+
+	<resultMap type="chattingMemberVO" id="memberMap">
+		<id property="empNo" column="emp_no"/>
+		<result property="empNo" column="emp_no"/>
+		<result property="empNm" column="emp_nm"/>
+		<result property="chttRoomNo" column="chtt_room_no"/>
+	</resultMap>
+
+
+	<select id="roomInfo" parameterType="Map" resultMap="roomMap">
+		
+		select
+			cm.chtt_room_no, chtt_room_nm
+			, cm.emp_no, emp_nm
+		from employee e, chatting_room cr
+			left outer join chatting_member cm on (cr.chtt_room_no = cm.chtt_room_no)
+		where e.emp_no = cm.emp_no
+			and cr.chtt_room_no = #{chttRoomNo}
+	
+	</select>
+
+
+
+	<select id="friendList" resultType="employeeVO">
+	
+		select 
+			EMP_NO
+			, EMP_TELNO
+			, EMP_ADRES1
+			, EMP_NM
+			, EMP_ENCPN
+			, EMP_CLSF
+			, EMP_SE
+			, EMP_SEXDSTN
+			, EMP_PROFILE
+			, EMP_RRNO1
+			, EMP_ADRES2
+			, EMP_EXP
+			, EMP_RGSDE
+			, EMP_NO
+			, EMP_HFFC_AT
+			, EMP_UPDDE
+			, EMP_EMAIL
+		from employee order by emp_nm
+	
+	</select>
+
+	<update id="chatReadUpdate" parameterType="Map">
+		
+		update chatting_member
+		set
+			chtt_last = (select max(chtt_room_indx) from chatting_contents where chtt_room_no = #{chttRoomNo})
+		where chtt_room_no = #{chttRoomNo}
+			and emp_no = #{empNo}
+	
+	
+	</update>
+
+
+
+	<insert id="createRoom" parameterType="String">
+	
+		insert into chatting_room(
+			chtt_room_no, chtt_room_nm
+		)values(
+			seq_chtt_room_no.nextval, #{roomName}
+		)
+		
+	</insert>
+	
+	
+	<insert id="insertChattMember" parameterType="chattingRoomVO">
+		
+		insert into chatting_member(
+			CHTT_MB_IDX, EMP_NO, CHTT_ROOM_NO, chtt_entnc, indvdl_setup_room_nm
+		)values(
+			seq_chtt_mb_idx.nextval, #{empNo}, seq_chtt_room_no.currval, 0, #{chttRoomNm}
+		)
+	</insert>
+
+	<insert id="insertFirstInvite">
+		insert into chatting_contents(
+			chtt_indx, chtt_room_indx, emp_no, chtt_cn, chtt_de, chtt_room_no
+		)values(
+			seq_chat_indx.nextval, 0, '000', '채팅방이 생성되었습니다', sysdate, seq_chtt_room_no.currval
+		)
+		
+	
+	</insert>
+
+
+	<select id="selectChattingRoomList" parameterType="Map" resultType="chattingRoomVO">
+		
+		SELECT
+		    a.chtt_room_no,
+		    b.indvdl_setup_room_nm,
+		    b.chtt_last,
+		    MAX(c.chtt_de) as chttDe,
+		    MAX(c.chtt_room_indx) as chttRoomIndx,
+		    (
+		        SELECT MAX(cc.chtt_cn)
+		        FROM chatting_contents cc
+		        WHERE cc.chtt_room_no = c.chtt_room_no
+		            AND cc.chtt_de = (
+		                SELECT MAX(ccc.chtt_de)
+		                FROM chatting_contents ccc
+		                WHERE ccc.chtt_room_no = cc.chtt_room_no
+		            )
+		    ) AS chttCn
+		FROM
+		    chatting_room a
+		    JOIN (
+		        SELECT * FROM chatting_member WHERE emp_no = #{sessionUserId}
+		    ) b ON a.chtt_room_no = b.chtt_room_no
+		    JOIN chatting_contents c ON a.chtt_room_no = c.chtt_room_no
+		GROUP BY
+		    a.chtt_room_no, b.indvdl_setup_room_nm, b.chtt_last
+		ORDER BY
+		    MAX(c.chtt_indx) DESC
+		
+		
+		
+	</select>
+
+	
+
+	<select id="chattingList" parameterType="Map" resultType="chattingVO">
+	
+		select
+			chtt_indx, chtt_room_indx
+			, a.emp_no, emp_nm, emp_se, emp_profile
+			, chtt_cn, chtt_atchmnfl, chtt_de, chtt_extsn, chtt_file_nm
+		from chatting_contents a, employee b
+		where a.emp_no = b.emp_no
+			and chtt_room_no = #{chttRoomNo}
+		order by chtt_room_indx
+	
+	</select>
+	
+	<select id="downloadChat" parameterType="String" resultType="chattingVO">
+	
+		select CHTT_ATCHMNFL, CHTT_EXTSN, CHTT_FILE_NM
+		from CHATTING_CONTENTS
+		where CHTT_INDX = #{chttIndx}
+	
+	</select>
+
+
+</mapper>

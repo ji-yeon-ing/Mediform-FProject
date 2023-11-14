@@ -1,0 +1,445 @@
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 | 행정관리자</title>
+<style type="text/css">
+.subMenu:hover {
+	border-color: #3f51b5;
+	background-color: rgba(63, 81, 181, 0.1);
+}
+
+.subMenu {
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.tableTd{
+	text-align: center;
+/* 	width: 23px; */
+}
+
+.trHover:hover{
+	background-color: #f7f8f9;
+}
+
+.table > :not(caption) > * > * {
+	padding: 0.3rem 0.3rem;
+}
+
+/* tr > td:nth-child(1) { */
+/*   background-color: #f7f7f7; */
+/* }  */
+/* tr > td:nth-child(2) { */
+/*   background-color: #f7f7f7; */
+/* }  */
+</style>
+
+
+</head>
+<body>
+	<input type="hidden" id="msg" value="${msg }">
+
+	<!-- 서브 메뉴 -->
+	<ul class="navbar-nav d-flex flex-row"
+		style="margin-bottom: 15px; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed;">
+		<li style="margin-left: 15px;"></li>
+		<li class="subMenu nav-item">
+			<a class="nav-link" href="/mediform/manager/workSchedule/list/select" role="button" id="employeeScheduleBtn"> 근무 </a>
+		</li>
+		<li class="subMenu nav-item">
+			<a class="nav-link" href="http://game24.co.kr/game.php?gamecode=bowling" role="button" id="holidaySchedule"> 휴가 </a>
+		</li>
+	</ul>
+	<!-- 서브 메뉴 -->
+
+	<!-- content 시작 -->
+	
+	<input type="hidden" id="thisDateInput" value="${selectDate }">
+	
+	<!-- 좌측 카드 시작 -->
+	<div class="row mb-3 g-3">
+		<div class="col-lg-12">
+			<div class="d-flex justify-content-end" style="margin-bottom: 5px;">
+				<div class="">
+					<button
+						class="btn btn-falcon-danger btn-sm" type="button"
+						data-bs-toggle="modal" data-bs-target="#download-modal">양식 다운로드
+					</button>
+					<button
+						class="btn btn-falcon-warning btn-sm" style="color: gray;" type="button" 
+						data-bs-toggle="modal" data-bs-target="#upload-modal">일정 등록
+					</button>
+					<button
+						class="btn btn-falcon-primary btn-sm" type="button" id="excelFileExport">EXCEL
+					</button>
+					<button
+						class="btn btn-falcon-primary btn-sm" type="button" id="pdfBtn">PDF
+					</button>
+				</div>
+			</div>
+			<div class="card" id="CrmLocationBySessionTable"
+				data-list="{&quot;valueNames&quot;:[&quot;country&quot;,&quot;sessions&quot;,&quot;users&quot;],&quot;page&quot;:3,&quot;pagination&quot;:true}">
+				<div class="card-header d-flex flex-between-center py-2" style="background-color: midnightblue">
+					<h5 class="mb-0 text-white fw-semi-bold">간호 근무 일정표( ${selectDate } )</h5>
+					<div class="d-flex justify-content-end" style="margin-bottom: 5px;">
+						<form action="/mediform/manager/workSchedule/list/select" method="post" id="dateForm">
+							<input type="month" name="selectDate"  value="${selectDate }" id="dateInput"/>
+							<sec:csrfInput/>
+						</form>
+					</div>
+					
+				</div>
+				<div class="card-body pb-0 position-relative" style="margin-bottom: 20px;">
+					<table class="table fs--1 mb-0" id="tableData">
+						<thead class="">
+							<tr class="" style="background-color: #f7f7f7;">
+								<th></th>
+								<th></th>
+								<c:forEach begin="1" end="${lastDay }" varStatus="i"  >
+									<th class="tableTd align-middle">${i.index }</th>
+								</c:forEach>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody class="list" id="table-crm-location-session">
+							<tr class="" style="background-color: #f7f7f7;">
+								<th class="tableTd align-middle" >사번</th>
+								<th class="tableTd align-middle" >이름</th>
+								<c:forEach items="${daysList }" var="days">
+									<th class="tableTd align-middle" >${days }</th>
+								</c:forEach>
+								<th class="tableTd align-middle" >OFF</th>
+								<th class="tableTd align-middle" >D</th>
+								<th class="tableTd align-middle" >E</th>
+								<th class="tableTd align-middle" >N</th>
+							</tr>
+							
+							<c:choose>
+								<c:when test="${empty wsList }">
+									<tr>
+										<td class="tableTd align-middle" colspan="${lastDay + 6}">등록된 근무 일정표가 없습니다.</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<c:forEach items="${wsList}" var="emp" varStatus="i">
+										<tr>
+											<td class="tableTd align-middle">${emp.empNo}</td>
+									        <td class="tableTd align-middle">${emp.empNm}</td>
+									        
+									        <c:forEach items="${workCdList}" var="workCdArr" varStatus="j">
+									        	<c:if test="${i.index == j.index }">
+									        		<c:forEach items="${workCdArr }" var="workCd">
+											        	<td class="tableTd align-middle" <c:if test="${workCd eq 'OFF' }">style="background-color: #fbfbe1c2;"</c:if>>${workCd}</td>
+									        		</c:forEach>
+									        	</c:if>
+									        </c:forEach>
+									        
+											<c:forEach items="${empCntList}" var="empCnt" varStatus="k">
+												<c:if test="${i.index == k.index }">
+													<th class="tableTd align-middle" style="background-color: #f7f7f7;">${empCnt.empOFF}</th>
+										            <th class="tableTd align-middle" style="background-color: #f7f7f7;">${empCnt.empD}</th>
+										            <th class="tableTd align-middle" style="background-color: #f7f7f7;">${empCnt.empE}</th>
+										            <th class="tableTd align-middle" style="background-color: #f7f7f7;">${empCnt.empN}</th>
+									            </c:if>	
+									        </c:forEach>
+										</tr>
+									</c:forEach>
+									
+									<tr style="background-color: #f7f7f7;">
+										<td class="tableTd align-middle"></td>
+										<th class="tableTd">D</th>
+										<c:forEach items="${dateCntList }" var="dateCnt">
+											<th class="tableTd align-middle">${dateCnt.allD }</th>
+										</c:forEach>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+									</tr>
+									<tr style="background-color: #f7f7f7;">
+										<td class="tableTd align-middle"></td>
+										<th class="tableTd align-middle">E</th>
+										<c:forEach items="${dateCntList }" var="dateCnt">
+											<th class="tableTd align-middle">${dateCnt.allE }</th>
+										</c:forEach>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+									</tr>
+									<tr style="background-color: #f7f7f7;">
+										<td class="tableTd align-middle"></td>
+										<th class="tableTd align-middle">N</th>
+										<c:forEach items="${dateCntList }" var="dateCnt">
+											<th class="tableTd align-middle">${dateCnt.allN }</th>
+										</c:forEach>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+									</tr>
+									<tr style="background-color: #f7f7f7;">
+										<td class="tableTd align-middle"></td>
+										<th class="tableTd align-middle">OFF</th>
+										<c:forEach items="${dateCntList }" var="dateCnt">
+											<th class="tableTd align-middle">${dateCnt.allOFF }</th>
+										</c:forEach>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+										<td class="tableTd align-middle"></td>
+									</tr>	
+								</c:otherwise>
+							</c:choose>	
+						</tbody>
+					</table>
+				</div>
+				<div class="card-footer text-end p-0">
+
+				</div>
+			</div>
+		</div>
+		<!-- 좌측 카드 시작 -->
+	</div>
+	<!-- content 끝 -->
+	
+<!-- 다운로드를 위한 iframe button -->
+<iframe id="ifrm" style="display:none;" src="https://www.ddit.or.kr/"></iframe>
+
+<!-- 양식 다운로드 모달 시작 -->
+<div class="modal fade" id="download-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+    <div class="modal-content position-relative">
+      <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+        <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary" >
+          <h4 class="mb-1" id="modalExampleDemoLabel">양식 다운로드</h4>
+        </div>
+        <div class="p-4 pb-0 mb-3" >
+        	<h5>다운로드할 연월을 선택해 주세요.</h5>
+			<input type="month" name="selectDate" id="thisYM" value="${selectDate }" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">취소</button>
+        <button class="btn btn-primary" type="button" id="downloadBtn">다운로드</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 양식 다운로드 모달 끝 -->
+
+<!-- 일정 등록 모달 시작 -->
+<div class="modal fade" id="upload-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+    <div class="modal-content position-relative">
+      <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+        <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary" >
+          <h4 class="mb-1" id="modalExampleDemoLabel">일정 등록</h4>
+        </div>
+        <form action="/mediform/manager/workSchedule/insert" method="post" enctype="multipart/form-data" id="excelUploadForm">
+	        <div class="p-4 pb-0 mb-3" >
+	        	<span class="input-group" id="inputGroup-sizing-lg">파일을 선택해 주세요.</span>
+	        	<input type="file" class="form-control" name="file" accept=".xlsx, .xls" id="excelInput">
+	        	<sec:csrfInput/>
+	        </div>
+	    </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">취소</button>
+        <button class="btn btn-primary" type="button" id="uploadBtn">등록</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 양식 다운로드 모달 끝 -->
+
+<script type="text/javascript">
+$(function() {
+	$(document).ready(function() {
+		msgFunction();
+    });
+	
+	$('#dateInput').on('change', function(){
+		$('#dateForm').submit();
+	});
+	
+	
+	
+	// 테이블 -> 엑셀 버튼
+	 $("#excelFileExport").click(function(){
+	        exportExcel();
+	 });
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// =========================================================================
+	// HTML 테이블을 EXCEL로
+	function s2ab(s) { 
+	    var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+	    var view = new Uint8Array(buf);  //create uint8array as viewer
+	    for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+	    return buf;    
+	}
+	function exportExcel(){ 
+	    // step 1. workbook 생성
+	    var wb = XLSX.utils.book_new();
+
+	    // step 2. 시트 만들기 
+	    var newWorksheet = excelHandler.getWorksheet();
+	    
+	    // step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.  
+	    XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler.getSheetName());
+
+	    // step 4. 엑셀 파일 만들기 
+	    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+	    // step 5. 엑셀 파일 내보내기 
+	    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelHandler.getExcelFileName());
+	}	
+	
+	
+	var excelHandler = {
+        	
+	        getExcelFileName : function(){
+        	var thisDateInput = $('#thisDateInput').val();
+	            return thisDateInput+'근무일정표확인용.xlsx';
+	        },
+	        getSheetName : function(){
+        	var thisDateInput = $('#thisDateInput').val();
+	            return thisDateInput+'근무일정';
+	        },
+	        getExcelData : function(){
+	        	return document.getElementById('tableData');  
+	        },
+	        getWorksheet : function(){
+	            return XLSX.utils.table_to_sheet(this.getExcelData());
+	        }
+	}
+	// =========================================================================
+	
+		
+		
+	// =========================================================================
+	// pdf 변환	
+	function pdfPrint() {
+	    var pdfDiv = $('#CrmLocationBySessionTable');
+	    var a4Width = 210; // A4 가로 크기 (mm 단위)
+
+	    html2canvas(pdfDiv, {
+	        onrendered: function (canvas) {
+	            var imgData = canvas.toDataURL('image/png');
+	            var pageWidth = a4Width;
+	            var scaleFactor = 2.3; // 이미지 확대 비율
+	            var imgHeight = canvas.height * pageWidth / canvas.width * scaleFactor;
+	            var imgWidth = pageWidth * 1.4;
+
+	            var doc = new jsPDF('l', 'mm', 'a4'); // 'l'은 가로 방향
+
+	            var position = 0;
+
+	            // 이미지의 가로 중앙 정렬
+	            var x = (pageWidth - imgWidth) / 2 + 45; 
+	            // 페이지의 세로 중앙에 위치
+	            var y = (a4Width - imgHeight) / 4.0;
+
+	            doc.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+
+	            // 파일 저장
+	            var thisDateInput = $('#thisDateInput').val();
+	            doc.save(thisDateInput + '간호근무일정표.pdf');
+	        }
+	    });
+	}
+ 
+ var pdfBtn = $('#pdfBtn');
+ pdfBtn.on('click', function(){
+	 $('body').find('svg').each(function() {
+		    $(this).attr('width', this.getBoundingClientRect().width);
+		    $(this).attr('height', this.getBoundingClientRect().height);
+		    $(this).css('width', null);
+		    $(this).css('height', null);
+	 });
+	 pdfPrint();
+ });
+//=========================================================================	
+	
+	
+	function msgFunction(){
+		var msg = $('#msg').val();
+		console.log(msg);
+		if (msg != null && msg != "" && msg == "y") {
+			Swal.fire({
+			      icon: 'success',
+			      title: '실행 결과',
+			      text: '정상적으로 처리 되었습니다.',
+			      confirmButtonColor: 'blue'
+			    });
+		}else if(msg != null && msg != "" && msg == "n"){
+			Swal.fire({
+			      icon: 'error',
+			      title: '실행 결과',
+			      text: '해당 요청 실행 중 오류가 발생했습니다.',
+			      confirmButtonColor: 'blue'
+			    });
+		}else if(msg != null && msg != "" && msg == "f"){
+			Swal.fire({
+			      icon: 'error',
+			      title: '실행 결과',
+			      html: '잘못된 입력 양식이 포함되어 있습니다.<br>다시 시도해 주세요.',
+			      confirmButtonColor: 'blue'
+			    });
+		}
+	} 
+	
+	
+	// 양식 다운로드 버튼을 누르면
+	var downloadBtn = $('#downloadBtn');
+	downloadBtn.on('click', function(){
+		// 양식에서 선택한 해당 연월을 다운로드 url에 쿼리스트링으로 포함해서 넘길 계획
+		var thisYM = $('#thisYM').val();
+		$("#ifrm").attr("src","/mediform/manager/workSchedule/excelForm/download?reqYm=" + thisYM);
+		$('#download-modal').modal("hide");
+	});
+	
+	var uploadBtn = $('#uploadBtn');
+	uploadBtn.on('click', function(){
+		var excelInput = $('#excelInput').val();
+		
+		if(excelInput == null || excelInput == ""){
+			Swal.fire({
+			      icon: 'error',
+			      title: '실행 결과',
+			      text: '등록된 파일이 없습니다.',
+			      confirmButtonColor: 'blue'
+			    });
+		}else{
+			excelUploadForm.submit();
+		}
+	});
+});
+</script>
+</body>
+</html>

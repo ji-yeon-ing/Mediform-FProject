@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.AlarmMapper">
+
+	<select id="selectAlarm">
+		select count(*)
+		from alarm
+		where emp_no = #{empNo} and ALARM_CNFIRM = 'N'
+	
+	</select>
+	
+	
+	<select id="selectAlarmList">
+		select ALARM_NO, a.EMP_NO, ALARM_WRITER, ALARM_CN, ALARM_DTTM, ALARM_CNFIRM, ALARM_DELETE, ALARM_CNT
+	</select>
+
+
+
+</mapper>

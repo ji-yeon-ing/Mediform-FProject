@@ -1,0 +1,49 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.mapper.common.CertificatesMapper;
+
+// 제증명 서비스
+@Service
+public class CertificatesServiceImpl implements ICertificatesService {
+	
+	@Inject
+	private CertificatesMapper certificatesMapper;
+
+	// 진단서 폼 ajax
+	@Override
+	public List<ClinicVO> selectCertificatesList(Map<String, String> map) {
+		return certificatesMapper.selectCertificatesList(map);
+	}
+
+	@Override
+	public ServiceResult insertCertificatesCd(Map<String, String> map) {
+		
+		ServiceResult result = null;
+		
+		int status = certificatesMapper.insertCertificatesCd(map);
+
+		if(status > 0) {
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<ClinicVO> selectMtcList(Map<String, String> map) {
+		return certificatesMapper.selectMtcList(map);
+	}
+	
+	
+}

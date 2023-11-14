@@ -1,0 +1,97 @@
+package kr.or.ddit.patient.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.patient.ServiceResult;
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/patient")
+public class PatientController {
+	
+	@Inject
+	private IPatientService patientService;
+	
+	// 환자 list 조회
+	@RequestMapping(value = "/list")
+	public String patientList(Model model) {
+		log.info("patientList() 실행...!");
+		
+		List<PatientVO> patientList = patientService.selectPatientList();
+		
+		model.addAttribute("patientList", patientList);
+		
+		return "patient/patientList";
+	}
+	
+	// 환자 검색(ajax)
+	@ResponseBody
+	@PostMapping("/search")
+	public List<PatientVO> patientSearch(@RequestBody Map<String, String> map) {
+		
+		List<PatientVO> patientList = patientService.patientSearch(map);
+		
+		log.info("patientList : "+ patientList);
+		return patientList;
+	}
+	
+	// 환자 정보 조회(ajax)
+	@ResponseBody
+	@PostMapping("/info")
+	public PatientVO patientInfo(@RequestBody Map<String, String> map) {
+		
+		PatientVO patientInfo = patientService.selectPatient(map);
+		
+		log.info("patientInfo : "+ patientInfo);
+		return patientInfo;
+	}
+	
+	// 환자 전체 정보 조회(ajax)
+	@ResponseBody
+	@PostMapping("/searchList")
+	public List<PatientVO> patientSearchList() {
+		
+		List<PatientVO> patientList = patientService.selectPatientList();
+		
+		log.info("patientList : "+ patientList);
+		return patientList;
+	}
+	
+	// 신규 환자 등록
+	
+	@RequestMapping(value="/insert", method = RequestMethod.POST)
+	public String patientInsert(PatientVO patientVO, Model model) {
+		log.info("patientInsert() 실행중...!");
+		
+		String goPage = "";
+		
+		ServiceResult result = patientService.patientInsert(patientVO);
+		if(result.equals(ServiceResult.OK)) {
+			log.info("환자등록 성공");
+			goPage = "redirect:/mediform/patient/list";
+		}else {
+			log.info("환자등록 실패");
+			goPage = "patient/patientList";
+			model.addAttribute("patientVO", patientVO);
+		}
+		
+		return goPage;
+		
+	}
+	
+}

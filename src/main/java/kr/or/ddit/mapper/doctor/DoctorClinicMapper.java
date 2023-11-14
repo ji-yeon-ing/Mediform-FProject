@@ -1,0 +1,55 @@
+package kr.or.ddit.mapper.doctor;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.doctor.vo.ClinicAssignmentVO;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.doctor.vo.DoctorGroupOrderContentVO;
+import kr.or.ddit.doctor.vo.DoctorGroupOrderVO;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface DoctorClinicMapper {
+
+	// 진료실 정보(의사 사번)
+	public ClinicAssignmentVO selectclinicAssigment(String doctorNo);
+
+	// 대기환자 리스트 조회(접수)
+	public List<ClinicVO> selectwaitingList(String doctorNo);
+	
+	// 대기 환자 리스트(전체) 
+	public List<ClinicVO> selectwaitingAllList();
+	
+	// 환자 상태 업데이트
+	public int updateStatus(Map<String, Object> map);
+	
+	// 진료 환자 정보 조회
+	public PatientVO selectclinicPatient(String patntNo);
+
+	// 그룹오더 리스트
+	public List<DoctorGroupOrderVO> getgroupOrder(String doctorNo);
+
+	// 그룹오더 내용 리스트
+	public List<DoctorGroupOrderContentVO> getgroupOrderContent(String groCd);
+
+	// 그룹오더 등록
+	public int insertGroupOrder(DoctorGroupOrderVO doctorGroupOrderVO);
+
+	// 그룹오더 내용 등록
+	public int insertGroupOrderContent(DoctorGroupOrderContentVO doctorGroupOrderContentVO);
+
+	// 그룹오더 약품 리스트
+	public List<MedicineVO> selectGroupOrderMedicineList(Map<String, String> map);
+
+	// 그룹오더 삭제
+	public int deleteGroupOrder(DoctorGroupOrderVO doctorGroupOrderVO);
+
+	// 그룹오더 내용 삭제
+	public int deleteGroupOrderContent(DoctorGroupOrderVO doctorGroupOrderVO);
+
+	// 그룹오더 업데이트
+	public int updateGroupOrder(DoctorGroupOrderVO doctorGroupOrderVO);
+
+
+}

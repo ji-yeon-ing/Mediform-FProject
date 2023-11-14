@@ -1,0 +1,43 @@
+package kr.or.ddit.manager.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@PreAuthorize("hasRole('ROLE_MANAGER')")
+@RequestMapping(value="/mediform/manager")
+public class ManagerStatisticsController {
+
+	@GetMapping(value="/patient/statistics/select")
+	public String patientStatistics(Model model) {
+		List<Integer> testList = new ArrayList<Integer>();
+		testList.add(38);
+		testList.add(98);
+		testList.add(66);
+		testList.add(75);
+		testList.add(111);
+		testList.add(8);
+		testList.add(99);
+		model.addAttribute("ageList", testList);
+		return "manager/patientStatistics";
+	}
+	
+	@GetMapping(value="/revenue/statistics/select")
+	public String revenueStatistics() {
+		return "manager/revenueStatistics";
+	}
+	
+	@GetMapping(value="/audit/statistics/select")
+	public String auditStatistics() {
+		return "manager/auditStatistics";
+	}
+}

@@ -1,0 +1,27 @@
+package kr.or.ddit.administration.vo;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class NoticeBoardVO {
+
+	private int ntbdNo;
+	private String empNm;
+	private String ntbdSj;
+	private String ntbdWriter;
+	@DateTimeFormat(pattern = "yyyy.MM.dd HH:mm")
+	private Date ntbdDay;
+	private String ntbdCn;
+	private MultipartFile atchFile;
+	private String ntbdAtchmnfl;
+	private int ntbdRdcnt;
+	private int ntbdIpcrAt;
+	@DateTimeFormat(pattern = "yyyy.MM.dd HH:mm")
+	private Date ntbdUpdde;
+	
+}

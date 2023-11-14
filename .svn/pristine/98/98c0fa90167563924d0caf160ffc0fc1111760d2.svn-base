@@ -1,0 +1,20 @@
+package kr.or.ddit.mapper.nurse;
+
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.vo.HospitalizationVO;
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+
+
+public interface RoomMapper {
+
+	public HospitalizationVO patientHospitaldetail(String patntNo);
+
+	public List<NurseRecordVO> selectTakeOverList(Map<String, String> map);
+
+	public int takeOverinsert(NurseRecordVO nurseRecord);
+
+
+}

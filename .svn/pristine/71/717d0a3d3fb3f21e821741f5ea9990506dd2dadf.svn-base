@@ -1,0 +1,94 @@
+package kr.or.ddit.calender.service.Impl;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.calender.ServiceResult;
+import kr.or.ddit.calender.service.IManagerSchedulerService;
+import kr.or.ddit.calender.vo.SchedulerVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.mapper.calender.ManagerSchedulerMapper;
+
+@Service
+public class ManagerSchedulerServiceImpl implements IManagerSchedulerService{
+	
+	@Inject
+	private ManagerSchedulerMapper managerSchedulerMapper;
+	
+	// calender 일정 목록 조회
+	@Override
+	public List<SchedulerVO> schedulerMapList() {
+		return managerSchedulerMapper.schedulerMapList();
+	}
+
+	// calender 필터링 조회
+	@Override
+	public List<SchedulerVO> schedulerMapFilterList(HashMap<String, String> searchSchMap) {
+		return managerSchedulerMapper.schedulerMapFilterList(searchSchMap);
+	}
+	
+	// 일정 등록
+	@Override
+	public ServiceResult schedulerInsert(SchedulerVO schedulerVO) {
+		ServiceResult result = null;
+		
+		int status = managerSchedulerMapper.schedulerInsert(schedulerVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+	
+	// 일정 수정
+	@Override
+	public ServiceResult schedulerUpdate(SchedulerVO schedulerVO) {
+		ServiceResult result = null;
+		
+		int status = managerSchedulerMapper.schedulerUpdate(schedulerVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	// 일정 삭제
+	@Override
+	public ServiceResult schedulerDelete(String schdlCd) {
+		ServiceResult result = null;
+		
+		int status = managerSchedulerMapper.schedulerDelete(schdlCd);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	// cout 조회
+	@Override
+	public int selectSchedulerCount(PaginationInfoVO<SchedulerVO> pagingVO) {
+		return managerSchedulerMapper.selectSchedulerCount(pagingVO);
+	}
+
+	// list 조회
+	@Override
+	public List<SchedulerVO> selectSchedulerList(PaginationInfoVO<SchedulerVO> pagingVO) {
+		return managerSchedulerMapper.selectSchedulerList(pagingVO);
+	}
+
+
+
+}

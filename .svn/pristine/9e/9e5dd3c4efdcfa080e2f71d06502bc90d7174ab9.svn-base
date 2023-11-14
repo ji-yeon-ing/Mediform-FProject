@@ -1,0 +1,388 @@
+package kr.or.ddit.doctor.controller;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.common.vo.FileVO;
+import kr.or.ddit.common.vo.HealthCheckupVO;
+import kr.or.ddit.common.vo.MedicalTreatmentVO;
+import kr.or.ddit.doctor.service.IDoctorClinicService;
+import kr.or.ddit.doctor.service.IDoctorService;
+import kr.or.ddit.doctor.service.Impl.DoctorClinicServiceImpl;
+import kr.or.ddit.doctor.vo.ClinicAssignmentVO;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.doctor.vo.DoctorGroupOrderContentVO;
+import kr.or.ddit.doctor.vo.DoctorGroupOrderVO;
+import kr.or.ddit.doctor.vo.MedicalExaminationOrderVO;
+import kr.or.ddit.doctor.vo.SickAndWoundedListVO;
+import kr.or.ddit.manager.service.IManagerService;
+import kr.or.ddit.manager.service.impl.ManagerServiceImpl;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import kr.or.ddit.nurse.vo.VitalVO;
+import kr.or.ddit.patient.vo.PatientVO;
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.IOException;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/doctor")
+@PreAuthorize("hasRole('ROLE_DOCTOR')")
+public class DoctorHomeController {
+
+	@Inject
+	private IDoctorService doctorService;
+	
+	 @Inject
+	 private IManagerService managerService;
+	 
+	 @Inject
+	 private IDoctorClinicService doctorClinicService;
+	
+   @RequestMapping("/main")
+   public String clinicRoom(Model model, Authentication authentication) {
+      log.info("clinicRoom() 실행중...!");
+      
+      CustomUser customUser = (CustomUser) authentication.getPrincipal();
+      String doctorNo = customUser.getEmployee().getEmpNo();
+      log.info(doctorNo);
+      
+      EmployeeVO empVO = managerService.getEmployee(doctorNo);
+      ClinicAssignmentVO clinicAssignmentVO = doctorClinicService.selectclinicAssigment(doctorNo);
+      String clinicNo = clinicAssignmentVO.getClnicNo().substring(1,2);
+      
+      List<DoctorGroupOrderVO> groupOrderList = doctorClinicService.getgroupOrder(doctorNo);
+      List<DoctorGroupOrderContentVO> groupOrderContentList = new ArrayList<DoctorGroupOrderContentVO>();
+
+      for (DoctorGroupOrderVO groupOrder : groupOrderList) {
+          String groCd = groupOrder.getGroCd();
+
+          List<DoctorGroupOrderContentVO> contentList = doctorClinicService.getgroupOrderContent(groCd);
+          groupOrderContentList.addAll(contentList);
+      }
+      
+      model.addAttribute("empVO", empVO);
+      model.addAttribute("clinicNo", clinicNo);
+      model.addAttribute("groupOrderList", groupOrderList);
+      model.addAttribute("groupOrderContentList", groupOrderContentList);
+      model.addAttribute("menuSelected", "room");
+      
+      return "doctor/clinicRoom";
+   }
+	
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public String home() {
+		
+		log.info("오호!");		
+		
+		return "doctor/home";
+	}
+	
+	@GetMapping("/clinic")
+	public String clinicForm(Model model) {
+//		model.addAttribute("menuSelected", "clinic");
+		
+		return "doctor/clinic";
+		
+	}
+	
+	@ResponseBody
+	@GetMapping("/getClinicApi")	
+	public String getClinicApi() throws IOException {
+		
+		// 1. URL을 만들기 위한 StringBuilder.
+        StringBuilder urlBuilder = new StringBuilder("https://api.odcloud.kr/api/15067467/v1/uddi:242b4301-d660-495d-b409-a3fe8fd3a03a?page=1&perPage=&serviceKey=9NMCrEzGLs2ZaWKERiFRLfNl3unHLu3k9etcvvhPAKZ3dTRMItv65nTYrSo7jSHdxgaO1kX4QS7j3WF0Sli0Ow=="); /*URL*/
+        // 2. 오픈 API의요청 규격에 맞는 파라미터 생성, 발급받은 인증키.
+//        urlBuilder.append("?" + URLEncoder.encode("ServiceKey","UTF-8") + "=9NMCrEzGLs2ZaWKERiFRLfNl3unHLu3k9etcvvhPAKZ3dTRMItv65nTYrSo7jSHdxgaO1kX4QS7j3WF0Sli0Ow%3D%3D"); /*Service Key*/
+//        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*XML 또는 JSON*/
+//        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
+//        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지 번호*/
+//        urlBuilder.append("&" + URLEncoder.encode("cond[country_nm::EQ]","UTF-8") + "=" + URLEncoder.encode("가나", "UTF-8")); /*한글 국가명*/
+//        urlBuilder.append("&" + URLEncoder.encode("cond[country_iso_alp2::EQ]","UTF-8") + "=" + URLEncoder.encode("GH", "UTF-8")); /*ISO 2자리코드*/
+        // 3. URL 객체 생성.
+        URL url = new URL(urlBuilder.toString());
+        // 4. 요청하고자 하는 URL과 통신하기 위한 Connection 객체 생성.
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        // 5. 통신을 위한 메소드 SET.
+        conn.setRequestMethod("GET");
+        // 6. 통신을 위한 Content-type SET. 
+        conn.setRequestProperty("Content-type", "application/json");
+        // 7. 통신 응답 코드 확인.
+        System.out.println("Response code: " + conn.getResponseCode());//200성공
+        // 8. 전달받은 데이터를 BufferedReader 객체로 저장.
+        BufferedReader rd;
+        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        // 9. 저장된 데이터를 라인별로 읽어 StringBuilder 객체로 저장.
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        // 10. 객체 해제.
+        rd.close();
+        conn.disconnect();
+        // 11. 전달받은 데이터 확인.
+//        System.out.println(sb.toString());
+		return sb.toString();
+	}
+	
+	// 환자 이전 진료 기록 전체 조회 의사용(날짜만 조회)(ajax)
+	@ResponseBody
+	@PostMapping("/clinic/select/time")
+	public List<ClinicVO> selectClnicTime(@RequestBody Map<String, String> map) {
+		
+		List<ClinicVO> allClinicList = doctorService.selectClnicTime(map);
+		
+		log.info("allClinicList : "+ allClinicList);
+		
+		return allClinicList;
+	}
+	
+	// 환자 검사 결과 조회
+	@ResponseBody
+	@PostMapping("/MedicalExaminationOrder/select")
+	public List<MedicalExaminationOrderVO> selectMEOResult(@RequestBody Map<String, String> map) {
+		
+		List<MedicalExaminationOrderVO> selectMEOResult = doctorService.selectMEOResult(map);
+		
+		log.info("selectMEOResult : "+ selectMEOResult);
+		
+		return selectMEOResult;
+	}
+	// 환자 xray 결과 조회
+	@ResponseBody
+	@PostMapping("/MedicalExaminationOrder/select/xray")
+	public List<FileVO> selectXrayResult(@RequestBody Map<String, String> map) {
+		
+		List<FileVO> selectXrayResult = doctorService.selectXrayResult(map);
+		
+		log.info("selectXrayResult : "+ selectXrayResult);
+		
+		return selectXrayResult;
+	}
+	
+	// 진료 등록 (ajax)
+	@ResponseBody
+	@PostMapping("/clinic/insert")
+	public ServiceResult insertClinic(@RequestBody ClinicVO clinicVO) {
+		ServiceResult result = null;
+		
+		result = doctorService.insertClinic(clinicVO);
+		
+		log.info("result : " + result);
+		
+		return result;
+	}
+	
+	// 상병 목록 조회(ajax)
+	@ResponseBody
+	@PostMapping("/sickAndWoundedList/list")
+	public List<SickAndWoundedListVO> allSAWList() {
+		
+		List<SickAndWoundedListVO> allSAWList = doctorService.selectSAWList();
+			
+//		log.info("allSAWList : "+ allSAWList);
+		
+		return allSAWList;
+	}
+	// 상병 키워드 검색(ajax)
+	@ResponseBody
+	@PostMapping("/sickAndWoundedList/select")
+	public List<SickAndWoundedListVO> selectSAWList(@RequestBody Map<String, String> map) {
+		
+		List<SickAndWoundedListVO> selectSAWList = doctorService.selectSAW(map);
+		
+//		log.info("selectSAWList : "+ selectSAWList);
+		
+		return selectSAWList;
+	}
+	
+	// 검사 목록 조회(ajax)
+	@ResponseBody
+	@PostMapping("/healthCheckup/list")
+	public List<HealthCheckupVO> allHCList() {
+		
+		List<HealthCheckupVO> allHCList = doctorService.selectHCList();
+		
+		log.info("allHCList : "+ allHCList);
+		
+		return allHCList;
+	}
+	
+	// 검사 검색 조회(ajax)
+	@ResponseBody
+	@PostMapping("/healthCheckup/select")
+	public List<HealthCheckupVO> selectHC(@RequestBody Map<String, String> map) {
+		
+		List<HealthCheckupVO> selectHC = doctorService.selectHC(map);
+		
+		log.info("selectHCList : "+ selectHC);
+		
+		return selectHC;
+	}
+	
+	// 치료 목록 조회(ajax)
+	@ResponseBody
+	@PostMapping("/medicalTreatment/list")
+	public List<MedicalTreatmentVO> allMTList() {
+		
+		List<MedicalTreatmentVO> allMTList = doctorService.selectMTList();
+		
+		log.info("allMTList : "+ allMTList);
+		
+		return allMTList;
+	}
+	
+	// 치료 검색 조회(ajax)
+	@ResponseBody
+	@PostMapping("/medicalTreatment/select")
+	public List<MedicalTreatmentVO> selectMt(@RequestBody Map<String, String> map) {
+		
+		List<MedicalTreatmentVO> selectMT = doctorService.selectMT(map);
+		
+		log.info("selectMT : "+ selectMT);
+		
+		return selectMT;
+	}
+	
+	// 처방 목록 조회(ajax)
+	@ResponseBody
+	@PostMapping("/medicine/list")
+	public List<MedicineVO> allMedList() {
+		
+		List<MedicineVO> allMedList = doctorService.selectMedList();
+		
+		log.info("allMedList : "+ allMedList);
+		
+		return allMedList;
+	}
+	
+	// 처방 검색 조회(ajax)
+	@ResponseBody
+	@PostMapping("/medicine/select")
+	public List<MedicineVO> selectMed(@RequestBody Map<String, String> map) {
+		
+		List<MedicineVO> selectMed = doctorService.selectMed(map);
+		
+		log.info("selectMed : "+ selectMed);
+		
+		return selectMed;
+	}
+	
+	// 환자 바이탈 조회(제일 최근것)(ajax)
+	@ResponseBody
+	@PostMapping("/vitals/select")
+	public VitalVO selectVital(@RequestBody Map<String, String> map) {
+		String patntNo = map.get("patntNo");
+		VitalVO vital = doctorService.selectVital(patntNo);
+		
+		log.info("vital"+ vital);
+		
+		return vital;
+	}
+	
+	// 대기 환자 리스트 조회(제일 최근것)(ajax)
+	@ResponseBody
+	@PostMapping("/patient/list")
+	public List<ClinicVO> waiting(Authentication authentication) {
+		
+		// 로그인 정보
+		CustomUser customUser = (CustomUser) authentication.getPrincipal();
+	    String doctorNo = customUser.getEmployee().getEmpNo();
+	    
+		List<ClinicVO> waitingList = doctorClinicService.selectwaitingList(doctorNo);	// 대기환자정보
+		
+		return waitingList;
+	}
+	
+	
+	// 검사완료 환자 테이블 값 가져오기
+	@ResponseBody
+	@PostMapping("/clinic/select/pastTable")
+	public ClinicVO selectPastTable(@RequestBody ClinicVO clinicVO) {
+		
+		ClinicVO selectPastTable = doctorService.selectPastTable(clinicVO);	// 대기환자정보
+		
+		return selectPastTable;
+	}
+
+	// 그룹오더 등록
+	@ResponseBody
+	@PostMapping("/clinic/insert/groupOrder")
+	public String insertGroupOrder(@RequestBody DoctorGroupOrderVO doctorGroupOrderVO) {
+		log.info("개똥이");
+		
+		ServiceResult result = doctorClinicService.insertGroupOrder(doctorGroupOrderVO);
+		String groupCd = doctorGroupOrderVO.getGroCd();
+		
+		int successCount = 0;
+		for (String contentCd : doctorGroupOrderVO.getContentCdList()) {
+			DoctorGroupOrderContentVO doctorGroupOrderContentVO = new DoctorGroupOrderContentVO();
+			doctorGroupOrderContentVO.setGroCd(groupCd);
+			doctorGroupOrderContentVO.setContentCd(contentCd);
+			ServiceResult result1 = doctorClinicService.insertGroupOrderContent(doctorGroupOrderContentVO);
+			
+			if (result1.equals(ServiceResult.OK)) {
+		        log.info("그룹오더 등록 성공");
+		        successCount++;
+		    } else {
+		        log.info("그룹오더 등록 실패");
+		    }
+		}
+		
+		String msg = "";
+		if(result.equals(ServiceResult.OK) && successCount == doctorGroupOrderVO.getContentCdList().size()) {
+			log.info("그룹오더 등록 성공");
+			msg = "OK";
+		}else {
+			log.info("그룹오더 등록 실패");
+			msg = "FAILED";
+		}
+		
+		return msg;
+	}
+	
+	// 그룹오더 약품 리스트
+	@ResponseBody
+	@PostMapping("/clinic/medicine/select")
+	public List<MedicineVO> selectGroupOrder(@RequestBody Map<String, String> map) {
+		
+		List<MedicineVO> medicineList = doctorClinicService.selectGroupOrderMedicineList(map);
+		
+		return medicineList;
+	}
+	
+}

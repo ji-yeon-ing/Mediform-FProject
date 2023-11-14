@@ -1,0 +1,17 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+
+import kr.or.ddit.administration.vo.ReceiveVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+
+public interface IReceiveService {
+
+	int selectReceiveCount(PaginationInfoVO<ReceiveVO> pagingVO);
+
+	List<ReceiveVO> receiveList(PaginationInfoVO<ReceiveVO> pagingVO);
+
+
+
+
+}

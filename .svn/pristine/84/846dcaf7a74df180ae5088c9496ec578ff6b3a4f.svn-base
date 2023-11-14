@@ -1,0 +1,22 @@
+package kr.or.ddit.doctor.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+// 상병 컬럼
+@Data
+public class SickAndWoundedVO {
+
+	private String sckwndCd;
+	private String clnicNo;
+	private String rceptNo;
+	private String patntNo;
+	private String sckwndMain;
+	private String sckwndSub;
+	private String sckwndEx;
+	private Date atfssDt;
+	private String bodyCd;
+	private String prsmpAt;
+	private String kcd;
+}

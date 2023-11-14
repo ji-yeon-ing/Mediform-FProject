@@ -1,0 +1,40 @@
+package kr.or.ddit.calender.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.calender.ServiceResult;
+import kr.or.ddit.calender.service.IManagerVacationService;
+import kr.or.ddit.calender.vo.VacationVO;
+import kr.or.ddit.mapper.calender.ManagerVacationMapper;
+
+@Service
+public class ManagerVacationServiceImpl implements IManagerVacationService{
+	
+	@Inject
+	private ManagerVacationMapper managerVacationMapper;
+	
+	@Override
+	public List<VacationVO> vacationList() {
+		return null;
+	}
+
+	@Override
+	public ServiceResult vacationInsert(VacationVO vacationVO) {
+		return null;
+	}
+
+	@Override
+	public ServiceResult vacationUpdate(VacationVO vacationVO) {
+		return null;
+	}
+
+	@Override
+	public ServiceResult vacationDelete(String vcatnCode) {
+		return null;
+	}
+
+}

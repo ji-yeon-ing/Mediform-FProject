@@ -1,0 +1,61 @@
+package kr.or.ddit.mapper.calender;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.calender.vo.VacationVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+
+public interface VacationMapper {
+	
+	// 캘린더 리스트
+	public List<VacationVO> vacationMapList();
+
+	// 휴가 신청
+	public int vacationInsert(VacationVO vacationVO);
+	
+	// 직원 상세
+	public List<VacationVO> vacationDetailEmp(String searchEmpWord);
+
+	// 휴가 상세
+	public List<VacationVO> vacationDetail(VacationVO vacationVO);
+	
+	// 1차 승인
+	public int vacationUpdate(Map<String, String> map);
+	
+	// 최종 승인
+	public int vacationUpdateLast(Map<String, String> map);
+	
+	// 반려
+	public int vacationUpdateReject(Map<String, String> map);
+
+	// 휴가 삭제
+	public ServiceResult vacationDelete(String vcatnCode);
+
+	// 리스트
+	public List<VacationVO> selectVacationList(VacationVO vacationVO);
+
+	// 필터 리스트
+	public List<VacationVO> selectVacationFilterList(VacationVO vacationVO);
+
+	// 휴가 신청 리스트 조회
+	public List<VacationVO> selectSignupList(VacationVO vacationVO);
+
+	// 휴가 승인 리스트 조회
+	public List<VacationVO> selectApprovalList(VacationVO vacationVO);
+
+	// 휴가 반려 리스트 조회
+	public List<VacationVO> selectRejectList(VacationVO vacationVO);
+
+	// 연차 사용
+	public void updateYrycCount(Map<String, String> map);
+
+	// 공가 사용
+	public void updateOffCount(Map<String, String> map);
+
+	// 병가 사용
+	public void updateSickCount(Map<String, String> map);
+
+
+}

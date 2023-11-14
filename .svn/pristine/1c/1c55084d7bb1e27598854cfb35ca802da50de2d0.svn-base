@@ -1,0 +1,36 @@
+package kr.or.ddit.calender.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class VacationVO {
+	
+	// 일반사원
+	private String vcatnCd;				// 휴가 코드
+	private String vcatnCl;				// 휴가 분류(반차, 연가, 공가)
+	private String vcatnSelfEmpno;		// 휴가 신청자 사본
+	private Date vcatnRqstdt;			// 휴가 신청일
+	private Date vcatnBgndt;			// 휴가 시작일
+	private Date vcatnEnddt;			// 휴가 종료일
+	private String vcatnResn;			// 휴가 사유
+	
+	private int vcatnConfmStep;			// 승인 단계(0,1,2)
+	
+	// 1차 부서 대표
+	private String vcatnReprsntEmpno;	// 1차 승인자
+	private Date vcatnConfmDt1;			// 1차 승인일시
+	
+	// 2차 관리자
+	private String vcatnConfirmerEmpno;	// 2차 승인자
+	private Date vcatnConfmDt2;			// 2차 승인일시
+	private String vcatnConfmAt;		// 승인 여부(Y,N)
+	private String vcatnColor;			// 휴가 색깔
+	
+	// 반려(1,2차)                                             
+	private String vcatnRjctEmpno;		// 반려자 사번
+	private String vcatnRjctResn;		// 반려이유
+	private Date vcatnRjctDt;			// 반려자 일시
+	
+}

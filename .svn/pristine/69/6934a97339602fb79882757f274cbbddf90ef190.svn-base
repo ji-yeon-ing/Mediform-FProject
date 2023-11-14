@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper.nurse;
+
+import java.util.List;
+
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface RoomMapper {
+
+	public List<PatientVO> selectHsptlzList();
+
+}

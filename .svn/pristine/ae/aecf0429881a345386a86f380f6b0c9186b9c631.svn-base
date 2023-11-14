@@ -1,0 +1,267 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<style>
+
+.table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1; /* 다른 콘텐츠 위로 표시하기 위해 z-index를 설정합니다. */
+}
+
+</style>
+
+<!-- 음성 출력 클릭 모달 창 -->
+<div class="modal fade" id="voiceout" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="width: 1250; max-width: 1250px; height:500px; max-height: 520px;">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+				<div class="modal-body p-0">
+					<div class="rounded-top-3 py-3 ps-4 pe-6"
+						style="background-color: midnightblue">
+						<h4 class="mb-1 text-white" id="modalExampleDemoLabel">안내방송</h4>
+					</div>
+					<div class="p-4 pb-0">
+					
+						<div class="row">
+
+
+						<div class="col-7">
+						
+						
+							<div class="row">
+								<div class="table-container"
+									style="overflow-y: auto; max-height: 480px;">
+									<table class="table "
+										style="height: 450px;">
+										<thead>
+											<tr id="" class="bg-light">
+												<th class="col-3 text-center" scope="col">No</th>
+												<th class="col-9 text-center" scope="col">항목</th>
+											</tr>
+										</thead>
+										<tbody id="voiceListArea" style="overflow-y: auto; max-height: 430px;">
+										
+										
+											<tr class="oneBoard" id="">
+												<td class="text-center" style="vertical-align: middle">01</td>
+												<td class="text-center" style="vertical-align: middle">
+													안녕하세요방가방가안녕하세요
+												</td>
+											</tr>
+											
+											
+											
+											<tr class="oneBoard" id="">
+												<td class="text-center" style="vertical-align: middle">홍길동씨</td>
+												<td class="text-center" style="vertical-align: middle">
+													안녕하세요방가방가안녕하세요
+												</td>
+											</tr>
+											
+
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
+							<br><br>
+						</div>
+
+
+
+
+						<div class="col-5">
+
+							<textarea class="form-control" id="" rows="20"></textarea>
+
+						</div>
+
+
+					</div>
+					<div class="row">
+						<div class="col-9"></div>
+							<div class="col-3 align-end">
+								<div class="row">
+									<div class="col-2"></div>
+									<div class="col-10">
+										<button id="insertVoiceBtn" class="btn btn-primary">추가</button>
+										<button id="updateVoiceBtn"class="btn btn-primary">수정</button>
+										<button id="deleteVoiceBtn" class="btn btn-primary">삭제</button>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+				</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" id="voiceoutBtn" type="button">방송</button>
+				<button class="btn btn-secondary" type="button"
+					data-bs-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 환자가 있는 병상 클릭 모달 창 끝! -->
+
+
+
+
+<!-- 음성 출력 추가 -->
+<div class="modal fade" id="voiceoutInsertModal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="width: 650; max-width: 650px; height:450px; max-height: 450px;">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+				<div class="modal-body p-0">
+					<div class="rounded-top-3 py-3 ps-4 pe-6"
+						style="background-color: midnightblue">
+						<h4 class="mb-1 text-white" id="modalExampleDemoLabel">안내방송 등록</h4>
+					</div>
+					<div class="p-4 pb-0">
+					
+						<div class="row">
+							<h4 class="fw-semi-bold">제목</h4>
+						</div>
+					
+						<div class="row">
+							<input type="text" class="form-control" id="voiceTitle"/>
+						</div>
+						
+						<br>
+						
+						<div class="row">
+							<h4 class="fw-semi-bold">내용</h4>
+						</div>
+						
+						<div class="row">
+							<textarea class="form-control" id="voiceContent" rows="20"></textarea>
+						</div>
+					
+					</div>
+					<br>
+				</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" id="voiceoutBtn" type="button">등록</button>
+				<button class="btn btn-secondary" type="button"
+					data-bs-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 음성 출력 추가 -->
+
+
+<script>
+
+$(document).ready(function() {
+	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content")
+    // 페이지가 로드될 때 실행될 함수
+    // 원하는 동작을 여기에 작성
+	var voiceout = $("#voiceout");
+	var voiceListArea = $("#voiceListArea");
+	
+	
+	
+	voiceout.modal("show");       
+    
+	$.ajax({
+ 		type : "post",
+		url : "/mediform/admin/voiceOutput/list",
+ 		contentType : "application/json; charset=utf-8",
+ 		async: false,
+        beforeSend : function(xhr){            
+            xhr.setRequestHeader(header,token);
+        },
+ 		success : function(res) {
+			
+ 			var voiceListHtml = "";
+ 			
+ 			if(res.length == 0){
+ 				console.log("음성 리스트 없음!");
+ 			}else{
+ 				console.log("음성 리스트 있음!");
+ 				
+ 				$(res).each(function(){
+ 					
+ 					voiceListHtml += "<tr class='oneBoard' id='" + this.voiceOtptCd + "'>";
+ 					voiceListHtml += "  <td class='text-center' style='vertical-align: middle'>";
+ 					voiceListHtml += this.voiceOtptNm;
+ 					voiceListHtml += "  </td>";
+ 					voiceListHtml += "  <td class='text-center' style='vertical-align: middle'>";
+ 					voiceListHtml += this.voiceOtptCn;
+ 					voiceListHtml += "  </td>";
+ 					voiceListHtml += "</tr>";
+ 					
+ 				});
+ 				
+ 				voiceListArea.html(voiceListHtml);
+ 			}
+ 			
+ 		}
+ 	});
+	
+	
+});	
+
+$(function(){
+	
+	var insertVoiceBtn = $("#insertVoiceBtn");
+	var updateVoiceBtn = $("#updateVoiceBtn");
+	var deleteVoiceBtn = $("#deleteVoiceBtn");
+	
+	var voiceoutInsertModal = $("#voiceoutInsertModal");
+	
+	
+	// 음성 insert(새로 등록) 모달
+	insertVoiceBtn.on("click", function(){
+		
+		voiceoutInsertModal.modal("show");
+		
+		
+		
+		
+	});
+	
+	
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

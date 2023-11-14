@@ -1,0 +1,90 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PatientList</title>
+</head>
+<body>
+
+	<div class="row mb-3">
+		<div class="col">
+			<div class="card bg-100 shadow-none border">
+				<div class="row gx-0 flex-between-center">
+					<div class="col-sm-auto d-flex align-items-center">
+						<div>
+							<h5 class="text-primary fw-bold mb-0">
+								간호기록조회 <span class="text-info fw-medium"> --</span>
+							</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- content 시작 -->
+
+	<div class="col-lg-3">
+		<div class="card" id="TableCrmRecentLeads"
+			data-list='{"valueNames":["name","email","status"],"page":8,"pagination":true}'>
+			<div
+				class="card-header d-flex flex-between-center flex-wrap gap-2 py-2">
+				<h6 class="mb-0">환자 대기 리스트</h6>
+				<div class="d-none" id="table-recent-leads-actions"></div>
+				<div id="table-recent-leads-replace-element"></div>
+			</div>
+			<div class="card-body px-0 py-0">
+				<div class="table-responsive scrollbar">
+					<table class="table table-sm mb-0 overflow-hidden data-table fs--1"
+						data-datatables='{"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"language":{"info":"_START_ to _END_ Items of _TOTAL_"}}'>
+						<thead class="bg-200">
+							<tr>
+								<th class="text-900 no-sort white-space-nowrap" >
+										<input class="form-check-input" id="checkbox-bulk-item-select" type="checkbox" data-bulk-select='{"body":"table-simple-pagination-body","actions":"table-simple-pagination-actions","replacedElement":"table-simple-pagination-replace-element"}' />
+								</th>
+								<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">환자번호</th>
+								<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">이름</th>
+								<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">나이</th>
+								<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">성별</th>
+							</tr>
+						</thead>
+						<tbody class="list" id="table-simple-pagination-body">
+							<c:set value="${patientList }" var="patientList" />
+							<c:choose>
+								<c:when test="${empty patientList }">
+									<tr>
+										<td colspan="17" align="center">환자정보가 존재하지 않습니다.</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<c:forEach items="${patientList }" var="patient">
+										<tr class="btn-reveal-trigger">
+											<td class="align-middle" style="width: 28px;">
+												<div class="form-check mb-0">
+													<input class="form-check-input" type="checkbox" id="simple-pagination-item-13" data-bulk-select-row="data-bulk-select-row" />
+												</div>
+											</td>
+											<td class="align-middle white-space-nowrap fw-semi-bold name">${patient.patntNo }</td>
+											<td class="align-middle white-space-nowrap fw-semi-bold text-center"><a href="#">${patient.patntNm }</a></td>
+											<td class="align-middle white-space-nowrap product">${patient.patntAge }</td>
+											<td class="align-middle white-space-nowrap product">${patient.patntSexdstn }</td>
+											<td class="align-middle white-space-nowrap text-end">
+											</td>
+										</tr>
+									</c:forEach>
+								</c:otherwise>
+							</c:choose>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+
+
+
+

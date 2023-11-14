@@ -1,0 +1,58 @@
+package kr.or.ddit.nurse.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.calender.ServiceResult;
+import kr.or.ddit.doctor.vo.MedicalExaminationOrderVO;
+import kr.or.ddit.mapper.nurse.ActingMapper;
+import kr.or.ddit.nurse.service.IActingService;
+import kr.or.ddit.nurse.vo.VitalVO;
+
+@Service
+public class ActingServiceImpl implements IActingService{
+
+	@Inject
+	private ActingMapper actingMapper;
+	
+	@Override
+	public List<VitalVO> selectVitalList(Map<String, String> map) {
+		return actingMapper.selectVitalList(map);
+	}
+
+	@Override
+	public ServiceResult examResultInsert(Map<String, String> map) {
+		ServiceResult result = null;
+		
+		int status = actingMapper.examResultInsert(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public ServiceResult vitalResultInsert(Map<String, String> map) {
+		ServiceResult result = null;
+		
+		int status = actingMapper.vitalResultInsert(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+
+}

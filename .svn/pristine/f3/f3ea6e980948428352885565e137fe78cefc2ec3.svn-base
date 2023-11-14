@@ -1,0 +1,125 @@
+package kr.or.ddit.nurse.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.nurse.ServiceResult;
+import kr.or.ddit.nurse.service.IMedicineService;
+import kr.or.ddit.nurse.service.IOrderService;
+import kr.or.ddit.nurse.service.IRoomservice;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import kr.or.ddit.nurse.vo.OrderDetailVO;
+import kr.or.ddit.nurse.vo.PurchaseOrderVO;
+import kr.or.ddit.patient.vo.PatientVO;
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping(value = "/mediform/nurse/medicine")
+public class MedicineController {
+
+	@Inject
+	private IMedicineService medicineService;
+
+	@Inject
+	private IOrderService orderService;
+
+	
+	
+	// 약품재고현황, 발주, 발주상세 조회
+	@RequestMapping(value = "/list/select")
+	public String medicineMain(
+			@RequestParam(required = false, defaultValue = "medcinnm") String searchType,
+			@RequestParam(required = false) String searchWord, MedicineVO medicineVO, PurchaseOrderVO purchaseOrderVO, OrderDetailVO orderDetailVO, Model model) {
+
+		log.info("medicineList() 실행...!");
+
+		// 약품재고현황조회
+		List<MedicineVO> medicineList = medicineService.selectMedicineList();
+
+		//발주상세 조회
+		List<PurchaseOrderVO> orderList = orderService.selectOrderList();
+		Map<String, List<OrderDetailVO>> orderMap = new HashMap<>();
+		
+		for (PurchaseOrderVO order : orderList) {
+			List<OrderDetailVO> orderDetailList = orderService.selectOrderDetailList(order.getPorderCd());
+			orderMap.put(order.getPorderCd(), orderDetailList);
+		}
+		
+		// 발주서 조회
+		List<OrderDetailVO> purchaseList = orderService.selectPurchaseList();
+		
+		model.addAttribute("medicineList",medicineList );
+		model.addAttribute("orderList", orderList);
+		model.addAttribute("orderMap", orderMap);
+		model.addAttribute("menuSelected", "medicine");
+
+		return "nurse/medicineMain";
+	}
+
+
+	// 발주 상세 insert
+	@ResponseBody
+	@RequestMapping(value = "/orderlist/insert", method = RequestMethod.POST)
+	public ServiceResult saveOrderDetails(@RequestBody List<OrderDetailVO> orderDetails) {
+		PurchaseOrderVO purVO = new PurchaseOrderVO();
+		CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		purVO.setPorderEmpNo(user.getEmployee().getEmpNo());
+		
+		int total = 0;
+		for(OrderDetailVO odVO : orderDetails) {
+			total += odVO.getPodetailTotal();
+		}
+		purVO.setPorderTotal(total);
+		
+		ServiceResult result = orderService.insertPurchaseOrder(purVO);
+		if(result.equals(ServiceResult.OK)) {
+			for (OrderDetailVO detail : orderDetails) {
+				detail.setPorderCd(purVO.getPorderCd());
+				orderService.insertOrderDetail(detail);
+			}
+		}
+		return result;
+	}
+	
+	
+	// 약품 검색(ajax)
+	@ResponseBody
+	@PostMapping("/search")
+	public List<MedicineVO> medicineSearch(@RequestBody Map<String, String> map) {
+
+		List<MedicineVO> medicineList = medicineService.medicineSearch(map);
+
+		log.info("medicineList : " + medicineList);
+		return medicineList;
+	}
+
+	// 약품 정보 조회(ajax)
+	@ResponseBody
+	@PostMapping("/info")
+	public MedicineVO medicineInfo(@RequestBody Map<String, String> map) {
+
+		MedicineVO medicineInfo = medicineService.selectMedicine(map);
+
+		log.info("medicineInfo : " + medicineInfo);
+		return medicineInfo;
+	}
+
+
+}

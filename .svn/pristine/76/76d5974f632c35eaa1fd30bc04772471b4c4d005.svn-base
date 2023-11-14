@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.AuditMapper">
+<insert id="insertAudit" parameterType="auditVO">
+	INSERT INTO audit_dcrymanage (
+    audit_cd
+    , emp_no
+    , emp_nm
+    , ip_adres
+    , cntn_scrin
+    , audit_atnddu
+    , cntn_dt
+) VALUES (
+    'AUD' || SEQ_AUDIT.nextval
+    , #{empNo}
+    , #{empNm}
+    , #{ipAdres}
+    , #{cntnScrin}
+    , #{auditAtnddu}
+    , sysdate
+)
+</insert>
+
+<sql id="auditSearch">
+	<if test='searchType != null and searchType == "all"'>
+		<if test='searchWord != null'>
+			and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or cntn_scrin like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "a"'>
+		and emp_no like 'a%'
+		<if test='searchWord != null'>
+			and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or cntn_scrin like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "d"'>
+		and emp_no like 'd%'
+		<if test='searchWord != null'>
+			and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or cntn_scrin like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "n"'>
+		and emp_no like 'n%'
+		<if test='searchWord != null'>
+			and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or cntn_scrin like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "t"'>
+		and emp_no like 't%'
+		<if test='searchWord != null'>
+			and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or cntn_scrin like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+		</if>
+	</if>
+	<if test='searchType != null and searchType == "m"'>
+		and emp_no like 'm%'
+		<if test='searchWord != null'>
+			and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			or cntn_scrin like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+		</if>
+	</if>
+</sql>
+
+<select id="auditCount" parameterType="pagingVO" resultType="int">
+	select count(audit_cd) 
+	from audit_dcrymanage 
+	where 1=1 
+	<include refid="auditSearch"/>
+</select>
+
+<select id="auditList" parameterType="pagingVO" resultType="auditVO">
+	select 
+		b.*
+	from(
+		select 
+			a.*, row_number() over (order by a.cntn_dt desc) rnum
+		from (
+			SELECT
+			    audit_cd
+			  , emp_no
+			  , emp_nm
+			  , ip_adres
+			  , cntn_scrin
+			  , audit_atnddu
+			  , cntn_dt
+			FROM
+			    audit_dcrymanage 
+		    where 1=1 
+		    	and cntn_dt BETWEEN #{startDate} and #{endDate}+1
+		    	
+			<include refid="auditSearch"/>
+			order by cntn_dt desc
+		) a
+	) b
+	<![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	
+</select>
+
+</mapper>

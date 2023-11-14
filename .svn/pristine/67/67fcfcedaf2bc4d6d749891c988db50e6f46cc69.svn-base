@@ -1,0 +1,21 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 │ 행정관리자</title>
+<style type="text/css">
+.content {
+	 background-image: url('/resources/image/login/backgroundIMG2.jpg');
+	 background-size: 100% 100%;
+	 background-repeat: no-repeat;
+	 background-position: center center;
+}
+</style>
+</head>
+<body>
+
+
+</body>
+</html>

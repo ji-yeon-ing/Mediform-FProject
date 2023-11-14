@@ -1,0 +1,38 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.nurse.NurseClinicMapper;
+import kr.or.ddit.mapper.patient.PatientMapper;
+import kr.or.ddit.nurse.vo.NurseClinicVO;
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+
+@Service
+public class NurseClinicImpl implements INurseClinicService{
+
+	@Inject
+	private NurseClinicMapper nurseMapper;
+
+	@Override
+	public List<NurseClinicVO> selectPatientList() {
+		return nurseMapper.selectPatientList();
+	}
+
+	@Override
+	public List<NurseClinicVO> patientSearch(Map<String, String> map) {
+		return nurseMapper.patientSearch(map);
+	}
+
+	@Override
+	public NurseClinicVO selectPatient(Map<String, String> map) {
+		return nurseMapper.selectPatient(map);
+	}
+	
+	
+}

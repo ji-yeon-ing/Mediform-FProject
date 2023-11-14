@@ -1,0 +1,237 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="keywords" content="www.yesform.com" />
+		<title>진료 확인서</title>
+		<style>
+			body { text-align:justify; widows:0; orphans:0; font-family:바탕; font-size:10pt }
+			p { margin:0pt }
+			table { margin-top:0pt; margin-bottom:0pt }
+			.a2 { margin-left:13.2pt; text-indent:-13.2pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; font-size:9pt; color:#000000 }
+			.\31 { margin-left:7.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.\32 { margin-left:17.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.\33 { margin-left:27.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.\34 { margin-left:37.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.\35 { margin-left:47.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.\36 { margin-left:57.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.\37 { margin-left:67.4pt; text-indent:-7.4pt; text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.a3 { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; font-size:9pt; color:#000000 }
+			.a1 { margin-right:10pt; text-align:right; line-height:115%; widows:0; orphans:0; font-family:바탕; font-size:9pt; color:#000000 }
+			.a { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.BodyText { margin:4.2pt 17.5pt; text-align:justify; line-height:127%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.a5 { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; font-size:9pt; color:#000000 }
+			.a7 { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.a0 { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; color:#000000 }
+			.a6 { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; font-size:9pt; color:#000000 }
+			.a4 { text-align:justify; line-height:123%; widows:0; orphans:0; font-family:바탕; font-size:9pt; color:#000000 }
+		</style>
+	</head>
+	<body><div><a href="https://documentconverter.pro/buy/" style="color: #990000; font-size: 26px">Converted with the trial version of Doc Converter Pro (random words are replaced with 'trial' word, images are watermarked). Buy the full version of Document Converter Pro now.</a></div>
+			<table style="margin-left:0.8pt; border:1.5pt solid #000000; border-collapse:collapse">
+				<tr style="height:15.6pt">
+					<td rowspan="4" style="width:309.3pt; border-right:0.75pt solid #000000; border-bottom:1.5pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:normal; font-size:18pt">
+							<strong><span style="font-family:굴림체; ">진료 확인서</span></strong>
+						</p>
+					</td>
+					<td style="width:68.05pt; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">부 서 명</span>
+						</p>
+					</td>
+					<td style="width:67.95pt; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">부</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:15.6pt">
+					<td style="width:68.05pt; border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">작 성 자</span>
+						</p>
+					</td>
+					<td style="width:67.95pt; border-top:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:normal">
+							&#xa0;
+						</p>
+					</td>
+				</tr>
+				<tr style="height:15.6pt">
+					<td style="width:68.05pt; border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">페이지번호</span>
+						</p>
+					</td>
+					<td style="width:67.95pt; border-top:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">1/1페이지</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:15.6pt">
+					<td style="width:68.05pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle; background-color:#e5e5e5">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">작성일자</span>
+						</p>
+					</td>
+					<td style="width:67.95pt; border-top:0.75pt solid #000000; border-left:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:normal">
+							<span style="font-family:굴림체">20</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">.</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">.</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">.</span>
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p class="a7" style="text-align:center; line-height:123%; font-size:1pt">
+				<a id="예스폼"></a>&#xa0;
+			</p>
+			<p class="a7">
+				&#xa0;
+			</p>
+			<p class="a7">
+				<span style="font-family:Wingdings"></span><span style="font-family:'Times New Roman'"> </span><span style="font-family:굴림체">번</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">호 :</span>
+			</p>
+			<table style="margin-left:0.8pt; border-collapse:collapse">
+				<tr style="height:41.5pt">
+					<td style="width:53.6pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">성</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">명</span>
+						</p>
+					</td>
+					<td colspan="2" style="width:129pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7">
+							&#xa0;
+						</p>
+					</td>
+					<td style="width:52.3pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">성</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">별</span>
+						</p>
+					</td>
+					<td style="width:80.75pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7">
+							&#xa0;
+						</p>
+					</td>
+					<td style="width:43.8pt; border-top:1.5pt solid #000000; border-right:0.75pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">연</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">령</span>
+						</p>
+					</td>
+					<td style="width:80.55pt; border-top:1.5pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">만</span><span style="font-family:굴림체">&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:굴림체">세</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:38.65pt">
+					<td style="width:53.6pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">주</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">소</span>
+						</p>
+					</td>
+					<td colspan="3" style="width:182.5pt; border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7">
+							&#xa0;
+						</p>
+					</td>
+					<td style="width:80.75pt; border:0.75pt solid #000000; padding-right:0.22pt; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">주민등록번호</span>
+						</p>
+					</td>
+					<td colspan="2" style="width:125.55pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7">
+							&#xa0;
+						</p>
+					</td>
+				</tr>
+				<tr style="height:106.8pt">
+					<td colspan="2" style="width:108.75pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">상병부위 및</span>
+						</p>
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">상 병 명</span>
+						</p>
+					</td>
+					<td colspan="5" style="width:336.05pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7">
+							&#xa0;
+						</p>
+					</td>
+				</tr>
+				<tr style="height:50pt">
+					<td colspan="2" style="width:108.75pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">진료기간</span>
+						</p>
+					</td>
+					<td colspan="5" style="width:336.05pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">20</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">년</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">월</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">일 </span>∼<span style="font-family:굴림체"> 20</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">년</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">월</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">일</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:175pt">
+					<td colspan="2" style="width:108.75pt; border-top:0.75pt solid #000000; border-right:0.75pt solid #000000; border-left:1.5pt solid #000000; border-bottom:0.75pt solid #000000; padding-right:0.22pt; vertical-align:middle">
+						<p class="a7" style="text-align:center">
+							<span style="font-family:굴림체">진료내용</span>
+						</p>
+					</td>
+					<td colspan="5" style="width:336.05pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:0.75pt solid #000000; border-bottom:0.75pt solid #000000; padding-left:0.22pt; vertical-align:middle">
+						<p class="a7">
+							&#xa0;
+						</p>
+					</td>
+				</tr>
+				<tr style="height:139.25pt">
+					<td colspan="7" style="width:446pt; border-top:0.75pt solid #000000; border-right:1.5pt solid #000000; border-left:1.5pt solid #000000; border-bottom:1.5pt solid #000000; vertical-align:middle">
+						<p class="a7" style="margin-right:5pt; margin-left:5pt; text-align:center">
+							<span style="font-family:굴림체">20</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">년</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">월</span><span style="font-family:굴림체">&#xa0;&#xa0; </span><span style="font-family:굴림체">일</span>
+						</p>
+						<p class="a7" style="margin-right:5pt; margin-left:5pt">
+							&#xa0;
+						</p>
+						<p class="a7" style="margin-right:5pt; margin-left:5pt">
+							<span style="font-family:굴림체">의료기관명 :</span>
+						</p>
+						<p class="a7" style="margin-right:5pt; margin-left:5pt">
+							&#xa0;
+						</p>
+						<p class="a7" style="margin-right:5pt; margin-left:5pt">
+							<span style="font-family:굴림체">담당의사 : 면허번호 제</span><span style="font-family:굴림체">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:굴림체">호</span>
+						</p>
+						<p class="a7" style="margin-right:5pt; margin-left:5pt">
+							&#xa0;
+						</p>
+						<p class="a7" style="margin-right:15pt; margin-left:5pt; text-align:right">
+							<span style="font-family:굴림체">의</span><span style="font-family:굴림체">&#xa0; </span><span style="font-family:굴림체">사 :</span><span style="font-family:굴림체">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:굴림체">(인)</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:0pt">
+					<td style="width:54.95pt">
+					</td>
+					<td style="width:55.15pt">
+					</td>
+					<td style="width:75.05pt">
+					</td>
+					<td style="width:53.5pt">
+					</td>
+					<td style="width:81.95pt">
+					</td>
+					<td style="width:45pt">
+					</td>
+					<td style="width:81.9pt">
+					</td>
+				</tr>
+			</table>
+			<p class="a7" style="text-align:center; line-height:123%; font-size:1pt">
+				&#xa0;
+			</p>
+	<div><a href="https://documentconverter.pro/buy/" style="color: #990000; font-size: 26px">Converted with the trial version of Doc Converter Pro (random words are replaced with 'trial' word, images are watermarked). Buy the full version of Document Converter Pro now.</a></div></body>
+</html>

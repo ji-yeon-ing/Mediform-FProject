@@ -1,0 +1,22 @@
+package kr.or.ddit.doctor.vo;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Data;
+
+// 상병 컬럼
+@Data
+public class SickAndWoundedVO {
+
+	private String sckwndCd;	// 상병 코드(기본키)
+	private String clnicNo;     // 진료 번호(식별)
+	private String rceptNo;     // 접수 번호(식별)
+	private String patntNo;     // 환자 번호(식별)
+	private String sckwndKr;   	// 상병한글명(Null)
+	private String sckwndEn;    // 상병영문명(Null)
+	private String bodyCd;      // 환부 코드(비식별)(NotNull)
+	private String kcd;         // 질병분류기호(Null)
+	private int sckwndSe;       // 상병구분(Null)
+}

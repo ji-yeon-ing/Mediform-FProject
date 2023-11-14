@@ -1,0 +1,60 @@
+package kr.or.ddit.therapist.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.RceptVO;
+import kr.or.ddit.mapper.therapist.TherapistReceiptMapper;
+import kr.or.ddit.therapist.vo.MedicalTreatmentRecordVO;
+import kr.or.ddit.therapist.vo.PhysicalClinicRoomVO;
+import kr.or.ddit.therapist.vo.TherapistPatientVO;
+
+@Service
+public class TherapistReceiptServiceImpl implements ITherapistIReceiptService {
+	
+	@Inject
+	private TherapistReceiptMapper therapistreceiptMapper;
+
+	@Override
+	public List<RceptVO> waitingList() {
+		
+		List<RceptVO> waitingList = therapistreceiptMapper.waitingList();
+		
+		return waitingList;
+	}
+
+	@Override
+	public List<PhysicalClinicRoomVO> roomList() {
+		
+		return therapistreceiptMapper.roomList();
+	}
+
+	@Override
+	public TherapistPatientVO getPatient(String rceptNo) {
+		return therapistreceiptMapper.getPatient(rceptNo);
+	}
+
+	@Override
+	public List<MedicalTreatmentRecordVO> medicalTreatmentRecordList(String rceptNo) {
+		return therapistreceiptMapper.medicalTreatmentRecordList(rceptNo);
+	}
+
+	@Override
+	public int medicalTreatmentRecordUpdate(MedicalTreatmentRecordVO mtrVO) {
+		return therapistreceiptMapper.medicalTreatmentRecordUpdate(mtrVO);
+	}
+
+	@Override
+	public int physicalClinicRoomRegistration(PhysicalClinicRoomVO roomVO) {
+		return therapistreceiptMapper.physicalClinicRoomRegistration(roomVO);
+	}
+
+	@Override
+	public int rceptSttusUpdate(PhysicalClinicRoomVO roomVO) {
+		return therapistreceiptMapper.rceptSttusUpdate(roomVO);
+	}
+
+}

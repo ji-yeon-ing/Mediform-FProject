@@ -1,0 +1,400 @@
+	<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="java.util.Date" %>
+
+		<style type="text/css">
+			body { widows:0; orphans:0; font-family:'맑은 고딕'; font-size:11pt }
+			p { margin:0pt }
+ 			li, table { margin-top:0pt; margin-bottom:0pt} 
+ 			table {table-layout:fixed;}
+ 			 .inline-block {display: inline-block;}
+			.td1 { width:180px; table-layout: fixed; }
+ 			.Footer { margin-top:0pt; margin-bottom:0pt; line-height:normal; widows:0; orphans:0; font-size:11pt } 
+ 			.Header { margin-top:0pt; margin-bottom:0pt; line-height:normal; widows:0; orphans:0; font-size:11pt } 
+			.a3 { margin:0pt 0pt 0pt 13.1pt; text-indent:-13.1pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:normal; widows:0; orphans:0; font-family:바탕; font-size:9pt; font-weight:normal; font-style:normal; letter-spacing:-0.2pt; vertical-align:0pt; color:#000000 } 
+			.\31 { margin:0pt 0pt 0pt 10pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.\32 { margin:0pt 0pt 0pt 20pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.\33 { margin:0pt 0pt 0pt 30pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.\34 { margin:0pt 0pt 0pt 40pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.\35 { margin:0pt 0pt 0pt 50pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.\36 { margin:0pt 0pt 0pt 60pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.\37 { margin:0pt 0pt 0pt 70pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.a2 { margin:0pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:normal; widows:0; orphans:0; font-family:굴림; font-size:9pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+			.a5 { margin:0pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:굴림; font-size:9pt; font-weight:normal; font-style:normal; letter-spacing:-0.2pt; vertical-align:0pt; color:#000000 } 
+ 			.a4 { margin:0pt 0pt 0pt 13.1pt; text-indent:-13.1pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:normal; widows:0; orphans:0; font-family:바탕; font-size:9pt; font-weight:normal; font-style:normal; letter-spacing:-0.2pt; vertical-align:0pt; color:#000000 } 
+ 			.a { margin:0pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+ 			.a0 { margin:0pt 0pt 0pt 15pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:바탕; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+ 			.a7 { margin:0pt 2.5pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:'#태신명조'; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:-0.25pt; vertical-align:0pt; color:#000000 } 
+ 			.a6 { margin:0pt; text-indent:0pt; text-align:center; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:HY견명조; font-size:20pt; font-weight:normal; font-style:normal; letter-spacing:-0.5pt; vertical-align:0pt; color:#000000 } 
+ 			.a1 { margin:0pt; text-indent:0pt; text-align:justify; page-break-before:auto; page-break-inside:auto; page-break-after:auto; line-height:104%; widows:0; orphans:0; font-family:굴림; font-size:10pt; font-weight:normal; font-style:normal; letter-spacing:0pt; vertical-align:0pt; color:#000000 } 
+ 			span.EndnoteReference { vertical-align:super } 
+ 			span.FootnoteReference { vertical-align:super } 
+ 			span.Hyperlink { text-decoration:underline; color:#0000ff } 
+		</style>
+			<table cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+				<tr style="height:25.5pt">
+					<td colspan="8" style="padding:1.4pt 5.1pt; vertical-align:top">
+						<p class="a" style="line-height:104%; font-size:9pt">
+							<span class="a" style="line-height:104%; font-family:'Arial Unicode MS'; font-size:9pt; letter-spacing:-0.3pt; vertical-align:baseline">■ </span>
+							<span class="a" style="line-height:104%; font-family:돋움; font-size:9pt; letter-spacing:-0.3pt; vertical-align:baseline">의료법 시행규칙 [별지 제5호의2서식] </span>
+							<span class="a" style="line-height:104%; font-family:돋움; font-size:9pt; letter-spacing:normal; vertical-align:baseline; color:#0000ff">&lt;개정 2019. 9. 27.&gt; </span>
+						</p>
+					</td>
+					<td colspan="2" style="padding:1.4pt 5.1pt; vertical-align:top">
+						<p class="a" style="line-height:104%; font-size:8pt">
+							<span style="font-family:돋움체; letter-spacing:normal">&#xa0;</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:29.75pt">
+					<td colspan="10" style=" padding:1.4pt 5.1pt; vertical-align:middle">
+						<p class="a6" style="text-align: center; line-height:104%; font-size:16pt">
+							<span class="a" style="line-height:104%; font-family:HY견고딕; font-size:16pt; font-weight:bold; letter-spacing:-0.4pt; vertical-align:baseline">진  단  서</span>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" style="padding:1.4pt 4.72pt 0pt; ">
+							<span class="a" style="font-family:돋움체; letter-spacing:-0.25pt; vertical-align:baseline">등록번호 :</span> 
+<!-- 0. 등록 번호 == 환자 번호 -->		<!-- 등록 번호 == 환자 번호 -->
+							<span class="a cdVal" style="font-family:돋움체; letter-spacing:-0.25pt; vertical-align:baseline">11112121313</span>
+					</td>
+				</tr>
+				<tr style="height:20.75pt">
+					<td colspan="10" style="padding:0pt 4.72pt; ">
+							<span class="a" style="font-family:돋움체; letter-spacing:-0.25pt; vertical-align:baseline">연 번 호 : </span>
+<!-- 1. 연번호 (sysdate yyyyMMdd)-서류번호 -->
+							<span class="a cdVal" style="font-family:돋움체; letter-spacing:-0.25pt; vertical-align:baseline"><fmt:formatDate value="<%= new Date() %>" pattern="yyyyMMdd"/>-000005</span>
+					</td>
+				</tr>
+				<tr style="height:32.1pt">
+					<td class="td1" style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a7 " style="text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:0.8pt; vertical-align:baseline">환자의 성명</span>
+						</p>
+					</td>
+					<td colspan="4" style="border:0.75pt solid #939393; padding:0pt 4.72pt; vertical-align:middle">
+						<p class="a" style="line-height:normal; font-size:11pt">
+<!-- 2. 환자 이름 -->				<!-- 환자 이름 -->
+							<span class="cdVal" style="font-family:돋움체; letter-spacing:-0.25pt">우 태 원</span>
+						</p>
+					</td>
+					<td colspan="4" style="border:0.75pt solid #939393; padding:1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="text-align:center; line-height:normal; font-size:11pt">
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">환자의</span>
+						</p>
+						<p class="a" style="text-align:center; line-height:normal; font-size:11pt">
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">주민등록번호</span>
+						</p>
+					</td>
+					<td style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="line-height:normal; font-size:11pt">
+<!-- 3. 환자 주민등록번호 -->			<!-- 환자 주민등록번호 -->
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">960322-14xxxxx</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:29.8pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:0.8pt; vertical-align:baseline">환자의 주소</span>
+						</p>
+					</td>
+					<td colspan="9" style="font-family:돋움체; :355.15pt; border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:top">
+						<p class="a" style="text-align:left; line-height:104%; font-size:11pt">
+<!-- 4. 환자 주소 --><!-- 5. 우편번호 -->
+							<span class="a cdVal" style="text-align:left; line-height:104%; font-family:돋움체; font-size:11pt">대전광역시 중구 오류동 삐리리릴 건물 (</span><span class="a cdVal" style="text-align:left; line-height:104%; font-family:돋움체; font-size:11pt">32222</span>) <br>
+<!-- 6. 상세 주소 -->				<!--상세 주소 -->
+							<span class="a cdVal" style="text-align:left; line-height:104%; font-family:돋움체; font-size:11pt">000동 0000호 </span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:29.8pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a7" style="text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:0.8pt; vertical-align:baseline">환자의 연락처</span>
+						</p>
+					</td>
+					<td colspan="9" style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="text-align:left; line-height:normal; font-size:11pt">
+<!-- 7. 환자 연락처 -->				<!-- 환자 연락처 -->
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">010-4907-9549</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:59pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:5pt; margin-left:5pt; text-align:center; line-height:normal; font-size:11pt">
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">병 명</span>
+						</p>
+						<p class="a" style="margin-right:5pt; margin-left:5pt; line-height:normal; font-size:11pt">
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.8pt; vertical-align:baseline">&#xa0;[</span>
+<!-- 추정 여부(class="paRadio")-><!-- 추정 여부 -->
+							<input class="paRadio" type="radio" name="prsmpAt" value="N">				
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.8pt; vertical-align:baseline">] 임상적 추정</span>
+						</p>
+						<p class="a" style="margin-right:5pt; margin-left:5pt; line-height:normal; font-size:11pt">
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.8pt; vertical-align:baseline">&#xa0;[</span>
+<!-- 추정 여부(class="paRadio") -->	<!-- 추정 여부 -->
+							<input class="paRadio" type="radio" name="prsmpAt" value="Y">	
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.8pt; vertical-align:baseline">] 최종 진단</span>
+						</p>
+					</td>
+					<td colspan="8" style="border:0.75pt solid #939393; padding:1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="line-height:117%">
+							<span class="a" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">(주 질병ㆍ부상)</span>
+						</p>
+<!-- 8. 주 상병 -->				<!-- 주 상병 -->					
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">주상병인데 뭘 써야 될지 잘 몰라서 그냥 주저려 봅니다.</span> <br>
+						<p class="a" style="line-height:117%">
+							<span class="a" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">(부 질병ㆍ부상)</span>
+						</p>
+<!-- 9. 부 상병 -->				<!-- 부 상병 -->			
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">이건 부 상병인데 뭘 써야 될지 잘 몰라서 그냥 주저려 봅니다. <br> 참고로 상병 이름은 줄바꿈 해서 나오게끔 해야겠네</span> <br>
+					</td>
+					<td style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:top">
+						<p class="a" style="margin-top:4.2pt; margin-right:3pt; margin-left:3pt; text-align:center; line-height:normal">
+							<span class="a" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">[질병분류기호]</span> <br>
+<!-- 10. 질병분류기호 -->			<!-- 질병분류기호 -->				
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">K04.01</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:29.8pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:5pt; margin-left:5pt; text-align:center; line-height:normal; font-size:11pt">
+							<span class="a" style="font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">발병 연월일</span>
+						</p>
+					</td>
+					<td colspan="4" style="border:0.75pt solid #939393; padding:1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="text-align:center">
+<!-- 11. 발병일 --> 					<!-- 발병일 -->								
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">
+								<fmt:formatDate value="<%= new Date() %>" pattern="yyyy년 MM월 dd일"/>
+							</span>
+						</p>
+					</td>
+					<td colspan="4" style="border:0.75pt solid #939393; padding:1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="margin-left:5pt; text-indent:-4.8pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">진단 연월일</span>
+						</p>
+					</td>
+					<td style=" border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="text-align:center;">
+<!-- 12. 진단일 -->				<!-- 진단일 -->
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">
+								<fmt:formatDate value="<%= new Date() %>" pattern="yyyy년 MM월 dd일"/>
+							</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="width: 250px; height:73.85pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:5pt; margin-left:5pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">치료내용 및 향후</span>
+						</p>
+						<p class="a" style="margin-right:5pt; margin-left:5pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">치료에 대한 소견</span>
+						</p>
+					</td>
+					<td colspan="9" style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="line-height:117%; font-size:11pt">
+<!-- 13. 검사 날짜, 의사 소견 내용 --><!-- 치료 및 검사 날짜, 의사 소견 내용 -->
+							<div>
+								<div class="inline-block">
+									<span class="col-3 a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">2023.08.05</span>
+								</div>
+<!-- 14. 검사명 -->
+								<div class="inline-block">
+									<span class="col-6 a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">#전악 파노라마 촬영 후 치석 제거 시행</span>
+								</div>
+<!-- 15. 검사 결과 -->
+								<div class="inline-block">
+									<span class="col-6 a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">#결과결과</span>
+								</div>
+								
+							</div>
+							<div>
+								<div class="inline-block">
+<!-- 16. 치료 날짜 -->							
+									<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">2023.08.05</span>
+								</div>
+								<div class="inline-block">
+<!-- 17. 치료 명 -->							
+									<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">#전악 파노라마 촬영 후 치석 제거 시행</span>
+								</div>
+							</div>
+<!-- 의사소견 .insert1 -->
+							<textarea class="a insert1" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline" rows="5" cols="65">이런들 어떠하며 저런들 어떠하리 만수산 드렁칡이 얽어진들 어떠하리 우리도 이같이 얽어져 백년까지 누리리라.</textarea>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:29.85pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:5pt; margin-left:5pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">입원ㆍ퇴원</span>
+						</p>
+						<p class="a" style="margin-right:5pt; margin-left:5pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">연월일</span>
+						</p>
+					</td>
+					<td colspan="5" style="border:0.75pt solid #939393; padding:1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="line-height:117%; font-size:11pt">
+							<span class="a" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">&#xa0;입원일:&#xa0;</span>
+<!-- 18. 입원일 -->				<!-- 입원일 -->							
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">
+								<fmt:formatDate value="<%= new Date() %>" pattern="yyyy년 MM월 dd일"/>
+							</span>
+							<span class="a" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">부터&#xa0; </span>
+						</p>
+					</td>
+					<td colspan="4" style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="line-height:117%; font-size:11pt">
+							<span class="a" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">&#xa0;퇴원일:&#xa0;</span>
+<!-- 19. 퇴원일 -->				<!-- 퇴원일 -->					
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">
+								<fmt:formatDate value="<%= new Date() %>" pattern="yyyy년 MM월 dd일"/>
+							</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:27pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:2.5pt; margin-left:2.5pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">용&#xa0;&#xa0; 도</span>
+						</p>
+					</td>
+					<td colspan="9" style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="margin-right:2.5pt; margin-left:2.5pt; line-height:104%; font-size:11pt">
+<!-- 20. 용도 -->					<!-- 용도 -->
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">환자 보관용</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:27pt">
+					<td style="border-top:0.75pt solid #939393; border-right:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 4.72pt 1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:2.5pt; margin-left:2.5pt; text-align:center; line-height:104%; font-size:11pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">비&#xa0;&#xa0; 고</span>
+						</p>
+					</td>
+					<td colspan="9" style="border-top:0.75pt solid #939393; border-left:0.75pt solid #939393; border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt 1.4pt 4.72pt; vertical-align:middle">
+						<p class="a" style="margin-right:2.5pt; margin-left:2.5pt; line-height:104%; font-size:11pt">
+<!-- 21. 비고 -->					<!-- 비고 -->
+							<span class="a cdVal" style="line-height:117%; font-family:돋움체; font-size:11pt; letter-spacing:-0.25pt; vertical-align:baseline">비고입니다.</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:27.35pt">
+					<td colspan="10" style="border-top:0.75pt solid #939393; padding:1.4pt 5.1pt; vertical-align:middle">
+						<p class="a">
+							<span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">&#xa0;</span><span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">「의료법」 제17조 및 같은 법 시행규칙 제9조제1항에 따라 위와 같이 진단합니다. </span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:21.3pt">
+					<td colspan="10" style="padding:1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-right:7.5pt; margin-left:7.5pt; text-align:center; line-height:normal; font-size:9pt">
+<!-- 발행일시 .insert2-->		<!-- 발행일시 -->
+							<span class="a insert2" style="font-family:돋움체; font-size:9pt; letter-spacing:normal; vertical-align:baseline">
+								<fmt:formatDate value="<%= new Date() %>" pattern="yyyy년 MM월 dd일"/>
+							</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:21.3pt">
+					<td colspan="5" style="vertical-align:middle">
+						<p class="a" style="text-align:right; line-height:normal">
+							<span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">의료기관 명칭:</span>
+						</p>
+					</td>
+					<td colspan="5" style="vertical-align:middle">
+						<p class="a" style="text-align:left; line-height:normal">
+							<span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">&#xa0;메디폼 재활전문 병원</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:21.3pt">
+					<td colspan="5" style="vertical-align:middle">
+						<p class="a" style="text-align:right; line-height:normal">
+							<span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">주소:</span>
+						</p>
+					</td>
+					<td colspan="5" style="vertical-align:middle">
+						<p class="a" style="text-align:left; line-height:normal">
+							<span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">&#xa0;대전광역시 중구 계룡로 846 (오류동 175-13)</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:21.3pt; margin-bottom:21.3pt">
+					<td colspan="5" style="vertical-align:middle">
+						<p class="a" style="text-align:right; line-height:normal">
+							<span class="a" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">재활전문의 면허번호:</span>
+						</p>
+					</td>
+					<td colspan="5" style=" vertical-align:middle">
+						<p class="a" style="text-align:left; line-height:normal">
+<!-- 22. 전문의면허번호 -->			<!-- 전문의면허번호 -->
+							<span class="a cdVal" style="font-family:돋움체; letter-spacing:normal; vertical-align:baseline">&#xa0;10991</span>
+							<span class="a" style="line-height:143%; font-family:돋움체; letter-spacing:normal; vertical-align:baseline">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;성 명:</span>
+<!-- 23. 현재 로그인 된 의사 이름  --><!-- 현재 로그인 된 의사 이름  -->						
+							<span class="a cdVal" style="line-height:143%; font-family:돋움체; letter-spacing:normal; vertical-align:baseline">우 태 원</span>
+							<span class="a" style="line-height:143%; font-family:돋움체; font-size:9pt; letter-spacing:normal; vertical-align:baseline; color:#787878 ">(서명 또는 인)</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:3pt">
+					<td colspan="10" style="border-top:1.88pt solid #939393; border-bottom:1.88pt solid #939393; padding:1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="text-align:center; line-height:104%; font-size:3pt">
+							<span style="letter-spacing:normal">&#xa0;</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:17.05pt">
+					<td colspan="10" style="border-top:1.88pt solid #939393; border-bottom:0.75pt solid #5d5d5d; padding:1.4pt; vertical-align:middle; background-color:#bbbbbb">
+						<p class="a" style="text-align:center; line-height:normal">
+							<span class="a" style="font-family:돋움; font-weight:bold; letter-spacing:-0.35pt; vertical-align:baseline">작 성 방 법</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:58.8pt">
+					<td colspan="10" style="border-bottom:0.75pt solid #939393; padding:1.4pt 5.1pt; vertical-align:middle">
+						<p class="a" style="margin-left:6.8pt; text-indent:-6.8pt; font-size:8pt">
+							<span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.4pt; vertical-align:baseline">1. </span><span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.45pt; vertical-align:baseline">환자의 인적사항은 진찰한 의사, 치과의사 또는 한의사가 주민등록증, 기간 만료 전 여권, 운전면허증, 공무원증, 국립</span><span class="a" style="font-size:8pt; letter-spacing:-0.45pt; vertical-align:baseline">ㆍ</span><span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.45pt; vertical-align:baseline">공립대학 학생증, 군무원증, 건강보험증, 외국인등록증</span><span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.4pt; vertical-align:baseline"> 등 국가공인 신분증(환자가 미성년자인 경우에는 주민등록등본ㆍ초본, 학생증 등으로 대체 가능합니다)과 대조하여 확인하고 서명 또는 날인합니다.</span>
+						</p>
+						<p class="a" style="margin-left:7pt; text-indent:-7pt; font-size:8pt">
+							<span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.25pt; vertical-align:baseline">2. </span><span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.3pt; vertical-align:baseline">"병명"란에는 <a id="trial96074" href="https://documentconverter.pro/" title="Converted with Doc Converter Pro trial">TRIAL</a> 추정"과 "최종진단" 중 택일하여 [ ]에  </span><span class="a" style="font-family:'Arial Unicode MS'; font-size:8pt; letter-spacing:-0.3pt; vertical-align:baseline">√ </span><span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.3pt; vertical-align:baseline">표시를 하고, 질병명은 한글로 적되 영어로 적을 경우에는 한글을 함께 적으며, 질병분류기호</span><span class="a" style="font-family:돋움체; font-size:8pt; letter-spacing:-0.25pt; vertical-align:baseline">도 함께 적습니다.</span>
+						</p>
+					</td>
+				</tr>
+				<tr style="height:17.55pt">
+					<td colspan="10" style="border-top:0.75pt solid #939393; padding:1.4pt 5.1pt; vertical-align:bottom">
+						<p class="a" style="text-align:right; line-height:104%; font-size:8pt">
+							<span class="a" style="line-height:104%; font-family:돋움체; font-size:8pt; letter-spacing:normal; vertical-align:baseline">210mm</span><span class="a" style="line-height:104%; font-family:'Arial Unicode MS'; font-size:8pt; letter-spacing:normal; vertical-align:baseline">×</span><span class="a" style="line-height:104%; font-family:돋움체; font-size:8pt; letter-spacing:normal; vertical-align:baseline">297mm[백상지 80g/㎡]</span>
+						</p>
+					</td>
+				</tr>
+			</table>
+			<p class="a" style="line-height:104%; font-size:8pt">
+				<span style="font-family:돋움체; letter-spacing:normal">&#xa0;</span>
+			</p>
+
+<script type="text/javascript">
+$(function(){
+	
+	
+// 	var 
+	
+// 	$.ajax({
+// 		type : "post",
+// 		url : "",
+// 		data : ,
+// 		contentType : "application/json; charset=utf-8",
+// 		url : "",
+		
+		
+// 	});
+	
+});
+	
+</script>

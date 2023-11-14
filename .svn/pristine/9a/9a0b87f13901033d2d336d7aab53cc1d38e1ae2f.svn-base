@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper.nurse;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.nurse.vo.MedicineVO;
+
+public interface MedicineMapper {
+
+	List<MedicineVO> selectMedicineList();
+
+	List<MedicineVO> medicineSearch(Map<String, String> map);
+
+	MedicineVO selectMedicine(Map<String, String> map);
+
+
+}

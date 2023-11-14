@@ -1,0 +1,51 @@
+package kr.or.ddit.doctor.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.FileVO;
+import kr.or.ddit.common.vo.HealthCheckupVO;
+import kr.or.ddit.common.vo.MedicalTreatmentVO;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.doctor.vo.MedicalExaminationOrderVO;
+import kr.or.ddit.doctor.vo.SickAndWoundedListVO;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import kr.or.ddit.nurse.vo.VitalVO;
+
+public interface IDoctorService {
+	
+	// 이전 진료 기록 조회
+	public List<ClinicVO> selectClinicList(Map<String, String> map);
+	// 상병 전체 조회 ajax
+	public List<SickAndWoundedListVO> selectSAWList();
+	// 상병 검색 조회 ajax
+	public List<SickAndWoundedListVO> selectSAW(Map<String, String> map);
+	// 검사 전체 조회 ajax
+	public List<HealthCheckupVO> selectHCList();
+	// 검사 검색 조회 ajax
+	public List<HealthCheckupVO> selectHC(Map<String, String> map);
+	// 진료 등록 ajax
+	public ServiceResult insertClinic(ClinicVO clinicVO);
+	// 치료 전체 조회 ajax
+	public List<MedicalTreatmentVO> selectMTList();
+	// 치료 검색 조회 ajax
+	public List<MedicalTreatmentVO> selectMT(Map<String, String> map);
+	// 처방 전체 조회 ajax
+	public List<MedicineVO> selectMedList();
+	// 처방 검색 조회 ajax
+	public List<MedicineVO> selectMed(Map<String, String> map);
+	// 검사 결과 조회
+	public List<MedicalExaminationOrderVO> selectMEOResult(Map<String, String> map);
+	// 검사 xray 조회
+	public List<FileVO> selectXrayResult(Map<String, String> map);
+	// 이전 진료 기록 조회 의사용
+	public List<ClinicVO> selectClnicTime(Map<String, String> map);
+	// 환자 검사오더 등록한 진료 조회(ajax)
+	public ClinicVO selectClinic(Map<String, String> map);
+	// 환자 바이탈 조회 (제일 최근 것)
+	public VitalVO selectVital(String patntNo);
+	// 검사완료 환자 테이블 값 가져오기
+	public ClinicVO selectPastTable(ClinicVO clinicVO);
+}
+

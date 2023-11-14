@@ -1,0 +1,12 @@
+package kr.or.ddit.manager.vo;
+
+import lombok.Data;
+
+@Data
+public class StatisticsVO {
+	// 감사 기록 변수
+	String auditAtnddu;			// uri 한글명
+	int count;					// 합계
+	String name; 				// echart에서 흔히 이름으로 쓰는 속성명
+	String value;				// echart에서 흔히 숫자 값으로 쓰는 속성명
+}

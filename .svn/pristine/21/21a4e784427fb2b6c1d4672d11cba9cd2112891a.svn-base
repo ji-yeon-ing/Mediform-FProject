@@ -1,0 +1,34 @@
+package kr.or.ddit.doctor.vo;
+
+import java.util.Date;
+import java.util.List;
+
+import kr.or.ddit.common.vo.RceptVO;
+import lombok.Data;
+
+// 진료차트 컬럼
+@Data
+public class ClinicVO {
+	
+	private String clnicNo;			// 진료 번호(기본키)
+	private String rceptNo;         // 접수 번호(식별)
+	private String patntNo;         // 환자번호(식별)
+	private String empNo;           // 담당 의사 사번(NotNull)
+	private Date clnicTime;         // 진료 시간(NotNull)
+	private String clnicCn;         // 진단 내역(NotNull)
+	private String clnicAt;         // 진료 여부(NotNull)('Y')
+	private String beforeClnicNo;	// 이전 진료 번호(Null)
+	private String hsptlzAt;        // 입원 여부(NotNull)('N')
+	private String clnicMemo;       // 메모 사항(Null)
+	
+	// 처방 오더 VO
+	private List<PrescriptionOrderVO> prescriptionOrderVOList;
+	// 상병 VO 
+	private List<SickAndWoundedVO> sickAndWoundedVOList;
+	// 치료 오더 VO
+	private List<MedicalTreatmentRecordVO> medicalTreatmentRecordVOList;
+	// 검사 오더 VO
+	private List<MedicalExaminationOrderVO> medicalExaminationOrderVOList;
+	// 접수 VO
+	private List<RceptVO> rceptVOList;
+}

@@ -1,0 +1,40 @@
+package kr.or.ddit.nurse.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.nurse.service.IRoomservice;
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping(value="/mediform/nurse/room")
+public class NurseRoomController {
+
+	@Inject
+	private IRoomservice roomservice;
+	
+	// 입원 환자 전체 정보 조회(ajax)
+		@ResponseBody
+		@PostMapping("/selectHsptlzList")
+		public List<PatientVO> searchHsptlzList() {
+			
+			List<PatientVO> patientList = roomservice.selectHsptlzList();
+			
+			log.info("patientList : "+ patientList);
+			return patientList;
+		}
+	
+	
+	
+	
+	
+}

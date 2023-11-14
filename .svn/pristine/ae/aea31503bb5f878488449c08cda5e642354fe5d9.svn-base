@@ -1,0 +1,31 @@
+package kr.or.ddit.common.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform")
+public class SchedulerController {
+
+	
+	// 스케줄러  컨트롤러
+	@RequestMapping(value = "/scheduler", method = RequestMethod.GET)
+	public String scheduler() {
+		log.info("scheduler() 시작");	
+		return "nurse/scheduler";
+	}
+	
+	
+	@PostMapping(value = "/schedule")
+	public String schedulerForm() {
+		log.info("schedulerForm() 시작");
+		return "";
+		
+	}
+}

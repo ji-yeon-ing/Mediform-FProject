@@ -1,0 +1,9 @@
+package kr.or.ddit.mapper.common;
+
+import kr.or.ddit.common.vo.SchedulerVO;
+
+public interface SchedulerMapper {
+
+	public int schedulerinsert(SchedulerVO scheduler);
+
+}

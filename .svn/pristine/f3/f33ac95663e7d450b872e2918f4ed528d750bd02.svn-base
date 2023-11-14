@@ -1,0 +1,21 @@
+package kr.or.ddit.common.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+// 제증명 VO
+@Data
+public class HospitalCertificatesVO {
+	
+	private String hcrtfNo;			// 서류 번호(기본키)	
+	private String hcrtfPapersCl;   // 서류 분류(NotNull)
+	private Date hcrtfDt;           // 발행 일시(Null)
+	private String hcrtfDocNote;    // 의사 소견(Null)
+	private String hcrtfPrpos;      // 용도(Null)
+	private String hcrtfRm;         // 비고(Null)
+	private String clnicNo;         // 진료 번호(비식별)
+	private String rceptNo;         // 접수 번호(비식별)
+	private String patntNo;         // 환자 번호(비식별)
+	
+}

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.therapist.TherapistReceiptMapper">
+
+
+	<select id="waitingList" resultType="rceptVO">
+		select 
+			rcept_no, a.patnt_no, patnt_nm, patnt_rrno1, rcept_dt, rcept_reason, rcept_sttus, rcept_priort, rcept_clnc
+		from rcept a, patient b
+		where a.patnt_no = b.patnt_no
+			and (rcept_sttus = 5
+			or rcept_sttus = 6
+			or rcept_sttus = 7
+			or rcept_sttus = 8)
+		order by rcept_dt desc
+	</select>
+	<select id="roomList" resultType="therapistPhysicalClinicRoomVO">
+		SELECT
+		    pcr.physical_sckrm
+		  , pcr.physical_sttus
+		  , pcr.patnt_no
+		  , pcr.rcept_no
+		  , pcr.mdlrt_curer
+		  , p.patnt_nm
+		  , p.patnt_rrno1
+		  , e.emp_nm
+		FROM
+		    physical_clinic_room pcr
+		LEFT OUTER JOIN patient p ON p.patnt_no = pcr.patnt_no
+		LEFT JOIN EMPLOYEE e ON e.EMP_NO = pcr.mdlrt_curer
+		ORDER BY pcr.physical_sckrm ASC
+	</select>
+	<select id="getPatient" parameterType="string" resultType="therapistPatientVO">
+		SELECT P.PATNT_NO, P.PATNT_NM,P.PATNT_SEXDSTN, P.PATNT_RRNO1, P.PATNT_TELNO, R.RCEPT_NO, P.PATNT_AGE
+		FROM PATIENT P JOIN RCEPT R ON P.PATNT_NO = R.PATNT_NO
+		WHERE R.RCEPT_NO = #{rceptNo}
+	</select>
+	<select id="medicalTreatmentRecordList" parameterType="string" resultType="therapistMedicalTreatmentRecordVO">
+		SELECT R.RCEPT_NO, MT.MDLRT_NM, MT.MDLRT_CD, MTR.MDLRTRD_CHK, MT.MDLRT_CL
+		FROM RCEPT R
+		RIGHT JOIN MEDICAL_TREATMENT_RECORD MTR ON MTR.RCEPT_NO = R.RCEPT_NO
+		JOIN MEDICAL_TREATMENT MT ON MTR.MDLRT_CD = MT.MDLRT_CD
+		WHERE R.RCEPT_NO = #{rceptNo}
+		ORDER BY MT.MDLRT_CL ASC
+	</select>
+	
+	
+	<update id="medicalTreatmentRecordUpdate" parameterType="therapistMedicalTreatmentRecordVO">
+	   UPDATE medical_treatment_record
+	    SET mdlrtrd_chk =
+	        <choose>
+	            <when test='mdlrtrdChk != null and mdlrtrdChk == "F"'>
+	                'T', 
+	                MDLRT_CURER = #{mdlrtCurer}, 
+	                MDLRT_DT = SYSDATE
+	            </when>
+	            <when test='mdlrtrdChk != null and mdlrtrdChk == "T"'>
+	                'F', 
+	                MDLRT_CURER = null, 
+	                MDLRT_DT = null
+	            </when>
+	        </choose>
+	   WHERE rcept_no = #{rceptNo}
+	   AND mdlrt_cd = #{mdlrtCd}
+	</update>
+	
+	<update id="physicalClinicRoomRegistration" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE physical_clinic_room 
+		SET 
+			PHYSICAL_STTUS = 'Y', 
+			PATNT_NO = #{patntNo}, 
+			RCEPT_NO = #{rceptNo},
+			MDLRT_CURER = #{mdlrtCurer}
+		WHERE PHYSICAL_SCKRM = #{physicalSckrm}
+	</update>
+	
+	<update id="rceptSttusUpdate" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE RCEPT 
+		SET 
+			RCEPT_STTUS = 6
+		WHERE RCEPT_NO = #{rceptNo}
+	</update>
+	
+	<update id="updatePhysicalSttusOt" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE physical_clinic_room 
+		SET 
+			PHYSICAL_STTUS = 'N', 
+			PATNT_NO = null, 
+			RCEPT_NO = null, 
+			MDLRT_CURER = null
+		WHERE PHYSICAL_SCKRM = #{physicalSckrm}
+	</update>
+	
+	<update id="updateRceptSttusOt" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE RCEPT 
+		SET 
+			RCEPT_STTUS = 7
+		WHERE RCEPT_NO = #{rceptNo}
+	</update>
+	
+	<update id="deletePcr" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE physical_clinic_room 
+		SET 
+			PATNT_NO = null, 
+			RCEPT_NO = null, 
+			MDLRT_CURER = null
+		WHERE PHYSICAL_SCKRM = #{physicalSckrm}
+	</update>
+	
+<!-- 	<update id="updateRceptSttusOt" parameterType="therapistPhysicalClinicRoomVO"> -->
+<!-- 		UPDATE RCEPT  -->
+<!-- 		SET  -->
+<!-- 			RCEPT_STTUS = 9 -->
+<!-- 		WHERE RCEPT_NO = #{rceptNo} -->
+<!-- 	</update> -->
+	<!-- 
+	roomVO : PhysicalClinicRoomVO(physicalSckrm=2, physicalSttus=null
+	 , patntNo=P10000000, patntNm=null, patntRrno1=null, rceptNo=10000110)
+	-->
+	<update id="updateRceptSttusCp" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE RCEPT
+		    SET    RCEPT_STTUS = 9
+		WHERE  RCEPT_NO = #{rceptNo} AND PATNT_NO = #{patntNo}
+	</update>
+	<!-- 
+	roomVO : PhysicalClinicRoomVO(physicalSckrm=2, physicalSttus=null
+	 , patntNo=P10000000, patntNm=null, patntRrno1=null, rceptNo=10000110)
+	-->
+	<update id="updatePhysicalSttusCp" parameterType="therapistPhysicalClinicRoomVO">
+		UPDATE PHYSICAL_CLINIC_ROOM
+		SET    PHYSICAL_STTUS = 'N'
+		WHERE  PHYSICAL_SCKRM = #{physicalSckrm} AND RCEPT_NO = #{rceptNo} AND PATNT_NO = #{patntNo}
+	</update>
+	
+	<update id="therapyRoomRoomRegistration" parameterType="therapistPhysicalClinicRoomVO">
+	
+		UPDATE CLINIC_ROOM
+		SET 
+			CLNIC_STTUS = 'TRE'
+			, PATNT_NO = #{patntNo}
+		WHERE CLNIC_NO = #{rceptClnc}
+	
+	
+	</update>
+	
+	
+	<update id="rceptTherapySttusUpdate" parameterType="therapistPhysicalClinicRoomVO">
+	
+		UPDATE RCEPT
+		SET
+			RCEPT_STTUS = 8,
+			RCEPT_CLNC = #{rceptClnc}
+		WHERE RCEPT_NO = #{rceptNo}
+			and PATNT_NO = #{patntNo}
+	
+	</update>
+	
+	
+	
+	<resultMap type="occupationalTherapyVO" id="otMap">
+		<id property="rceptNo" column="rcept_no"/>
+		<result property="mdlrtrdCd" column="mdlrtrd_cd"/>
+		<result property="clnicNo" column="clnic_no"/>
+		<result property="rceptNo" column="rcept_no"/>
+		<result property="mdlrtCd" column="mdlrt_cd"/>
+		<result property="mdlrtCurer" column="mdlrt_curer"/>
+		<result property="empNm" column="emp_nm"/>
+		<result property="mdlrtDt" column="mdlrt_dt"/>
+		<result property="bodyCd" column="body_cd"/>
+		<result property="mdlrtrdChk" column="mdlrtrd_chk"/>
+		<result property="rceptSttus" column="rcept_sttus"/>
+		<result property="rceptClnc" column="rcept_clnc"/>
+		<result property="patntNo" column="patnt_no"/>
+		<result property="patntNm" column="patnt_nm"/>
+		<result property="patntRrno1" column="patnt_rrno1"/>
+		<collection property="mtList" resultMap="mtMap"/>	
+	</resultMap>
+	
+	
+	<resultMap type="therapistMedicalTreatmentVO" id="mtMap">
+		<id property="mdlrtCd" column="mdlrt_cd"/>
+		<result property="mdlrtCd" column="mdlrt_cd"/>
+		<result property="mdlrtNm" column="mdlrt_nm"/>
+		<result property="mdlrtAmount" column="mdlrt_amount"/>
+		<result property="mllwncAt" column="mllwnc_at"/>
+	</resultMap>
+	
+	
+	<select id="therapyingList" resultType="occupationalTherapyVO" resultMap="otMap">
+	
+		select 
+			r.rcept_no
+			, r.patnt_no
+			, p.patnt_nm
+			, p.patnt_rrno1
+			, r.rcept_sttus
+			, r.rcept_clnc
+			, mtr.mdlrtrd_cd
+			, mt.MDLRT_NM
+			, mtr.MDLRT_CURER
+			, e.emp_nm
+		from rcept r, patient p, clinic c, employee e, medical_treatment_record mtr
+			left outer join medical_treatment mt on (mtr.MDLRT_CD = mt.MDLRT_CD)
+		where rcept_sttus = '8'
+			and r.patnt_no = p.patnt_no
+			and mtr.rcept_no = r.rcept_no
+			and c.patnt_no = p.patnt_no
+			and c.rcept_no = r.rcept_no
+			and c.rcept_no = mtr.rcept_no
+			and c.clnic_no = mtr.clnic_no
+			and MDLRT_CL = '작업'
+			and e.emp_no = mtr.MDLRT_CURER
+	
+	
+	</select>
+	
+	<update id="ocMedicalTreatmentRecordUpdate" parameterType="therapistPhysicalClinicRoomVO">
+	
+		update MEDICAL_TREATMENT_RECORD
+		set
+			MDLRT_CURER = #{mdlrtCurer} 
+			, BODY_CD = ''
+			, MDLRT_DT = sysdate
+			, MDLRTRD_CHK = 'T'
+		where rcept_no = #{rceptNo}
+			
+	
+	</update>
+	
+	
+	<update id="updateReceptSttusOc" parameterType="therapistPhysicalClinicRoomVO">
+	
+		update rcept
+		set 
+			RCEPT_CLNC = ''
+			, RCEPT_STTUS = '9'
+		where rcept_no = #{rceptNo}
+	
+	</update>
+	
+	<select id="mtrCheck" parameterType="therapistPhysicalClinicRoomVO" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		    MEDICAL_TREATMENT MT LEFT JOIN 
+		    MEDICAL_TREATMENT_RECORD MTR ON MT.MDLRT_CD = MTR.MDLRT_CD
+		WHERE MTR.RCEPT_NO = #{rceptNo}
+		    AND MT.MDLRT_CL = '작업'
+	</select>
+	
+	
+	
+
+</mapper>

@@ -1,0 +1,46 @@
+package kr.or.ddit.common.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.service.IAlarmService;
+import kr.or.ddit.common.vo.AlarmVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class AlarmController {
+
+	@Inject
+	private IAlarmService alarmService;
+	
+	@ResponseBody
+	@RequestMapping(value="selectAlarm", method = RequestMethod.POST)
+	public List<AlarmVO> selectAlarm(@RequestBody Map<String, String> map){
+		
+		int empNo = Integer.parseInt(map.get("empNo").toString());
+		int alarmCnt = alarmService.selectAlarm(empNo);
+		
+		List<AlarmVO> alarm = alarmService.selectAlarmList(empNo);
+		if(alarm != null && alarm.size() > 0) {
+			alarm.get(0).setAlarmCnt(alarmCnt);
+		}
+		log.info("알람 개수 : >>>>>>>>>>>>>>>" + alarmCnt);
+		return alarm;
+	}
+	
+	@RequestMapping(value="/updateAlarm.do")
+	public String updateAlarm(int aNo) {
+		log.info("updateAlarm 넘어오는지 확인 :::::::::::::::::::" + aNo);
+		alarmService.updateAlarm(aNo);
+		return "redirect:/notice/list.do";
+	}
+}

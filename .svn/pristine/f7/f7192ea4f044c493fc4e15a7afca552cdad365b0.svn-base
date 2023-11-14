@@ -1,0 +1,117 @@
+package kr.or.ddit.administration.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.administration.service.IHospitalizationService;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.SickbedVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class Hospitalization {
+
+	@Inject
+	private IHospitalizationService hospitalization;
+	
+	@RequestMapping(value="/hospitalization/main")
+	public String hospitalizationMain(Model model) {
+		
+		List<SickbedVO> sickbedList = hospitalization.selectSickbedList();
+		
+		
+		log.info("hospitalizationMain() 실행!!!");
+		
+		model.addAttribute("sickbedList", sickbedList);
+		model.addAttribute("menuSelected", "hospitalization");
+		
+		log.info("병상 수 : " + sickbedList.size());
+		
+		for(SickbedVO sickbedVO : sickbedList) {
+			
+			log.info("병상 번호 : " + sickbedVO.getSckbdNo());
+			
+		}
+		
+		return "admin/hospitalizationMain";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/hospitalization/insert", method=RequestMethod.POST)
+	public String hospitalizationInsert(
+								@RequestBody Map<String, Object> map
+									) {
+		
+		log.info("hospitalizationInsert() 실행!!!");
+		
+		
+		ServiceResult result = hospitalization.hospitalizationInsert(map);
+		
+		String stattus = "";
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("업데이트 성공!!!!");
+			stattus = "success";
+		}else {
+			log.info("업데이트 실패!!!");
+			stattus = "fail";
+		}
+		
+		return stattus;
+	}
+
+	@ResponseBody
+	@RequestMapping(value="/hospitalization/select", method=RequestMethod.POST)
+	private SickbedVO hospitalizationSelect(
+								@RequestBody Map<String, String> map
+									) {
+		
+		log.info("hospitalizationSelect() 실행!!!");
+	
+		SickbedVO sickBedVO = hospitalization.hospitalizationSelect(map);
+		
+		return sickBedVO;
+		
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/hospitalization/update", method=RequestMethod.POST)
+	public String hospitalizationUpdate(
+								@RequestBody Map<String, Object> map
+									) {
+		
+		log.info("hospitalizationUpdate() 실행!!!");
+		
+		
+		ServiceResult result = hospitalization.hospitalizationUpdate(map);
+		
+		String stattus = "";
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("업데이트 성공!!!!");
+			stattus = "success";
+		}else {
+			log.info("업데이트 실패!!!");
+			stattus = "fail";
+		}
+		
+		return stattus;
+	}
+	
+	
+	
+	
+}

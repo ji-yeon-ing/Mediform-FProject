@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerSanctionMapper">
+
+	<resultMap type="sanctionVO" id="sanctionMap">
+		<id property="porderCd"  column="PORDER_CD"/>
+		<result property="porderCt" column="PORDER_CT"/>
+		<result property="porderDate" column="PORDER_DATE"/>
+		<result property="porderEmpno" column="PORDER_EMPNO"/>
+		<result property="porderConfm" column="PORDER_CONFM"/>
+		<result property="porderTotal" column="PORDER_TOTAL"/>
+		<collection property="sanctionDetailList" resultMap="sanctionDetailMap"/>
+	</resultMap>
+	
+	<resultMap type="sanctionDetailVO" id="sanctionDetailMap">
+		<id property="podetailCd" column="PODETAIL_CD"/>
+		<result property="porderCd" column="PORDER_CD"/>
+		<result property="podetailNm" column="PODETAIL_NM"/>
+		<result property="podetailMfbiz" column="PODETAIL_MFBIZ"/>
+		<result property="podetailUnit" column="PODETAIL_UNIT"/>
+		<result property="podetailAmount" column="PODETAIL_AMOUNT"/>
+		<result property="podetailTotal" column="PODETAIL_TOTAL"/>
+		<result property="podetailMemo" column="PODETAIL_MEMO"/>
+	</resultMap>
+	
+	<sql id="sanctionSearch">
+		<if test='searchWord != null'>
+			and E.EMP_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+		</if>
+	</sql>
+	
+	<select id="sanctionCount" resultType="int" parameterType="pagingVO">
+	select count(P.PORDER_CD) 
+	FROM PURCHASE_ORDER P JOIN EMPLOYEE E ON(P.PORDER_EMPNO = E.EMP_NO)
+	where 1=1
+	and P.PORDER_CONFM_NO = 'A'
+   	AND P.PORDER_CONFM = 'Y'
+	and P.PORDER_DATE BETWEEN #{startDate} and #{endDate}+1
+	<include refid="sanctionSearch"/>
+	</select>
+	
+	<select id="sanctionList" resultType="sanctionVO" parameterType="pagingVO">
+	select 
+        b.*
+    from (
+        select 
+            a.*, row_number() over (order by a.PORDER_DATE desc) rnum
+        from (
+            SELECT
+              P.PORDER_CD, 
+              P.PORDER_CT, 
+              P.PORDER_DATE, 
+              P.PORDER_EMPNO,
+              E.EMP_NM,
+			  P.PORDER_TOTAL, 
+			  P.PORDER_CONFM, 
+			  P.PORDER_CONFM_NO
+            FROM PURCHASE_ORDER P JOIN EMPLOYEE E ON(P.PORDER_EMPNO = E.EMP_NO)
+            where 1=1
+            	and P.PORDER_CONFM_NO = 'A'
+            	AND P.PORDER_CONFM = 'Y' 
+                and P.PORDER_DATE BETWEEN #{startDate} and #{endDate} + 1
+            <include refid="sanctionSearch"/>
+            order by P.PORDER_DATE desc
+        ) a
+    ) b
+    <![CDATA[
+        where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+    ]]>	
+	</select>
+
+
+	<sql id="sanctionCompletionSearch">
+		<if test='searchType != null and searchType == "ALL"'>
+			<if test='searchWord != null'>
+				and E.EMP_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>	
+		<if test='searchType != null and searchType == "Y"'>
+			and P.PORDER_CONFM = 'Y'
+			<if test='searchWord != null'>
+				and E.EMP_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>	
+		<if test='searchType != null and searchType == "N"'>
+			and P.PORDER_CONFM = 'N'
+			<if test='searchWord != null'>
+				and E.EMP_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>	
+	</sql>	
+	
+	
+	<select id="sanctionCompletionCount" resultType="int" parameterType="pagingVO">
+	select count(P.PORDER_CD) 
+	FROM PURCHASE_ORDER P JOIN EMPLOYEE E ON(P.PORDER_EMPNO = E.EMP_NO)
+	where 1=1
+		and P.PORDER_CONFM_NO = 'B'
+		and P.PORDER_DATE BETWEEN #{startDate} and #{endDate}+1
+	<include refid="sanctionCompletionSearch"/>
+	</select>
+	
+	<select id="sanctionCompletionList" resultType="sanctionVO" parameterType="pagingVO">
+	select 
+        b.*
+    from (
+        select 
+            a.*, row_number() over (order by a.PORDER_CONFM_DT desc) rnum
+        from (
+            SELECT
+              P.PORDER_CD, 
+              P.PORDER_CT, 
+              P.PORDER_DATE, 
+              P.PORDER_EMPNO,
+              E.EMP_NM,
+			  P.PORDER_TOTAL, 
+			  P.PORDER_CONFM, 
+			  P.PORDER_CONFM_NO, 
+			  P.PORDER_CONFM_DT, 
+			  (SELECT EMP_NM FROM EMPLOYEE WHERE EMP_NO = P.porder_auth_2) AS porderAuth2Nm
+            FROM PURCHASE_ORDER P JOIN EMPLOYEE E ON(P.PORDER_EMPNO = E.EMP_NO)
+            where 1=1
+            	and P.PORDER_CONFM_NO = 'B'
+                and P.PORDER_DATE BETWEEN #{startDate} and #{endDate} + 1
+            <include refid="sanctionCompletionSearch"/>
+            order by P.PORDER_CONFM_DT desc
+        ) a
+    ) b
+    <![CDATA[
+        where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+    ]]>	
+	</select>
+	
+	<select id="sanctionDetail" parameterType="string" resultType="sanctionVO">
+	SELECT
+	    PO.porder_cd
+	  , PO.porder_ct
+	  , PO.porder_date
+	  , PO.porder_empno
+	  , E.EMP_NM
+	  , PO.porder_total
+	  , PO.porder_confm
+	  , PO.porder_confm_no
+	  , PO.porder_auth_1
+	  , (SELECT EMP_NM FROM EMPLOYEE WHERE EMP_NO = PO.porder_auth_1) AS porderAuth1Nm
+	  , PO.porder_auth_2
+	  , (SELECT EMP_NM FROM EMPLOYEE WHERE EMP_NO = PO.porder_auth_2) AS porderAuth2Nm
+	FROM purchase_order PO
+	JOIN EMPLOYEE E ON PO.porder_empno = E.EMP_NO
+	WHERE PORDER_CD = #{porderCd}
+	</select>
+	
+	<select id="sanctionDetailList" parameterType="string" resultType="sanctionDetailVO">
+	SELECT
+	    POD.podetail_cd
+	  , POD.porder_cd
+	  , POD.podetail_nm
+	  , POD.podetail_mfbiz
+	  , POD.podetail_unit
+	  , POD.podetail_amount
+	  , POD.podetail_total
+	  , POD.podetail_memo
+	  , POD.MEDCIN_CD
+	  , M.MEDCIN_NM
+	  , M.MEDCIN_INVNTRY
+	  , M.MEDCIN_MFBIZ
+	  , M.MDCTN_COURS
+	  , M.MEDCIN_PC
+	  , M.MEDCIN_STANDARD
+	  , M.MEDCIN_UNIT
+	FROM purchase_order_detail POD
+	JOIN medicine M ON M.MEDCIN_CD = POD.MEDCIN_CD
+	WHERE POD.PORDER_CD = #{porderCd}
+	</select>
+	
+	<update id="sanctionAgree" parameterType="sanctionVO">
+		UPDATE purchase_order
+		SET PORDER_AUTH_2 = #{porderAuth2}, 
+			PORDER_CONFM_NO = 'B', 
+			PORDER_CONFM = #{porderConfm}, 
+			PORDER_CONFM_DT = sysdate
+		WHERE PORDER_CD = #{porderCd}
+	</update>
+	
+	<update id="sanctionReject" parameterType="sanctionVO">
+		UPDATE purchase_order
+		SET PORDER_AUTH_2 = #{porderAuth2}, 
+			PORDER_CONFM_NO = 'B', 
+			PORDER_CONFM = #{porderConfm}, 
+			PORDER_CONFM_DT = sysdate, 
+			RJCT_RESN = #{rjctResn}
+		WHERE PORDER_CD = #{porderCd}
+	</update>
+	
+
+</mapper>
+
+
+
+

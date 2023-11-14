@@ -1,0 +1,21 @@
+package kr.or.ddit.manager.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
+import javax.mail.MessagingException;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface IManagerService {
+
+	public List<EmployeeVO> ApplicationList();
+
+	public EmployeeVO getEmployee(String empNo);
+
+	public ServiceResult rejectUpdate(EmployeeVO empVO) throws MessagingException, UnsupportedEncodingException;
+
+	public ServiceResult agreeEmployee(EmployeeVO empVO) throws MessagingException, UnsupportedEncodingException;
+
+}

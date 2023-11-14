@@ -1,0 +1,803 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 │ 행정관리자</title>
+<style type="text/css">
+#header {
+	font-weight: bold;
+}
+
+#searchBtn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+}
+
+.text-nowrap {
+	cursor: pointer;
+}
+
+#msgArea {
+	font-size: 17px;
+	margin-bottom: 50px;
+}
+
+#empSelectBox, #conSelectBox, #comSelectBox {
+	margin-left: auto;
+	margin-top: 20px;
+	width: 150px;
+	height: 35px;
+}
+
+#empSearchBox {
+	margin-top: 18px;
+	margin-right: 8px;
+}
+
+.subMenu:hover {
+	border-color: #3f51b5;
+	background-color: rgba(63, 81, 181, 0.1);
+}
+
+.subMenu {
+	font-size: 16px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.profileImg {
+	width: 150px; /* 원하는 가로 크기로 설정 */
+	height: 150px; /* 원하는 세로 크기로 설정 */
+	object-fit: cover; /* 이미지 비율 유지하면서 부족한 부분을 채움 */
+}
+</style>
+</head>
+<body>
+
+	<!-- 서브 메뉴 -->
+	<ul class="navbar-nav d-flex flex-row"
+		style="margin-bottom: 15px; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed;">
+		<li style="margin-left: 15px;"></li>
+		<li class="subMenu nav-item"><a class="nav-link"
+			href="/mediform/manager/employee/list/select" role="button"
+			id="employeeManagementBtn">&nbsp;&nbsp;직원 관리&nbsp;&nbsp;</a></li>
+		<li class="subMenu nav-item"><a class="nav-link"
+			href="/mediform/manager/employee/confirm/list/select" role="button"
+			id="employeeCompleteBtn">&nbsp;&nbsp;신청 내역&nbsp;&nbsp;</a></li>
+		<li class="subMenu nav-item"><a class="nav-link"
+			href="/mediform/manager/employee/chart/select" role="button"
+			id="employeeOrganizationChartBtn">&nbsp;&nbsp;직원 조직도&nbsp;&nbsp;</a>
+		</li>
+	</ul>
+	<!-- 서브 메뉴 -->
+	<input type="hidden" id="msg" value="${msg }">
+	<!-- ////////////////////// 신청 내역 ///////////////////////// -->
+	<div class="row">
+		<div class="col-lg-5">
+			<div class="card" style="height: 710px;" id="">
+				<div class="card-header d-flex flex-between-center py-2 border-bottom"
+					style="background-color: midnightblue">
+					<div class="row flex-between-end">
+						<div class="col-auto align-self-center">
+							<h5 class="mb-0 text-white fw-semi-bold" id="header">신청 내역</h5>
+						</div>
+					</div>
+				</div>
+				<div class="card-body " style="padding: initial !important;">
+					<div class="tab-content">
+						<div class="tab-pane preview-tab-pane active">
+							<!--  //////////////// 직원 조회 시작////////////////// -->
+							<div class="table-responsive scrollbar">
+								<div style="display: flex; justify-content: flex-start; margin-left: 20px;">
+									<table class="table table-hover table-striped overflow-hidden">
+										<thead>
+											<tr>
+												<th class="text-start" scope="col">이름</th>
+												<th class="text-start" scope="col">소속</th>
+												<th class="text-start" scope="col">신청일자</th>
+												<th class="text-start" scope="col">등록자명</th>
+											</tr>
+										</thead>
+										<tbody>
+										<c:choose>
+											<c:when test="${empty confirmList }">
+												<tr class="align-middle" id="">
+													<td class="text-center" colspan="5">회원가입을 신청한 내역이
+														없습니다.</td>
+												</tr>
+											</c:when>
+											<c:otherwise>
+												<c:forEach items="${confirmList }" var="confirm">
+													<tr class="detail align-middle" id="${confirm.empNo }">
+														<td class="text-nowrap">${confirm.empNm }</td>
+														<td class="text-nowrap"><c:choose>
+																<c:when test="${confirm.empSe eq 'n'}">간호</c:when>
+																<c:when test="${confirm.empSe eq 'a'}">원무</c:when>
+																<c:when test="${confirm.empSe eq 'd'}">전문</c:when>
+																<c:when test="${confirm.empSe eq 't'}">치료</c:when>
+																<c:when test="${confirm.empSe eq 'm'}">관리</c:when>
+																<c:when test="${confirm.empSe eq 'k'}">병원장</c:when>
+															</c:choose></td>
+														<td class="text-nowrap"><fmt:formatDate
+																value="${confirm.empRgsde }"
+																pattern="yyyy.MM.dd HH:mm" /></td>
+														<td class="text-nowrap">오호</td>
+													</tr>
+												</c:forEach>
+											</c:otherwise>
+										</c:choose>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--  //////////////// 신청 내역 끝////////////////// -->
+		<div class="col-lg-7">
+			<div class="card" style="height: 710px;" id="">
+				<div class="card-header d-flex flex-between-center py-2 border-bottom"
+						style="background-color: midnightblue">
+						<div class="row flex-between-end">
+							<div class="col-auto align-self-center">
+								<h5 class="mb-0 text-white fw-semi-bold" id="header">처리 내역</h5>
+							</div>
+						</div>
+					</div>
+				<div class="table-responsive scrollbar">
+					<div style="display: flex; justify-content: flex-start; margin-left: 20px;">
+						<form action="/mediform/manager/employee/confirm/list/select"
+							method="post" id="searchForm" style="display: flex;">
+							<!-- 셀렉트박스 -->
+							<select class="form-select form-select-sm"
+								aria-label=".form-select-sm example" id="comSelectBox"
+								name="searchType">
+								<option
+									<c:if test="${searchType eq 'default'}">selected</c:if>
+									value="default">전체 내역</option>
+								<option
+									<c:if test="${searchType eq 'yes'}">selected</c:if>
+									value="yes">승인 내역</option>
+								<option
+									<c:if test="${searchType eq 'no'}">selected</c:if>
+									value="no">반려 내역</option>
+							</select>
+							<!-- 검색창 -->
+							<div class="search-box" id="searchForm" style="margin-top: 18px;">
+								<!-- 								  <form class="position-relative" data-bs-toggle="search" data-bs-display="static"> -->
+								<input class="completeSearchInput form-control search-input fuzzy-search"
+									type="search" placeholder="직원명이나 사번을 입력해 주세요."
+									aria-label="Search" id="searchInput" style="flex: 1; "
+									name="searchWord" value="${pagingVO.searchWord }" /> <span
+									class="fas fa-search search-box-icon"></span>
+								<!-- 								  </form> -->
+								<div
+									class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none"
+									data-bs-dismiss="search">
+									<button class="btn btn-link btn-close-falcon p-0"
+										aria-label="Close"></button>
+								</div>
+							</div>
+							<div style="display: flex; justify-content: flex-end; margin-top: 20px; margin-left:5px;" >
+					        	<button class="btn btn-outline-secondary me-1 mb-1"  type="button" id="searchBtn">검색</button>
+					        </div>
+							<input type="hidden" name="page" id="page" /> 
+							<sec:csrfInput />
+						</form>
+					</div>
+					<table class="table table-hover table-striped overflow-hidden">
+						<thead>
+							<tr>
+								<th scope="col">이름</th>
+								<th scope="col">성별</th>
+								<th scope="col">이메일</th>
+								<th scope="col">연락처</th>
+								<th scope="col">소속</th>
+								<th scope="col">신청일자</th>
+								<th scope="col">승인내역</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:set value="${pagingVO.dataList }" var="comfirmList" />
+							<c:choose>
+								<c:when test="${empty confirmList }">
+									<tr class="align-middle" id="">
+										<td class="text-center" colspan="5">회원가입을 신청한 내역이
+											없습니다.</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<c:forEach items="${comfirmList }" var="complete">
+										<tr class="completeDetail align-middle"
+											id="${complete.empNo }">
+											<td class="text-nowrap">${complete.empNm }</td>
+											<td class="text-nowrap"><c:if
+													test="${complete.empSexdstn eq 'M' }">남성</c:if> <c:if
+													test="${complete.empSexdstn eq 'F' }">여성</c:if></td>
+											<td class="text-nowrap">${complete.empEmail }</td>
+											<td class="telNoTd text-nowrap">${complete.empTelno }</td>
+											<td class="text-nowrap"><c:choose>
+													<c:when test="${complete.empSe eq 'n'}">간호</c:when>
+													<c:when test="${complete.empSe eq 'a'}">원무</c:when>
+													<c:when test="${complete.empSe eq 'd'}">전문</c:when>
+													<c:when test="${complete.empSe eq 't'}">치료</c:when>
+													<c:when test="${complete.empSe eq 'm'}">관리</c:when>
+													<c:when test="${complete.empSe eq 'k'}">병원장</c:when>
+												</c:choose></td>
+											<td class="text-nowrap"><fmt:formatDate
+													value="${complete.empRgsde }"
+													pattern="yyyy.MM.dd HH:mm" /></td>
+											<td class="text-nowrap"><c:if
+													test="${complete.empConfm eq 'Y'}">승인</c:if> <c:if
+													test="${complete.empConfm eq 'N'}">반려</c:if></td>
+										</tr>
+									</c:forEach>
+								</c:otherwise>
+							</c:choose>
+						</tbody>
+					</table>
+				</div>
+				<div class="card-footer clearfix col-auto align-self-center pagingArea" id="pagingArea" style="padding-top: 0px;">
+					${pagingVO.pagingHTML }</div>
+				</div>
+			</div>
+		</div>
+		<!--  //////////////// 처리 내역 끝////////////////// -->
+
+
+<!-- 2 신청 내역 모달 탬플릿 시작 -->
+<div class="modal fade" id="confirmDetail-modal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="max-width: 1200px">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 py-3 ps-4 pe-6 " style="background-color: midnightblue; font-weight: bold;">
+					<h4 class="modalHeader mb-1 text-white" id="modalExampleDemoLabel">신청내역
+						상세보기</h4>
+				</div>
+				<div class="p-4 pb-0">
+					<!-- 승인 폼 -->
+					<form action="/mediform/manager/employee/agree" method="post"
+						id="agreeForm">
+						<input type="hidden" id="cfEmpNo" name="empNo" value="">
+						<input type="hidden" id="cfEmpSeInput" name="empSe" value="">
+						<input type="hidden" id="cfEmpEmail" name="empEmail" value="">
+						<sec:csrfInput />
+					</form>
+					<div class="text-center">
+						<img class="profileImg rounded-circle img-thumbnail shadow-sm"
+							width="150" height="150"
+							src="/resources/image/profile/profileImg.png"
+							alt="User profile picture" id="cfEmpProfile">
+					</div>
+					<div class="row">
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for=cfEmpNm>이름</label> <input
+								class="form-control" id="cfEmpNm" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpSexdstn">성별</label> <input
+								class="form-control" id="cfEmpSexdstn" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpSe">소속</label> <input
+								class="form-control" id="cfEmpSe" type="text" name=""
+								readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpRrno">주민등록번호</label>
+							<input class="form-control" id="cfEmpRrno" type="text"
+								name="" readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpTelno">연락처</label> <input
+								class="form-control" id="cfEmpTelno" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpEmailInput">이메일</label>
+							<input class="form-control" id="cfEmpEmailInput" type="text"
+								name="empEmail" readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="mb-3 form-group">
+							<label class="col-form-label" for="cfEmpAdres">주소</label> <input
+								class="form-control" id="cfEmpAdres" type="text" name=""
+								readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpRqstr">등록자사번</label>
+							<input class="form-control" id="cfEmpRqstr" type="text"
+								name="" readonly="readonly" />
+						</div>
+						<div class="col-6 mb-3 form-group">
+							<label class="col-form-label" for="cfEmpRqstrNm">등록자명</label>
+							<input class="form-control" id="cfEmpRqstrNm" type="text"
+								name="" readonly="readonly" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" id="agreeBtn">승인</button>
+				<button class="btn btn-primary" type="button" id="rejectBtn">반려</button>
+				<!-- 닫기 버튼 활성화 속성 : data-bs-dismiss="modal" -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 2 신청 내역 모달 탬플릿 끝 -->
+
+<!-- 3  신청 내역 모달 탬플릿 시작 -->
+<div class="modal fade" id="completeDetail-modal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="max-width: 1200px">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 py-3 ps-4 pe-6 " style="background-color: midnightblue; font-weight: bold;">
+					<h4 class="modalHeader text-white" id="modalExampleDemoLabel">처리내역
+						상세보기</h4>
+				</div>
+				<div class="p-4 pb-0">
+					<div class="text-center">
+						<img class="profileImg rounded-circle img-thumbnail shadow-sm"
+							width="150" height="150"
+							src="/resources/image/profile/profileImg.png"
+							alt="User profile picture" id="comEmpProfile">
+					</div>
+					<div class="row">
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for=comEmpNm>이름</label> <input
+								class="form-control" id="comEmpNm" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="comEmpSe">소속</label> <input
+								class="form-control" id="comEmpSe" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="comEmpSexdstn">성별</label>
+							<input class="form-control" id="comEmpSexdstn" type="text"
+								name="" readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="comEmpRrno">주민등록번호</label>
+							<input class="form-control" id="comEmpRrno" type="text"
+								name="" readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="comEmpTelno">연락처</label> <input
+								class="form-control" id="comEmpTelno" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="comEmpEmail">이메일</label> <input
+								class="form-control" id="comEmpEmail" type="text"
+								name="empEmail" readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="mb-3 form-group">
+							<label class="col-form-label" for="comEmpAdres">주소</label> <input
+								class="form-control" id="comEmpAdres" type="text" name=""
+								readonly="readonly" />
+						</div>
+					</div>
+
+					<label class="col-form-label" for="comEmpConfm">승인여부</label> <br>
+					<input class="form-check-input" id="comEmpConfm1" type="radio"
+						name="comEmpConfm" value="1"> 승인 <input
+						class="form-check-input" id="comEmpConfm2" type="radio"
+						name="comEmpConfm" value="0" style="margin-left: 20px;">
+					반려
+
+					<div class="mb-3 form-group">
+						<label class="col-form-label" for="comRjctResn">반려사유</label> <input
+							class="form-control" id="comRjctResn" type="text" name=""
+							readonly="readonly" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" type="button"
+					data-bs-dismiss="modal">닫기</button>
+				<!-- 닫기 버튼 활성화 속성 : data-bs-dismiss="modal" -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 3 신청 내역 모달 탬플릿 끝 -->
+
+
+<!-- 반려사유 모달  탬플릿 시작 -->
+<div class="modal fade" id="reject-modal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="max-width: 500px">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 py-3 ps-4 pe-6 " style="background-color: midnightblue; font-weight: bold;">
+					<h4 class="text-white" id="modalExampleDemoLabel">반려</h4>
+				</div>
+				<div class="p-4 pb-0">
+					<div class="mb-3 form-group">
+						<form action="/mediform/manager/employee/rejectUpdate"
+							method="post" id="rejectForm">
+							<input type="hidden" id="rejectEmpNo" name="empNo"> <input
+								type="hidden" id="rejectEmpEmail" name="empEmail" value="">
+							<label class="col-form-label" for="reason">반려사유</label> <input
+								class="form-control" id="reason" type="text" name="RjctResn"
+								placeholder="반려사유를 입력해 주세요." />
+							<sec:csrfInput />
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button"
+					id="rejectUpdate">등록</button>
+				<!-- 닫기 버튼 활성화 속성 : data-bs-dismiss="modal" -->
+				<button class="btn btn-primary" type="button"
+					data-bs-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 반려사유 모달 탬플릿 끝 -->
+
+<script type="text/javascript">
+$(function() {
+    $(document).ready(function() {
+        msgFunction();
+        
+        $('.telNoTd').each(function() {
+            // 현재 td 요소의 텍스트 내용 가져오기
+            var phoneNumber = $(this).text();
+            // 전화번호 형식 변경
+            var formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+            // 변경된 내용으로 업데이트
+            $(this).text(formattedPhoneNumber);
+        });
+    });
+    
+ 	// 전화번호 형식을 변경하는 함수
+    function formatPhoneNumber(phoneNumber) {
+        return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    }
+ 
+    
+
+
+    // 넘어온 메세지 값이 있을 시 안내 모달창 발생
+    function msgFunction() {
+        var msg = $('#msg').val();
+//         console.log(msg);
+        if (msg != null && msg != "" && msg == "y") {
+            Swal.fire({
+                icon: 'success',
+                title: '실행 결과',
+                text: '정상적으로 처리 되었습니다.',
+                confirmButtonColor: 'blue'
+            });
+        } else if (msg != null && msg != "" && msg == "n") {
+            Swal.fire({
+                icon: 'error',
+                title: '실행 결과',
+                text: '해당 요청 실행 중 오류가 발생했습니다.',
+                confirmButtonColor: 'blue'
+            });
+        } else if (msg != null && msg != "" && msg == "e") {
+            Swal.fire({
+                icon: 'error',
+                title: '실행 결과',
+                text: '이미 본 과에 해당 직책이 존재합니다.',
+                confirmButtonColor: 'blue'
+            });
+        }
+    }
+    
+    $('#searchBtn').on('click', function(){
+    	$("#searchForm").submit();
+    });
+
+    var searchXbtn = $('.btn-close-falcon-container');
+    searchXbtn.on('click', function() {
+        event.preventDefault();
+        $('.fuzzy-search').val("");
+    });
+
+    $("#searchInput").on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // 기본 Enter 동작 방지
+            $("#searchForm").submit();
+        }
+    });
+
+    // 타임스탬프 날짜 변환 함수(시,분,초 포함) 
+    // yyyy/MM/dd hh:mm:ss
+    function formatDate(timeStamp) {
+        var date = new Date(timeStamp);
+
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var day = date.getDate().toString().padStart(2, '0');
+        var hours = date.getHours().toString().padStart(2, '0');
+        var minutes = date.getMinutes().toString().padStart(2, '0');
+        var seconds = date.getSeconds().toString().padStart(2, '0');
+
+        var formattedDate = year + '.' + month + '.' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+
+        return formattedDate;
+    }
+
+    // yyyy/MM/dd
+    function formatDateNoTime(timeStamp) {
+        var date = new Date(timeStamp);
+
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var day = date.getDate().toString().padStart(2, '0');
+
+        var formattedDate = year + '.' + month + '.' + day;
+
+        return formattedDate;
+    }
+
+    // 직원 조회(셀렉트 박스 값 변경시 리스트 변경)
+    var comSelectBox = $('#comSelectBox');
+    comSelectBox.on('change', function() {
+        $('#searchForm').submit();
+    });
+
+    var token = $("input[name='_csrf']").val();
+    var header = $("input[name='_csrf_header']").val();
+
+    // 처리 내역 상세 조회 ajax
+    var completeDetail = $('.completeDetail');
+    completeDetail.on('click', function() {
+        var empNo = $(this).attr('id');
+        var data = {
+            empNo: empNo
+        };
+
+        $.ajax({
+            type: "post",
+            url: "/mediform/manager/employee/getEmployee",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(emp) {
+                var empNm = emp.empNm;
+                var empRrno = emp.empRrno1 + "-" + emp.empRrno2;
+                var empSeCd = emp.empSe;
+                var empSeName = "";
+                if (empSeCd == "d") {
+                    empSeName = "전문의";
+                } else if (empSeCd == "n") {
+                    empSeName = "간호";
+                } else if (empSeCd == "t") {
+                    empSeName = "치료";
+                } else if (empSeCd == "m") {
+                    empSeName = "관리";
+                } else if (empSeCd == "a") {
+                    empSeName = "원무";
+                } else if (empSeCd == "k") {
+                    empSeName = "병원장";
+                }
+                
+                var empTelno = emp.empTelno;
+                var empAdres = emp.empAdres1 + " " + emp.empAdres2;
+                var empSexdstn = emp.empSexdstn;
+                var empSexdstnName = "";
+                if (empSexdstn == "F") {
+                    empSexdstnName = "여자";
+                } else {
+                    empSexdstnName = "남자";
+                }
+                var empEmail = emp.empEmail;
+                var empConfm = emp.empConfm;
+                var rjctResn = emp.rjctResn;
+                var empProfile = emp.empProfile;
+
+                // 모달창에 해당 상세 정보 넣기
+                if (empProfile != null) {
+                    $('#comEmpProfile').attr("src", empProfile);
+                }
+
+                $('#comEmpNm').val(empNm);
+                $('#comEmpSe').val(empSeName);
+                $('#comEmpRrno').val(empRrno);
+                var formatTelNo = formatPhoneNumber(empTelno);
+                $('#comEmpTelno').val(formatTelNo);
+                $('#comEmpAdres').val(empAdres);
+                $('#comEmpSexdstn').val(empSexdstnName);
+                $('#comEmpEmail').val(empEmail);
+                if (empConfm == "Y") {
+                    $('#comEmpConfm1').attr("checked", true);
+                } else {
+                    $('#comEmpConfm2').attr("checked", true);
+                }
+
+                $('#comEmpConfm1').prop("disabled", true);
+                $('#comEmpConfm2').prop("disabled", true);
+                $('#comRjctResn').val(rjctResn);
+            }
+        });
+        $("#completeDetail-modal").modal("show");
+    });
+
+    // # 신청 내역 상세 조회
+    var empDetail = $('.detail');
+    var rejectBtn = $('#rejectBtn');
+    var rejectUpdate = $('#rejectUpdate');
+    var rejectForm = $('#rejectForm');
+
+    empDetail.on('click', function() {
+        // 해당 데이터의 값을 상세 조회 모달로 이동
+        var empNo = $(this).attr("id");
+        var data = {
+            empNo: empNo
+        };
+
+        $.ajax({
+            type: "post",
+            url: "/mediform/manager/employee/getEmployee",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(emp) {
+                var empNo = emp.empNo;
+                var empNm = emp.empNm;
+                var empRrno = emp.empRrno1 + "-" + emp.empRrno2;
+                var empSeCd = emp.empSe;
+                var empSeName = "";
+                if (empSeCd == "d") {
+                    empSeName = "전문의";
+                } else if (empSeCd == "n") {
+                    empSeName = "간호";
+                } else if (empSeCd == "t") {
+                    empSeName = "치료";
+                } else if (empSeCd == "m") {
+                    empSeName = "관리";
+                } else if (empSeCd == "a") {
+                    empSeName = "원무";
+                } else if (empSeCd == "k") {
+                    empSeName = "병원장";
+                }
+                var empTelno = emp.empTelno;
+                var empAdres = emp.empAdres1 + " " + emp.empAdres2;
+                var empSexdstn = emp.empSexdstn;
+                var empSexdstnName = "";
+                if (empSexdstn == "F") {
+                    empSexdstnName = "여자";
+                } else {
+                    empSexdstnName = "남자";
+                }
+                var empEmail = emp.empEmail;
+                var empRqstr = emp.empRqstr;
+                var empProfile = emp.empProfile;
+
+                // 모달창에 해당 상세 정보 넣기
+                $('#rejectEmpNo').val(empNo);
+                $('#cfEmpNo').val(empNo);
+                $('#cfEmpNm').val(empNm);
+                $('#cfEmpRrno').val(empRrno);
+                $('#cfEmpSe').val(empSeName);
+                $('#cfEmpSeInput').val(empSeCd);
+                
+                var formatTelNo = formatPhoneNumber(empTelno);
+                $('#cfEmpTelno').val(formatTelNo);
+                $('#cfEmpAdres').val(empAdres);
+                $('#cfEmpSexdstn').val(empSexdstnName);
+                $('#cfEmpEmail').val(empEmail);
+                $('#cfEmpEmailInput').val(empEmail);
+                $('#rejectEmpEmail').val(empEmail);
+                $('#cfEmpRqstr').val(empRqstr);
+
+                // 프로필 사진이 비어있지 않으면
+                if (empProfile != null) {
+                    $('#cfEmpProfile').attr("src", empProfile);
+                }
+
+                var cfData = {
+                    empNo: empRqstr
+                };
+
+                $.ajax({
+                    type: "post",
+                    url: "/mediform/manager/employee/getEmployee",
+                    data: JSON.stringify(cfData),
+                    contentType: "application/json; charset=utf-8",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success: function(rst) {
+                        var empNm = rst.empNm;
+
+                        $('#cfEmpRqstrNm').val(empNm);
+                    }
+                });
+            }
+        });
+
+        // 모달창 show
+        $("#confirmDetail-modal").modal("show");
+    });
+
+    var agreeBtn = $('#agreeBtn');
+
+    // 승인 버튼 클릭시
+    agreeBtn.on('click', function() {
+        $('#agreeForm').submit();
+    });
+
+    // 반려 버튼 클릭시 반려 사유 모달 show
+    rejectBtn.on('click', function() {
+        $("#memberDetail-modal").modal("hide");
+        $("#reject-modal").modal("show");
+    });
+
+    // 반려 사유 기재시 최종 반려 처리 완료
+    rejectUpdate.on('click', function() {
+        var reason = $('#reason');
+        if (reason != null) {
+            rejectForm.submit();
+        }
+    });
+    
+    /* 페이징 */
+	var pagingArea = $('#pagingArea');
+		pagingArea.on("click", "a", function(event){
+		var searchForm = $('#searchForm');
+		event.preventDefault();
+		var pageNo = $(this).data("page")
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+});
+		
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+package kr.or.ddit.manager.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class ManagerReceiveVO {
+
+	private String rciptNo;			// 영수증 번호
+	private String rcivNo;			// 수납 번호
+	private Date ipocdDttm;			// 수납일시(영수증)
+	private int ipocdAmount;		// 수납금액(영수증)
+	private String paymthd;			// 수납 방법(1: 카드 , 2: 현금)
+	private String patntNm;			// 환자명
+	private int ipocdAmountBefore;	// 이전 수납 누적 금액
+	
+	// 상세 조회를 위한 변수
+//	private String patntNm;			// 환자명
+	private String patntSexdstn;	// 성별
+	private int patntRrno1;			// 생년월일
+	private int patntAge;			// 나이
+	private String patntAdres1;		// 주소1
+	private String patntAdres2;		// 주소2
+	private String patntTelno;		// 전화번호
+	private String patntHlthinsAt;	// 보험여부
+	private int rcivAt;				// 수납 구분(0 : 미수납,  1 : 수납 , 2 : 부분 수납)
+	private int recivTotamt;		// 수납 총액(보험 적용이 되지 않은 토탈 금액)
+	private int prearngeAmount;		// 환자 부담액
+//	private String ipocdAmount;		// 해당 영수증의 납부 금액
+	private int rcivAmount;			// 환자 누적 수납액
+	private int missingAmount;		// 미수 금액
+//	private Date ipocdDttm;			// 분할 수납 일시
+	private Date rcivDttm;			// 수납 완료 일시
+	private String recivMemo;		// 수납 메모
+	
+	// 미수납 내역 조회
+	private Date clnicTime;			// 진료일시
+	private String prtctorNm;		// 보호자 이름
+	private String prtctorTelno; 	// 보호자 전화번호
+	private String patntMemo; 		// 환자 메모
+	
+}

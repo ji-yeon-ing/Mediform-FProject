@@ -1,0 +1,19 @@
+package kr.or.ddit.mapper.calender;
+
+import java.util.List;
+
+import kr.or.ddit.calender.vo.ModuleCalenderVO;
+
+public interface ModuleCalenderMapper {
+	// 저장
+	public int moduleCalenderInsert(ModuleCalenderVO moduleCalenderVO);
+	
+	// DB에 저장되어 있는 스케쥴 정보 가져오기
+	public List<ModuleCalenderVO> moduleCalenderList();
+	
+	// 삭제하기
+	public int moduleCalenderDelete(String start);
+	
+	// 수정하기
+	public int moduleCalenderUpdate(ModuleCalenderVO moduleCalenderVO);
+}

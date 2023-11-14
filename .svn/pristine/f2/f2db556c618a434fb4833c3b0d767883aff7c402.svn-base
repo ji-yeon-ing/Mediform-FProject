@@ -1,0 +1,285 @@
+package kr.or.ddit.common.interceptor;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import kr.or.ddit.common.service.IAuditService;
+import kr.or.ddit.common.vo.AuditVO;
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class AuditInterceptor extends HandlerInterceptorAdapter{
+
+	@Inject
+	IAuditService auditService;
+	
+	@Override
+		public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+				throws Exception {
+		
+			// preHandle 적용시 로그인을 하지 않은 상태로 권한이 걸려있는 url에 접근하면 session이 등록되기 전이기 때문에 오류가 발생함.
+			// 때문에 afterCompletion로 Override함
+		
+			// 해당 URI
+			String empNo = "";							// 사용자 아이디
+			String empNm = "";							// 사용자명
+			String clientIp = getClientIp(request);		// IP 주소
+			String requestURI = request.getRequestURI();// 접속 URI
+			String auditAtnddu = "";					// 번역된 URI
+			
+			// 현재 로그인한 사용자 정보 가져오기
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        if (authentication != null) {
+	        	CustomUser customUser = (CustomUser) authentication.getPrincipal();
+//	            username = authentication.getName();
+	        	empNo = customUser.getEmployee().getEmpNo();
+	        	empNm = customUser.getEmployee().getEmpNm();
+	            log.info("requestURI : " + requestURI);
+	            log.info("empNo : " + empNo);
+	            log.info("empNm : " + empNm);
+	            log.info("Client IP Address: " + clientIp);
+	            
+	            auditAtnddu = uriInterpretation(requestURI);
+	            log.info("auditAtnddu : " + auditAtnddu);
+	            
+	            // 전 팀원 시큐리티 적용 후 주석 해제
+	            // 그 전까진 콘솔로만 인터셉터 확인
+	            
+	            
+	            // 여기부터
+	            
+	            
+//	            AuditVO auditVO = new AuditVO();
+//	            auditVO.setEmpNo(empNo);
+//	            auditVO.setEmpNm(empNm);
+//	            auditVO.setIpAdres(clientIp);
+//	            auditVO.setCntnScrin(requestURI);
+//	            auditVO.setAuditAtnddu(auditAtnddu);
+//	            
+//	            auditService.insertAudit(auditVO);
+	            
+	            
+	            
+	            // 여기까지
+	        }
+			
+		}
+	
+	// URI 번역을 위한 메소드
+	public String uriInterpretation(String uriStr) {
+		// 번역한 url 변수
+		String auditAtnddu = ""; 
+		
+		// "/"을 기준으로 나눈 임시 배열
+		String[] tempArr = uriStr.split("/");
+		// "mediform/소속"을 제외한 나머지 값들
+		String[] uriArr = new String[tempArr.length - 3];
+		if (tempArr.length > 3) {
+		    for (int i = 3; i < tempArr.length; i++) {
+		    	uriArr[i - 3] = tempArr[i];
+		    }
+		    // trimmedArr 배열에는 앞의 두 요소를 제외한 내용이 포함됨
+		}
+		
+		if(uriArr.length > 0) {
+			log.info("uriStr : " + uriStr);
+			for(int i = 0; i < uriArr.length; i++) {
+				log.info("uriArr[ " + i +" ]" + uriArr[i]); 
+				
+				if(uriArr[i] != null) {
+					// 공통
+					if(uriArr[i].equals("select")) {
+						auditAtnddu += "조회 ";
+					}else if(uriArr[i].equals("insert")) {
+						auditAtnddu += "등록 ";
+					}else if(uriArr[i].equals("delete")) {
+						auditAtnddu += "삭제 ";
+					}else if(uriArr[i].equals("update")) {
+						auditAtnddu += "수정 ";
+					}else if(uriArr[i].equals("download")) {
+						auditAtnddu += "다운로드 ";
+					}else if(uriArr[i].equals("list")) {
+						auditAtnddu += "목록 ";
+					// 원무	
+					}else if(uriArr[i].equals("employee")) {
+						auditAtnddu += "직원 ";
+					}else if(uriArr[i].equals("home")) {
+						auditAtnddu += "홈 화면 ";
+					}else if(uriArr[i].equals("board")) {
+						auditAtnddu += "공지사항 ";
+					}else if(uriArr[i].equals("detail")) {
+						auditAtnddu += "상세조회 ";
+					}else if(uriArr[i].equals("hospitalization")) {
+						auditAtnddu += "입퇴원 ";
+					}else if(uriArr[i].equals("main")) {
+						auditAtnddu += "메인 ";
+					}else if(uriArr[i].equals("common")) {
+						auditAtnddu += "공통 ";
+					}else if(uriArr[i].equals("mypage")) {
+						auditAtnddu += "마이페이지 ";
+					}else if(uriArr[i].equals("patient")) {
+						auditAtnddu += "환자 ";
+					}else if(uriArr[i].equals("search")) {
+						auditAtnddu += "검색 ";
+					}else if(uriArr[i].equals("info")) {
+						auditAtnddu += "정보 ";
+					}else if(uriArr[i].equals("searchList")) {
+						auditAtnddu += "검색 목록 ";
+					}else if(uriArr[i].equals("updateForm")) {
+						auditAtnddu += "수정 화면 ";
+					// 재원 >> receipt로 되어 있음.
+					}else if(uriArr[i].equals("rcept")) {
+						auditAtnddu += "접수 ";
+					}else if(uriArr[i].equals("reservation")) {
+						auditAtnddu += "예약 ";
+					}else if(uriArr[i].equals("sms")) {
+						auditAtnddu += "SMS ";
+					}else if(uriArr[i].equals("form")) {
+						auditAtnddu += "폼 ";
+					}else if(uriArr[i].equals("chatting")) {
+						auditAtnddu += "채팅 ";
+					}else if(uriArr[i].equals("friend")) {
+						auditAtnddu += "친구 ";
+					}else if(uriArr[i].equals("chattingroom")) {
+						auditAtnddu += "채팅방 ";
+					}else if(uriArr[i].equals("room")) {
+						auditAtnddu += "방 ";
+						
+					// 의사
+					}else if(uriArr[i].equals("clinic")) {
+						auditAtnddu += "진료차트 ";
+					}else if(uriArr[i].equals("getClinicApi")) {
+						auditAtnddu += "진료차트API ";
+					}else if(uriArr[i].equals("allClinic")) {
+						auditAtnddu += "환자 진료 기록 전체 조회 ";
+					// DoctorHomeConroller 아직 추가 중...
+					// 추후 수정
+						
+					// 행정관리자
+					}else if(uriArr[i].equals("audit")) {
+						auditAtnddu += "감사기록 ";
+					}else if(uriArr[i].equals("getEmployee")) {
+						auditAtnddu += "상세조회 ";
+					}else if(uriArr[i].equals("rejectUpdate")) {
+						auditAtnddu += "신청 반려 처리 ";
+					}else if(uriArr[i].equals("agree")) {
+						auditAtnddu += "신청 승인 처리 ";
+					}else if(uriArr[i].equals("chart")) {
+						auditAtnddu += "차트 ";
+					}else if(uriArr[i].equals("receive")) {
+						auditAtnddu += "수납 ";
+					}else if(uriArr[i].equals("unpaidList")) {
+						auditAtnddu += "미수납 ";
+					}else if(uriArr[i].equals("workSchedule")) {
+						auditAtnddu += "근무 일정표 ";
+					}else if(uriArr[i].equals("excelForm")) {
+						auditAtnddu += "엑셀 형식 ";
+					}else if(uriArr[i].equals("statistics")) {
+						auditAtnddu += "통계 ";
+					}else if(uriArr[i].equals("revenue")) {
+						auditAtnddu += "매출 ";
+						
+					// 간호
+					// MedicineController 10/18 오후에 수정
+					}else if(uriArr[i].equals("nurse")) {
+						auditAtnddu += "간호 ";
+					}else if(uriArr[i].equals("roomlist")) {
+						auditAtnddu += "병동 목록 ";
+					}else if(uriArr[i].equals("getPatientDetails")) {
+						auditAtnddu += "환자 상세 조회 ";
+					}else if(uriArr[i].equals("allRecordList")) {
+						auditAtnddu += "환자 외래진료 간호 액팅 기록 조회 ";
+					}else if(uriArr[i].equals("TakeOverList")) {
+						auditAtnddu += "인수인계 리스트 조회 ";
+					}else if(uriArr[i].equals("TakeOvercount")) {
+						auditAtnddu += "인수인계 횟수 ";
+					}else if(uriArr[i].equals("insertTakeOver")) {
+						auditAtnddu += "인수인계 저장 ";
+					}else if(uriArr[i].equals("order")) {
+						auditAtnddu += "오더 ";
+					}else if(uriArr[i].equals("medicine")) {
+						auditAtnddu += "약품 ";
+						
+					// 치료
+					}else if(uriArr[i].equals("therapist")) {
+						auditAtnddu += "치료 ";
+					}else if(uriArr[i].equals("care")) {
+						auditAtnddu += "치료실 ";
+					}else if(uriArr[i].equals("MHRLS")) {
+						auditAtnddu += "치료기구 ";
+					}else if(uriArr[i].equals("SOAP")) {
+						auditAtnddu += "SOAP ";
+					}else if(uriArr[i].equals("xray")) {
+						auditAtnddu += "X-ray ";
+					}else if(uriArr[i].equals("view")) {
+						auditAtnddu += "화면 ";
+						
+					// 추가	
+					}else if(uriArr[i].equals("acting")) {
+						auditAtnddu += "액팅 ";
+					}else if(uriArr[i].equals("voiceOutput")) {
+						auditAtnddu += "음성 출력 ";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else if(uriArr[i].equals("")) {
+						auditAtnddu += "";
+					}else {
+						auditAtnddu += uriArr[i] + " ";
+					}
+				}
+			}
+		}
+		
+		return auditAtnddu;
+	}
+	
+	// IP 주소를 따오기 위한 메소드
+	public String getClientIp(HttpServletRequest request) {
+	    String remoteAddr = "";
+
+	    if (request != null) {
+	        remoteAddr = request.getHeader("X-Forwarded-For");
+	        if (remoteAddr == null || remoteAddr.isEmpty() || "unknown".equalsIgnoreCase(remoteAddr)) {
+	            remoteAddr = request.getHeader("Proxy-Client-IP");
+	        }
+	        if (remoteAddr == null || remoteAddr.isEmpty() || "unknown".equalsIgnoreCase(remoteAddr)) {
+	            remoteAddr = request.getHeader("WL-Proxy-Client-IP");
+	        }
+	        if (remoteAddr == null || remoteAddr.isEmpty() || "unknown".equalsIgnoreCase(remoteAddr)) {
+	            remoteAddr = request.getRemoteAddr();
+	        }
+	    }
+
+	    return remoteAddr;
+	}
+	
+	
+}

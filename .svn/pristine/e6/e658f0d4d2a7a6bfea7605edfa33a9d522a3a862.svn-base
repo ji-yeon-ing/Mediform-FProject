@@ -1,0 +1,197 @@
+package kr.or.ddit.common.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpSession;
+
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
+public class AlarmHandler extends TextWebSocketHandler {
+
+	
+	// 로그인중인 개별유저
+	Map<String, WebSocketSession> users = new ConcurrentHashMap<String, WebSocketSession>();
+	private Map<String, WebSocketSession> sessions;
+	
+	
+	// 클라이언트가 서버로 연결시
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		String senderId = getMemberId(session); // 접속한 유저의 http세션을 조회하여 id를 얻는 함수
+		if(senderId!=null) {	// 로그인 값이 있는 경우만
+			log(senderId + " 연결 됨");
+			users.put(senderId, session);   // 로그인중 개별유저 저장
+		}
+	}
+	// 클라이언트가 Data 전송 시
+	@Override
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+		String senderId = getMemberId(session);
+		// 특정 유저에게 보내기
+		String msg = message.getPayload();
+		if(msg != null) {
+			String[] strs = msg.split(",");
+			log(strs.toString());
+			if(strs != null && strs.length == 4) {
+				String type = strs[0];
+				String target = strs[1]; // m_id 저장
+				String content = strs[2];
+				String url = strs[3];
+				WebSocketSession targetSession = users.get(target);  // 메시지를 받을 세션 조회
+				
+				// 실시간 접속시
+				if(targetSession!=null) {
+					// ex: [&분의일] 신청이 들어왔습니다.
+					TextMessage tmpMsg = new TextMessage("<a target='_blank' href='"+ url +"'>[<b>" + type + "</b>] " + content + "</a>" );
+					targetSession.sendMessage(tmpMsg);
+				}
+			}
+		}
+	}
+	// 연결 해제될 때
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		String senderId = getMemberId(session);
+		if(senderId!=null) {	// 로그인 값이 있는 경우만
+			log(senderId + " 연결 종료됨");
+			users.remove(senderId);
+			sessions.remove(session);
+		}
+	}
+	// 에러 발생시
+	@Override
+	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+		log(session.getId() + " 익셉션 발생: " + exception.getMessage());
+
+	}
+	// 로그 메시지
+	private void log(String logmsg) {
+		System.out.println(new Date() + " : " + logmsg);
+	}
+	// 웹소켓에 id 가져오기
+    // 접속한 유저의 http세션을 조회하여 id를 얻는 함수
+	private String getMemberId(WebSocketSession session) {
+		Map<String, Object> httpSession = session.getAttributes();
+		String m_id = (String) httpSession.get("m_id"); // 세션에 저장된 m_id 기준 조회
+		return m_id==null? null: m_id;
+	}
+
+
+
+
+
+	
+//	// 소켓에 접속한 인원들을 담기 위한 리스트 객체 생성
+//		List<WebSocketSession> sessionList = new ArrayList<WebSocketSession>();
+//		Map<String, WebSocketSession> userSessions = new HashMap<String, WebSocketSession>();
+//		
+//		@Override
+//		public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+//			log.info("afterConnectionEstablished() 실행...!! 클라이언트 서버 접속 연결 성공...! : "+ session);
+//			log.info("session : " + session.getId());
+//			// 현재 소켓에 접속한 인원들 리스트에 모두 담는다.
+//			sessionList.add(session);
+//			String senderId = getId(session);
+//			userSessions.put(senderId, session);
+//			
+//			super.afterConnectionEstablished(session);
+//		}
+//
+//
+//		@Override
+//		protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+//			log.info("handleTextMessage() 실행...!! 메세지 전송 시도 성공...!");
+//			log.info("메세지야 들어오아라..."+ message.getPayload().toString()); 
+//			
+////			log.info("handleTextMessage에 들어온 세션과 메세지"+ session + ": "+ message);
+//			
+//			
+//			// jsp 페이지에서 쏴준 아이디 값
+////			String senderId =  message.getPayload().toString();
+//			
+//			String senderId = getId(session);
+//			log.info("소켓 컨트롤러에서 로그인한 아이디 값 추출 : "+senderId);
+//			
+//			// 모든 유저에게 보내기
+////			for(WebSocketSession sessionOne : sessionList) {
+////				// jsp 페이지에 ws.onmessage로 메세지를 보내준다. 
+////				sessionOne.sendMessage(new TextMessage(senderId + " : " + message));
+////			}
+//			
+//			String msg = message.getPayload();
+//			if(StringUtils.isNotEmpty(msg)) {
+//				String[] strs = msg.split(",");
+//				
+//				if(strs != null && strs.length == 4) {
+//					String alarmCnt = strs[0];
+//					String aContent = strs[1];
+//					String boardWriter = strs[2];
+//					String aNo = strs[3];
+//					
+//					WebSocketSession boardWriterSession = userSessions.get(boardWriter);
+//					log.info("boardWriterSession >>>>>>>>>>>>>" + boardWriterSession);
+//					if(boardWriterSession != null) {
+//						TextMessage tmpMsg = new TextMessage("미확인 알람 갯수 : "+alarmCnt+"<br>"+"<a href='/notice/updateAlarm.do?aNo="+aNo+"'>"+aContent+"</a>");
+//						boardWriterSession.sendMessage(tmpMsg);
+//					}
+//				}
+//				
+//			}
+//			
+//			// 받은 메시지를 
+////			super.handleTextMessage(session, message);
+//		}
+//
+//		@Override
+//		public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+//			log.info("afterConnectionClosed() 실행...!! 서버 연결 종료...!");
+//		}
+//		
+//		private String getId(WebSocketSession session) {
+//			SecurityContextImpl loginUser = null;
+//			String id = null;
+//			Map<String, Object> httpSession = session.getAttributes();
+//			Set<Entry<String, Object>> entrySet = httpSession.entrySet();
+//			Iterator<Entry<String, Object>> entryIte = entrySet.iterator();
+//			while(entryIte.hasNext()) {
+//				Entry<String, Object> entry = entryIte.next();
+//				String key = entry.getKey();
+//				log.info("key : " + key);
+//				if(key.equals("SPRING_SECURITY_CONTEXT")){
+//					loginUser = (SecurityContextImpl)httpSession.get("SPRING_SECURITY_CONTEXT");
+//					log.info("loginUser : " + loginUser);
+//					
+//				}
+//			}
+//			CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//			log.info("principal id  : " + user.getUsername());
+//			log.info("member id : " + user.getEmployee().getEmpNm());
+//			id =  user.getEmployee().getEmpNm();
+//			if(null == user.getUsername()) {
+//				id = session.getId();
+//			}
+//			return id;
+//		}
+	}

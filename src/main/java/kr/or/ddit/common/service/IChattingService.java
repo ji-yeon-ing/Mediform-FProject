@@ -1,0 +1,35 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.ChattingRoomVO;
+import kr.or.ddit.common.vo.ChattingVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface IChattingService {
+
+	List<EmployeeVO> friendList();
+
+	ServiceResult insertChattMember(String roomName, List<String> selectedFriendValues);
+
+	List<ChattingRoomVO> selectChattingRoomList(Map<String, String> map);
+
+	ServiceResult chattingInsert(Map<String, String> map);
+
+	List<ChattingVO> chattingList(Map<String, Object> map);
+
+	int chatReadUpdate(Map<String, String> map);
+
+	ChattingRoomVO roomInfo(Map<String, String> map);
+
+	ServiceResult fileInsert(HttpServletRequest req, ChattingVO chattingVO);
+
+	ChattingVO chattingDownload(String chttIndx);
+
+
+
+}

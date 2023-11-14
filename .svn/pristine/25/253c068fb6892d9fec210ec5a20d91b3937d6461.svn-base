@@ -1,0 +1,85 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<div id="tableExample3"
+		data-list='{"valueNames":["code","cate","date","emp","total","confm"],"page":10,"pagination":true}'>
+		<div class="row justify-content-end g-0">
+			<div class="col-auto col-sm-5 mb-3">
+				<form>
+					<div class="input-group">
+						<input class="form-control search-input fuzzy-search"
+							type="search" placeholder="Search..." aria-label="search" />
+						<div class="input-group-text bg-transparent">
+							<span class="fas fa-search search-box-icon"></span>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="table-responsive scrollbar">
+			<table class="table table-bordered table-striped fs--1 mb-0"
+				id="purchaseTable">
+				<thead class="bg-200">
+					<tr>
+						<th class="text-900 sort text-center" data-sort="code">No</th>
+						<th class="text-900 sort text-center" data-sort="cate">구분</th>
+						<th class="text-900 sort text-center" data-sort="date">주문일</th>
+						<th class="text-900 sort text-center" data-sort="emp">발주자</th>
+						<th class="text-900 sort text-center" data-sort="total">발주금액</th>
+						<th class="text-900 sort text-center" data-sort="confm">승인여부</th>
+					</tr>
+				</thead>
+				<tbody class="list" id="table-crm-location-session">
+					<c:set value="${orderList }" var="orderList" />
+					<c:choose>
+						<c:when test="${empty orderList }">
+							<tr>
+								<td colspan="17" align="center">발주서가 존재하지 않습니다.</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<c:forEach items="${orderList }" var="order">
+								<tr>
+									<td class="code">${order.porderCd }</td>
+									<td class="cate">${order.porderCt }</td>
+									<td class="date"><fmt:formatDate
+											value="${order.porderDate }" pattern="yyyy.MM.dd" /></td>
+									<td class="emp">${order.porderEmpNo }</td>
+									<td class="total">${order.porderTotal }</td>
+									<td class="confm">${order.porderConfm }</td>
+									<td style="padding: 0; padding-top: 10px"><button
+											class="btn btn-primary btn-sm text-white"
+											style="font-size: 12px; padding: 3px;" id="sacntion">승인</button>
+									</td>
+									<td style="padding: 0; padding-top: 10px"><button
+											class="btn btn-danger btn-sm text-white"
+											style="font-size: 12px; padding: 3px;" id="sacntion">반려</button>
+									</td>
+								</tr>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
+		</div>
+		<div class="d-flex justify-content-center mt-3">
+			<button class="btn btn-sm btn-falcon-default me-1" type="button"
+				title="Previous" data-list-pagination="prev">
+				<span class="fas fa-chevron-left"></span>
+			</button>
+			<ul class="pagination mb-0"></ul>
+			<button class="btn btn-sm btn-falcon-default ms-1" type="button"
+				title="Next" data-list-pagination="next">
+				<span class="fas fa-chevron-right"> </span>
+			</button>
+		</div>
+	</div>
+</body>
+</html>

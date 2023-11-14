@@ -1,0 +1,42 @@
+package kr.or.ddit.patient.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/patient")
+public class PatientController {
+	
+	@Inject
+	private IPatientService patientService;
+	
+	// 환자 list 조회
+	@RequestMapping(value = "/list")
+	public String patientList(Model model) {
+		log.info("patientList() 실행...!");
+		
+		List<PatientVO> patientList = patientService.selectPatientList();
+		
+		model.addAttribute("patientList", patientList);
+		
+		return "patient/list";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

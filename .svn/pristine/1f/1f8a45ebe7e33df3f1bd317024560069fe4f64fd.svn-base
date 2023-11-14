@@ -1,0 +1,462 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<style>
+.pointer {
+	cursor: pointer;
+}
+</style>
+
+
+<!-- 환자 조회 검색창 시작 -->
+<div style="margin-bottom: 20px;">
+	<div class="search-box">
+	  <form class="position-relative w-470" data-bs-toggle="search" data-bs-display="static">
+	    <input class="form-control search-input fuzzy-search" type="search" placeholder="검색할 환자 이름을 입력해주세요." aria-label="Search" id="searchInput" />
+	    <span class="fas fa-search search-box-icon"></span>
+	  </form>
+	  <div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
+	    <button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+	  </div>
+	  <div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100" id="searchBox">
+		<!-- 드롭다운 길이 수정 : max-height: 17rem;  	 -->
+			<div class="scrollbar list py-3" style="max-height: 17rem;" id="search-results">
+		    </div>
+	  </div>
+
+	</div>
+</div>
+<!-- 환자 조회 검색창 끝 -->
+
+<div
+	style="height: 600px; width: 487px; background-color: rgb(144, 196, 230);"
+	class="text-black position-relative">
+
+	<div style="padding-top: 20px; padding-left: 20px;">
+		<table border="1" id="patientTable"
+			style="background-color: rgb(224, 224, 224); border-radius: 5px;"">
+			<tr>
+				<td rowspan="5" width="80px;" align="center">이름</td>
+				<td colspan="2"></td>
+				<td></td>
+				<td align="center"></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td width="80px;"></td>
+				<td width="40px;"></td>
+				<td align="center"></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="4">접수메모(증상/내원 목적)</td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="4"></td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<table>
+
+		</table>
+	</div>
+	<div
+		style="background-color: rgb(224, 224, 224); border-radius: 5px; top: 250px; left: 20px; height: 480px; width: 446px;"
+		class="position-absolute">
+		<!-- 날짜박스 div -->
+		<div style="top: 15px; left: 15px; width: 100px; height: 400px;"
+			class="position-absolute">
+			<div></div>
+		</div>
+		<!-- 진료 기록 div -->
+		<div
+			style="margin-top: 16px; left: 128px; color: rgb(69, 143, 191); height: 50px; width: 300px; background-color: green;"
+			class="position-absolute">
+			<div
+				style="font-size: 30px; position: absolute; margin: 0; width: 130px;"
+				id="idTest">진료기록</div>
+			<div
+				style="font-size: 30px; position: absolute; top: 0px; left: 130px">[]</div>
+			<div
+				style="font-size: 12px; position: absolute; top: 20px; left: 160px">담당의
+				:</div>
+		</div>
+		<div>
+			<div class="dropstart font-sans-serif position-static d-inline-block">
+				<button
+					class="btn btn-falcon-default rounded-pill me-1 mb-1 dropdown"
+					type="button" id="" data-bs-toggle="dropdown"
+					data-boundary="window" aria-haspopup="true" aria-expanded="false"
+					data-bs-reference="parent">
+					제증명 <span class="fas fa-ellipsis-h fs--1"></span>
+				</button>
+				<div class="dropdown-menu dropdown-menu-end border py-2" aria-labelledby="dropdown-simple-pagination-table-item-13">
+					<button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#certificates-diagnosis-modal" id="certificates-diagnosis-Btn">진단서</button>
+					<button class="dropdown-item" data-bs-toggle="modal" data-bs-target="">진료확인서</button>
+					<button class="dropdown-item" data-bs-toggle="modal" data-bs-target="">처방전</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 제증명 진단서 모달 시작 -->
+<div class="modal fade" id="certificates-diagnosis-modal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg mt-6" role="document">
+		<div class="modal-content border-0">
+			<div class="position-absolute top-0 end-0 mt-3 me-3 z-1">
+				<button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="p-4">
+					<form action="/mediform/doctor/cd/insert" method="post" class="row g-3" id="insertForm">
+						<%@ include file="certificates.jsp" %>
+						<div class="col-md-12">
+							<div align="right">
+								<button class="btn" type="reset" id="resetBtn">초기화</button>
+								<button class="btn btn-primary" id="insertBtn">저장</button>
+							</div>
+						</div>
+						<sec:csrfInput /> 
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 제증명 진단서 모달 끝 -->
+
+<script type="text/javascript">
+$(function(){
+
+		
+	//상병 API
+// 	$.ajax({
+// 		url:"/mediform/doctor/getClinicApi",
+// 		type:"get",
+// 		dataType:"json",
+// 		success:function(rslt){
+// 			console.log("rslt.data : " + JSON.stringify(rslt.data));
+			
+// 			let str = "<table border='1'>";
+			
+// 			$.each(rslt.data,function(idx,vo){
+// 				//console.log("vo : " + JSON.stringify(vo));
+				
+// 				str += "<tr>";
+// 				str += "<td>"+vo.법정감염병구분+"</td>";
+// 				str += "<td>"+vo.상병기호+"</td>";
+// 				str += "<td>"+vo.상한연령+"</td>";
+// 				str += "<td>"+vo.성별구분+"</td>";
+// 				str += "<td>"+vo.양한방구분+"</td>";
+// 				str += "<td>"+vo.영문명+"</td>";
+// 				str += "<td>"+vo.완전코드구분+"</td>";
+// 				str += "<td>"+vo.주상병사용구분+"</td>";
+// 				str += "<td>"+vo.하한연령+"</td>";
+// 				str += "<td>"+vo.한글명+"</td>";
+// 				str += "</tr>";
+				
+// 			});
+			
+// 			str += "</table>";
+			
+// 			$("#idTest").append(str);
+// // 			console.log("rslt : " + JSON.stringify(rslt.data));
+// 		}
+// 	});
+	
+	// 시큐리티 토큰 관련 2개
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	// 검색 input요소
+	var searchInput = $("#searchInput");
+	// 드롭다운 요소(결과를 뿌려줄 곳)
+	var searchRes = $("#search-results");
+	// 환자 정보를 담을 테이블
+	var patientTable = $("#patientTable");
+	console.log(patientTable);
+	let selectedIndex = -1;
+	
+	searchInput.focusout(function(){
+		$("#searchBox").hide();
+	});
+
+	// 검색창에 공백일 때 클릭 시 전체 리스트 출력 
+	searchInput.focusin(function(){
+		$("#searchBox").show();
+		console.log("focusin...!");
+		if(searchInput.val() == ""){
+			console.log("서치인풋 밸 : "+ searchInput.val());
+			$.ajax({
+				type : "post",
+				url : "/mediform/patient/searchList",
+				contentType : "application/json; charset=utf-8",
+				async: false,
+		        beforeSend : function(xhr){
+		           //ajax호출 중 처리
+		           //글로벌 변수로 설정한 csrf token 셋팅
+			       xhr.setRequestHeader(header,token);
+			    },
+				success : function(res){
+					var searchResultsHtml = "";
+					console.log(res.length);
+					$(res).each(function(){
+						console.log(this.patntNm + " " + this.patntAge);
+						
+						searchResultsHtml += '<div class="dropdown-item px-x1 py-2" data-no="'+this.patntNo+'" data-name="'+this.patntNm+'">';
+						searchResultsHtml += '<div class="d-flex align-items-center">';
+						searchResultsHtml += '<div class="flex-1">';
+						searchResultsHtml += ' <h6 class="mb-0 hover-primary title pointer dropdown-item">' + this.patntNo + '  |  ' + this.patntNm + '  |  ' + this.patntAge + '세  |  ' + this.patntRrno1 + '</h6>';
+						searchResultsHtml += '</div>';
+						searchResultsHtml += '</div>';
+						searchResultsHtml += '</div>';
+						
+					});
+					$(searchRes).html(searchResultsHtml);
+				},
+			   	error : function(err){
+					console.log("err에러 : " + err);
+				}
+			});
+			
+			
+		}
+		
+		
+	});
+	
+	
+	// 환자 검색 시 키보드를 한글자씩 눌렀다가 떼는 순간 이벤트 발생
+	searchInput.on("input",function(event){
+		if(event.which != 13){
+			var keyword = searchInput.val();
+			console.log("keyword : " + keyword);
+			var searchObj = { 
+					keyword : keyword
+					};
+			
+			// 검색 환자 정보
+			$.ajax({
+				type : "post",
+				url  : "/mediform/patient/search",
+				data : JSON.stringify(searchObj),
+				contentType : "application/json; charset=utf-8",
+				async: false,
+		        beforeSend : function(xhr){
+		            //ajax호출 중 처리
+		            //글로벌 변수로 설정한 csrf token 셋팅
+		            xhr.setRequestHeader(header,token);
+		        },
+				success : function(res){
+					var searchResultsHtml = "";
+					console.log(res.length);
+					// 받아온 데이터가 없을 때 
+					// 환자 정보 없음은 h5로 설정(h6로 설정 시 클릭하면 환자 정보 테이블에 들어가지기 때문)
+					if(res.length == 0){
+						console.log("받아온 데이터 없음");
+						searchResultsHtml += '<div class="dropdown-item px-x1 py-2">';
+				        searchResultsHtml += '<div class="d-flex align-items-center">';
+				        searchResultsHtml += '<div class="flex-1">';
+				        searchResultsHtml += '<h5 class="mb-0 title">환자 정보가 존재하지 않습니다.</h5>';
+				        searchResultsHtml += '</div>';
+				        searchResultsHtml += '</div>';
+				        searchResultsHtml += '</div>';
+					}else{
+						// 받아온 값을 뿌리는 역할
+			            $(res).each(function(){
+						console.log(this.patntNm + " " + this.patntAge);
+						searchResultsHtml += '<div class="dropdown-item px-x1 py-2" data-no="'+this.patntNo+'" data-name="'+this.patntNm+'">';
+				        searchResultsHtml += '<div class="d-flex align-items-center">';
+				        searchResultsHtml += '<div class="flex-1">';
+				        searchResultsHtml += ' <h6 class="mb-0 hover-primary title pointer dropdown-item">' + this.patntNo + '  |  ' + this.patntNm + '  |  ' + this.patntAge + '세  |  ' + this.patntRrno1 + '</h6>';
+				        searchResultsHtml += '</div>';
+				        searchResultsHtml += '</div>';
+				        searchResultsHtml += '</div>';
+			       		});
+					}
+					$(searchRes).html(searchResultsHtml);
+					},
+				error : function(err){
+					console.log("err에러 : " + err);
+				}
+			});
+		}
+	});
+	// 엔터 눌렀을 시 제일 위에 환자 번호를 찾는다.
+	$("#searchInput").keypress(function(event){
+		if(event.which == 13){
+			event.preventDefault();
+			var patntNo = searchRes.children("div:eq(0)").data("no");
+			var patntNm = searchRes.children("div:eq(0)").data("name");
+			console.log(patntNo);
+			console.log("이름도 가져오나? " + patntNm);
+			// input태그에 선택된 이름 넣어주기
+			$(searchInput).val(patntNm);
+			// 환자 조회
+			selectPatientAjax(patntNo);
+			// 진료 기록 조회
+			selectClinicList(patntNo)
+			
+			searchInput.blur();
+			$("#searchBox").hide();
+		}
+	});
+	
+	
+	
+	// 위에서 뿌려준 환자 정보 클릭 이벤트 시작(드롭다운 div 안에 있는 <h6>태그 요소를 전부 가져와 클릭 이벤트 발생 시 작동)
+	$(searchRes).on("click","h6",function(event){
+		// 클릭된 h6 태그
+		var clickTarget = $(event.target);
+		// h6 태그 안에 있는 환자 정보 텍스트
+		var patientInfo = clickTarget.text();
+		console.log(clickTarget.text());
+		// 환자 정보 텍스트를 공백 기준으로 나누기
+		var patientSplit = patientInfo.split(' ');
+		console.log(patientSplit);
+		// 환자 번호(환자 정보 텍스트를 공백 기준으로 나누고 나서 0번째 요소)
+		var patntNo = patientSplit[0];
+		var patntNm = patientSplit[4];
+		console.log(patntNo);
+		console.log(patntNm);
+		$(searchInput).val(patntNm);
+		
+		var patientObj = {
+				patntNo : patntNo
+				};
+		// 환자 조회 ajax 호출
+		selectPatientAjax(patntNo);
+		
+		// 모든 진료 기록 조회 ajax
+		selectClinicList(patntNo);
+	});
+	// 위에서 뿌려준 환자 정보 클릭 이벤트 끝
+	
+	// 테이블용 환자 정보 ajax 호출 함수 시작
+	function selectPatientAjax(patntNo){
+		// 테이블용 환자 정보 ajax 시작
+		var patientObj = {
+				patntNo : patntNo
+				};
+		
+		$.ajax({
+			type : "post",
+			url  : "/mediform/patient/info",
+			data : JSON.stringify(patientObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				var patntHlthinsAt = "";
+				var patntHsptlzAt = "";	
+				console.log("patntNo : "+res.patntNo+" | patntNM : "+res.patntNm +" | patntTelno : "+res.patntTelno);
+				// 보험
+				if(res.patntHlthinsAt == "Y"){
+					patntHlthinsAt = "건강보험";
+				}else{
+					patntHlthinsAt = "보험 X";
+				}
+				// 입원여부
+				if(res.patntHsptlzAt == "Y"){
+					patntHsptlzAt = '<span class="fas fa-bed text-success fs-2"></span>';
+					
+				}else {
+					patntHsptlzAt = '<span class="fas fa-bed text-danger fs-2"></span>';
+				}
+				// 주민등록번호 앞자리를 문자열로 바꾼 후 앞에서 2개씩 끊어낸다.(생년월일에 사용하기 위해)
+				var patntRrno1 = res.patntRrno1.toString().match(/.{1,2}/g);
+				patntRrno1.splice(1, 0, ".");
+				patntRrno1.splice(3, 0, ".");
+				// 성별
+				var patntSexdstn = "";
+				if(res.patntSexdstn == "M"){
+					patntSexdstn = "남";
+				}else{
+					patntSexdstn = "여";
+				}
+				// 테이블 tr요소들 가져오기
+				var pTableTr = patientTable.find("tr");
+				console.log(pTableTr);
+				// 테이블 td요소들 가져오기
+				var pTableTd = pTableTr.find("td");
+				console.log(pTableTd);
+				
+				// 환자 간단 정보에 값 넣기
+				$(pTableTd[0]).html(res.patntNm);
+				$(pTableTd[1]).html(res.patntNo);
+				$(pTableTd[2]).html(patntHlthinsAt);
+				$(pTableTd[3]).html(patntHsptlzAt);
+				$(pTableTd[4]).html('<a href="/">특이사항</a>');
+				$(pTableTd[5]).html(patntRrno1);
+				$(pTableTd[6]).html(res.patntAge+"세");
+				$(pTableTd[7]).html(patntSexdstn);
+				$(pTableTd[8]).html(res.patntTelno);
+				$(pTableTd[10]).html(res.patntMemo);
+				
+			},
+			error : function(err){
+				console.log("err에러 : " + err);
+			}
+			
+		});
+		// 테이블용 환자 정보 ajax 끝
+	}
+	// 테이블용 환자 정보 ajax 호출 함수 끝
+	
+	// 모든 진료 기록 조회 호출 함수 시작
+	function selectClinicList(patntNo){
+		var patientObj = {
+				patntNo : patntNo
+				};
+		// 환자 진료 기록 조회 ajax 시작
+		$.ajax({
+			type : "post",
+			url  : "/mediform/doctor/allClinic",
+			data : JSON.stringify(patientObj),
+			contentType : "application/json; charset=utf-8",
+			async: false,
+	        beforeSend : function(xhr){
+	            //ajax호출 중 처리
+	            //글로벌 변수로 설정한 csrf token 셋팅
+	            xhr.setRequestHeader(header,token);
+	        },
+			success : function(res){
+				console.log("환자 진료 기록 조회 : " + res.length);
+				$(res).each(function(){
+					console.log("조회 대충 : " + res[0].rceptVO.recptReason);
+					console.log("조회 대충 : " + res[0].clnicNo);
+					console.log("조회 대충 : " + res[0].sickAndWoundedVO.sckwndMain);
+					console.log("조회 대충 : " + res[0].medicalTreatmentRecordVO.mdlrtCurer);
+				});
+			},
+			error : function(err){
+				console.log(err.status)
+			}
+		});
+		// 환자 진료 기록 조회 ajax 끝
+	}
+	// 모든 진료 기록 조회 호출 함수 끝
+	
+	
+	$("#certificates-diagnosis-Btn").on("click", function(){
+		$("#certificates-diagnosis-modal").modal();
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+});
+
+
+
+
+</script>

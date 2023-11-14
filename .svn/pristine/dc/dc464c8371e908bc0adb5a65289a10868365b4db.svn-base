@@ -1,0 +1,248 @@
+package kr.or.ddit.calender.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.calender.ServiceResult;
+import kr.or.ddit.calender.service.IManagerVacationService;
+import kr.or.ddit.calender.vo.VacationVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/mediform/manager/vacation")
+@Controller
+public class ManagerVacationController {
+	
+	@Inject
+	private IManagerVacationService managerVacationService;
+	
+	// 리스트 조회
+	@RequestMapping("/main")
+	public String vacationMain(VacationVO vacationVO, Model model) {
+		log.info("vacationMain() 실행중...!");
+		
+		List<VacationVO> dataList = managerVacationService.selectVacationList(vacationVO);
+		List<VacationVO> signupList = managerVacationService.selectSignupList(vacationVO);
+		List<VacationVO> approvalList = managerVacationService.selectApprovalList(vacationVO);
+		List<VacationVO> rejectList = managerVacationService.selectRejectList(vacationVO);
+		
+		model.addAttribute("dataList", dataList);
+		model.addAttribute("signupList", signupList);
+		model.addAttribute("approvalList", approvalList);
+		model.addAttribute("rejectList", rejectList);
+		
+		return "calender/managerVacation";
+	}
+	
+	// 캘린더 리스트 조회
+	@ResponseBody
+	@GetMapping("/list")
+	public List<Map<String, Object>> vacationList(){
+		log.info("vacationList() 실행중...!");
+		
+		JSONObject jsonObj = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		List<VacationVO> vacationList = managerVacationService.vacationMapList();
+		
+		for(VacationVO vacation : vacationList) {
+			map.put("id", vacation.getVcatnCd()); 								// 휴가 코드
+			
+			String title = null;
+			if(vacation.getVcatnSelfEmpse().equals("a")) {
+				title = "원무과";
+			}else if(vacation.getVcatnSelfEmpse().equals("d")) {
+				title = "의사과";
+			}else if(vacation.getVcatnSelfEmpse().equals("n")) {
+				title = "간호과";
+			}else if(vacation.getVcatnSelfEmpse().equals("t")) {
+				title = "치료과";
+			}else if(vacation.getVcatnSelfEmpse().equals("m")) {
+				title = "관리자";
+			}else if(vacation.getVcatnSelfEmpse().equals("k")) {
+				title = "병원장";
+			}
+			map.put("title", title + " " + vacation.getVcatnSelfEmpnm()); 		// 캘린더 제목
+			
+			String cl = null;
+			if(vacation.getVcatnCl().equals("1")) {
+				cl = "연차휴가";
+			}else if(vacation.getVcatnCl().equals("2")) {
+				cl = "오전반차";
+			}else if(vacation.getVcatnCl().equals("3")) {
+				cl = " 반차";
+			}else if(vacation.getVcatnCl().equals("4")) {
+				cl = "기타";
+			}else if(vacation.getVcatnCl().equals("5")) {
+				cl = "공가";
+			}else if(vacation.getVcatnCl().equals("6")) {
+				cl = "병가";
+			}else if(vacation.getVcatnCl().equals("7")) {
+				cl = "경조휴가";
+			}else if(vacation.getVcatnCl().equals("8")) {
+				cl = "출산휴가";
+			}
+			
+			String description = vacation.getVcatnSelfEmpnm() + "\t" + cl + "\t" + vacation.getVcatnResn();
+			map.put("description", description);								// 캘린더 내용
+			map.put("vcatnSelfEmpse", vacation.getVcatnSelfEmpse());			// 부서
+			map.put("vcatnResn", vacation.getVcatnResn());						// 사유
+			map.put("vcatnCl", vacation.getVcatnCl());							// 분류
+			map.put("vcatnSelfEmpno", vacation.getVcatnSelfEmpno());			// 휴가자 사번
+			map.put("vcatnSelfEmpnm", vacation.getVcatnSelfEmpnm());			// 휴가자 이름
+			map.put("vcatnSelfEmpclsf", vacation.getVcatnSelfEmpclsf());		// 휴가자 직위
+			map.put("vcatnYrycCo", vacation.getVcatnYrycCo());					// 사용수
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			map.put("pstgDt", sdf.format(vacation.getVcatnRqstdt()));			// 신청일시
+			map.put("start", vacation.getVcatnBgndt()); 						// 휴가 시작 일시
+			map.put("end", vacation.getVcatnEnddt()); 							// 휴가 종료 일시
+			
+			map.put("backgroundColor", "lightyellow");							// 배경 색깔
+			map.put("textColor", vacation.getVcatnColor());						// 글자 색깔
+			
+			jsonObj = new JSONObject(map);
+			jsonArr.add(jsonObj);
+			
+			log.info("제이슨 배열", jsonArr);
+		}
+
+		return jsonArr;
+	}
+	
+	// 휴가 신청
+	@PostMapping(value = "/insert")
+	public String vacationInsert(VacationVO vacationVO) {
+		log.info("vacationInsert() 실행중...!");
+		
+		String result = null;
+		
+		ServiceResult status = managerVacationService.vacationInsert(vacationVO);
+		if(status.equals(ServiceResult.OK)) {
+			log.info("등록 성공!!!");
+			result = "redirect:/mediform/manager/vacation/main";
+		}else {
+			log.info("등록 실패!!!");
+			result = "calender/managerVacation";
+		}
+		
+		return result;
+	}
+	
+	// 직원 상세
+	@ResponseBody
+	@PostMapping("/detail/emp")
+	public List<VacationVO> vacationDetailEmp(@RequestBody String searchEmpWord){
+		log.info("vacationDetailEmp() 실행중...!");
+		
+		List<VacationVO> vacationList = managerVacationService.vacationDetailEmp(searchEmpWord);
+		
+		return vacationList; 
+	}
+	
+	// 휴가 상세
+	@ResponseBody
+	@PostMapping("/detail")
+	public List<VacationVO> vacationDetailList(@RequestBody Map<String, String> map) {
+		log.info("vacationDetail() 실행중...!");
+		
+		String vcatnCd = map.get("vcatnCd");
+		String vcatnSelfEmpno = map.get("vcatnSelfEmpno");
+		
+		VacationVO vacationVO = new VacationVO();
+		if(vcatnCd != null && vcatnCd != "") {
+			vacationVO.setVcatnCd(vcatnCd);
+		}else if(vcatnSelfEmpno != null && vcatnSelfEmpno != "") {
+			vacationVO.setVcatnSelfEmpno(vcatnSelfEmpno);
+		}
+		List<VacationVO> vacationList = managerVacationService.vacationDetail(vacationVO);
+		
+		return vacationList;
+	}
+	
+	// 승인
+	@ResponseBody
+	@PostMapping("/update/approval")
+	public ServiceResult vacationUpdateApproval(@RequestBody Map<String, String> map) {
+		log.info("vacationUpdateApproval() 실행중...!");
+		
+		ServiceResult result = null;
+		String empNo = map.get("vcatnReprsntEmpno");
+		String empNoLast = map.get("vcatnConfirmerEmpno");
+		
+		if(empNo != null && empNoLast == null) {
+			result = managerVacationService.vacationUpdate(map);			// 1차 승인
+		}else if(empNo == null && empNoLast != null) {
+			result = managerVacationService.vacationUpdateLast(map);		// 2차 승인
+		}
+		
+		return result;
+	}
+	
+	// 반려
+	@ResponseBody
+	@PostMapping("/update/reject")
+	public ServiceResult vacationUpdateReject(@RequestBody Map<String, String> map) {
+		log.info("vacationUpdateReturn() 실행중...!");
+		
+		ServiceResult result = managerVacationService.vacationUpdateReject(map);
+		
+		return result;
+		
+	}
+	// 휴가 삭제
+	@PostMapping("/delete")
+	public String vacationDelete(String vcatnCode) {
+		log.info("vacationDelete() 실행중...!");
+
+		String goPage = null;
+		ServiceResult result = managerVacationService.vacationDelete(vcatnCode);
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("삭제 성공!!!");
+			goPage = "redirect:/mediform/manager/vacation/main";
+		}else {
+			log.info("삭제 실패!!!");
+			goPage = "calender/managerVacation";
+		}
+		
+		return goPage;
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

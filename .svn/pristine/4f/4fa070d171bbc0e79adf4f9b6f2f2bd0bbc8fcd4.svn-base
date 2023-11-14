@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.EmployeeInsertMapper">
+
+
+	<insert id="employeeInsert" parameterType="employeeVO">
+	
+		<selectKey keyProperty="empNo" resultType="String" order="BEFORE">
+ 				select seq_employee.nextval from dual
+ 		</selectKey>
+	
+	 	insert into employee(
+	 		emp_no, emp_nm, emp_rrno1, emp_rrno2, emp_telno, emp_zip, emp_adres1, emp_adres2,
+	 		emp_email, emp_sexdstn, emp_encpn, emp_exp, emp_rgsde, emp_hffc_at,
+	 		emp_lcns, emp_doctr_lcns, emp_se, emp_clsf, emp_yryc_remndr, emp_rqstr, emp_profile
+	 	
+	 	) values(
+	 	
+	 		#{empSe} || #{empNo}, #{empNm}, #{empRrno1}, #{empRrno2}, #{empTelno}, #{empZip}, #{empAdres1}, #{empAdres2}, 
+	 		#{empEmail} || #{empEmail2}, #{empSexdstn}, #{empEncpn}, #{empExp}, sysdate, 'Y',
+	 		#{empLcns}, #{empDoctrLcns}, #{empSe}, #{empClsf}, #{empYrycRemndr}, #{empRqstr}, #{empProfile}
+	 		
+	 	)
+	 
+	
+	</insert>
+
+
+
+
+
+
+
+
+</mapper>

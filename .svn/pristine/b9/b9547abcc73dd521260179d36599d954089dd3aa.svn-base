@@ -1,0 +1,28 @@
+package kr.or.ddit.nurse.vo;
+
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class MedicineVO {
+
+	//약품 재고
+	private String medcinCd;
+	private String medcinNm;
+	private int medcinInvntry;
+	private String medcinMfbiz;
+	private String mdctnCours;
+	private int medcinPc;
+	private int medcinStandard;
+	private String medcinUnit;
+	
+	//발주서
+	private String porderCd;
+	private String porderCt;
+	private Date porderDate;
+	private int porderTotal;
+	private String porderConfm;
+	
+}

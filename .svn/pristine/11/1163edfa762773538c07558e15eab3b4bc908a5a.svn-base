@@ -1,0 +1,52 @@
+package kr.or.ddit.administration.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.administration.service.IHospitalizationService;
+import kr.or.ddit.common.vo.SickbedVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class Hospitalization {
+
+	@Inject
+	private IHospitalizationService hospitalization;
+	
+	@RequestMapping(value="/hospitalization/main")
+	public String hospitalizationMain(Model model) {
+		
+		List<SickbedVO> sickbedList = hospitalization.selectSickbedList();
+		
+		
+		log.info("hospitalizationMain() 실행!!!");
+		
+		model.addAttribute("sickbedList", sickbedList);
+		
+		log.info("병상 수 : " + sickbedList.size());
+		
+		for(SickbedVO sickbedVO : sickbedList) {
+			
+			log.info("병상 번호 : " + sickbedVO.getSckbdNo());
+			
+		}
+		
+		return "admin/hospitalizationMain";
+	}
+	
+	
+	
+	
+	
+	
+}

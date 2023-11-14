@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.RoomMapper">
+	
+	<resultMap type="HospitalizationVO" id="HospitalizationVO">
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="hsptlzSckrm" column="HSPTLZ_SCKRM"/>
+		<result property="hsptlzSckbd" column="HSPTLZ_SCKBD"/>
+		<result property="hsptlzDe" column="HSPTLZ_DE"/>
+		<result property="prarndeLhstl" column="PRARNDE_LHSTL"/>
+		<result property="realLhstl" column="REAL_LHSTL"/>
+		<result property="empNm" column="EMP_NM"/>
+	</resultMap>
+	
+	<resultMap type="NurseRecordVO" id="NurseRecordVO">
+		<id property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="clnicNo" column="CLNIC_NO"/>
+		<result property="rceptNo" column="RCEPT_NO"/>
+		<result property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<result property="nrsRcordDe" column="NRS_RCORD_DE"/>
+		<result property="nrsRcordWrter" column="NRS_RCORD_WRTER"/>
+		<result property="nrsRcordCn" column="NRS_RCORD_CN"/>
+		<result property="nrsRcordMemo" column="NRS_RCORD_MEMO"/>
+	</resultMap>
+	
+	<!-- 간호기록내역조회 -->
+	<select id="selectRecordList" parameterType="Map" resultMap="NurseRecordVO">
+		select 
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN,NRS_RCORD_MEMO,CLNIC_NO,RCEPT_NO,PATNT_NO
+		from nurse_record 
+		where nrs_rcord_cd = #{nrsRcordCd}
+	</select>
+	
+	<select id="patientHospitaldetail" parameterType="String" resultType="HospitalizationVO">
+		SELECT  c.CLNIC_NO, e.EMP_NM, h.HSPTLZ_DE, h.REAL_LHSTL, h.HSPTLZ_SCKRM, h.HSPTLZ_SCKBD
+		FROM 
+		  CLINIC c
+		JOIN 
+		  EMPLOYEE e ON c.EMP_NO = e.EMP_NO
+		JOIN 
+		  HOSPITALIZATION h ON c.CLNIC_NO = h.CLNIC_NO
+		WHERE 
+		  h.PATNT_NO = #{patntNo}
+	</select>
+	
+	<select id="selectTakeOverList" parameterType="Map" resultMap="NurseRecordVO">
+		select 
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN
+		from nurse_record 
+		where PATNT_NO = #{patntNo}
+		order by NRS_RCORD_DE asc
+	</select>
+	
+	
+<!-- 	<select id="selectTakeOverCount" parameterType="int" resultMap="NurseRecordVO"> -->
+<!-- 		SELECT COUNT(NRS_RCORD_CN)  -->
+<!-- 		FROM nurse_record -->
+<!-- 		where PATNT_NO = #{patntNo} -->
+<!-- 	</select> -->
+	
+	
+	<insert id="takeOverinsert" parameterType="NurseRecordVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="nrsRcordCd" resultType="String" order="BEFORE">
+	        SELECT 'NRC' || SEQ_RECORD.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO NURSE_RECORD
+		(
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN, PATNT_NO
+		)VALUES(
+			#{nrsRcordCd}, SYSDATE, #{nrsRcordWrter}, #{nrsRcordCn}, #{patntNo}
+		)
+	</insert>
+	
+	
+	
+</mapper>

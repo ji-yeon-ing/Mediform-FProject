@@ -1,0 +1,42 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.SchedulerVO;
+import kr.or.ddit.mapper.common.SchedulerMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class SchedulerServiceImpl implements ISchedulerService {
+
+	@Inject
+	private SchedulerMapper schedulerMapper;
+	
+	@Override
+	public int schedulerinsert(SchedulerVO scheduler) {
+		
+		return schedulerMapper.schedulerinsert(scheduler);
+	}
+
+	@Override
+	public List<SchedulerVO> findAllSchedule() {
+		return schedulerMapper.schedulerList();
+	}
+
+	@Override
+	public int delete(String schdlCd) {
+		log.info("schdlCd:::::::::::::::::::::::::::::::::::::::::::::::"+schdlCd);
+		return schedulerMapper.schedulerdelete(schdlCd);
+	}
+
+	@Override
+	public int update(SchedulerVO scheduleVO) {
+		return schedulerMapper.schedulerupdate(scheduleVO);
+	}
+
+}

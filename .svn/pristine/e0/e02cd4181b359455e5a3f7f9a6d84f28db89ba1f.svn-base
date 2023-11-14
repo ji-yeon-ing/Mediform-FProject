@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.patient.PatientMapper">
+	
+	<resultMap type="patientVO" id="patientMap">
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="patntNm" column="PATNT_NM"/>
+		<result property="patntRrno1" column="PATNT_RRNO1"/>
+		<result property="patntRrno2" column="PATNT_RRNO2"/>
+		<result property="patntTelno" column="PATNT_TELNO"/>
+		<result property="patntZip" column="PATNT_ZIP"/>
+		<result property="patntAdres1" column="PATNT_ADRES1"/>
+		<result property="patntAdres2" column="PATNT_ADRES2"/>
+		<result property="patntAge" column="PATNT_AGE"/>
+		<result property="patntSexdstn" column="PATNT_SEXDSTN"/>
+		<result property="prtctorNm" column="PRTCTOR_NM"/>
+		<result property="prtctorTelno" column="PRTCTOR_TELNO"/>
+		<result property="patntAgre" column="PATNT_AGRE"/>
+		<result property="patntHeight" column="PATNT_HEIGHT"/>
+		<result property="patntBdwgh" column="PATNT_BDWGH"/>
+		<result property="patntBdp" column="PATNT_BDP"/>
+		<result property="patntHlthinsAt" column="PATNT_HLTHINS_AT"/>
+		<result property="patntMemo" column="PATNT_MEMO"/>
+		<result property="patntHsptlzAt" column="PATNT_HSPTLZ_AT"/>
+	</resultMap>
+	
+	<!-- 환자 list 조회 -->
+	<select id="selectPatientList" resultType="patientVO">
+		select
+		    PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+		from patient
+		order by PATNT_NO desc
+	</select>
+	
+	<!-- 환자 검색 & 페이징 list 조회 -->
+	<select id=""></select>
+
+	<select id="patientSearch" parameterType="Map" resultType="patientVO">
+		select
+    		 PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+		from patient
+		where PATNT_NM like '%'||#{keyword}||'%' or PATNT_NO like '%'||#{keyword}||'%'
+		order by PATNT_NO desc
+	</select>
+	
+	<!-- 입원환자 검색& 페이징 list 조회  시작-->
+	<select id="patientHsptlzListSearch" parameterType="Map" resultType="patientVO">
+		select
+    		PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_AGE, PATNT_TELNO
+		from patient
+		where 1 = 1
+		and   PATNT_HSPTLZ_AT = 'Y'
+		<if test="keyword!=null and keyword!=''">
+		 AND PATNT_NM like '%'||#{keyword}||'%' or PATNT_NO like '%'||#{keyword}||'%'
+		</if>
+		order by PATNT_NO desc
+	</select>
+	
+	<select id="selectHsptlzList" resultType="patientVO">
+		select
+    		PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_AGE
+		from patient
+		where PATNT_HSPTLZ_AT = 'Y'
+		order by PATNT_NO desc
+	</select>
+	<!-- 입원환자 검색& 페이징 list 조회  끝-->
+
+	<select id="selectPatient" parameterType="Map" resultType="patientVO">
+		select
+		    PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+		from patient
+		where PATNT_NO = #{patntNo}
+	</select>
+	
+	<insert id="patientInsert" parameterType="patientVO" useGeneratedKeys="true">
+	    <selectKey keyProperty="patntNo" resultType="String" order="BEFORE">
+	        SELECT 'P' || SEQ_PATIENT.NEXTVAL FROM DUAL
+	    </selectKey>
+	    INSERT INTO patient (
+	        PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+	        PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+	        PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+	    ) VALUES (
+	        #{patntNo}, #{patntNm}, #{patntRrno1}, #{patntRrno2}, #{patntTelno}, #{patntZip},
+	        #{patntAdres1}, #{patntAdres2}, #{patntAge}, #{patntSexdstn}, #{prtctorNm}, #{prtctorTelno},
+	        #{patntAgre}, #{patntHeight}, #{patntBdwgh}, #{patntBdp}, #{patntHlthinsAt}, #{patntMemo}, #{patntHsptlzAt}
+	    )
+	</insert>
+
+	<!-- 환자정보 조회 -->
+	<select id="selectPatientOne" parameterType="String" resultType="patientVO">
+		select
+		    PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+		from patient
+		where PATNT_NO = #{patntNo}
+	</select>
+
+	 <sql id="patientSearch">
+	 	<if test="searchType != null and searchType == 'patntnm'">
+	 		and (PATNT_NM like '%'||#{searchWord}||'%')
+	 	</if>
+	 	<if test="searchType != null and searchType == 'patntno'">
+	 		and (PATNT_NO like '%'||#{searchWord}||'%')
+	 	</if>
+	 </sql>
+	 
+	<sql id="patientCheckFilter">
+		<if test="searchVO != null">
+		    <if test="searchVO.filter1 != null and searchVO.filter1 != ''">
+		    	and (PATNT_HSPTLZ_AT = 'Y')
+		    </if>
+		    <if test="searchVO.filter2 != null and searchVO.filter2 != ''">
+		    	and (PATNT_HSPTLZ_AT = 'N')
+		    </if>
+		    <if test="searchVO.filter3 != null and searchVO.filter3 != ''">
+		    	and (PATNT_SEXDSTN = 'M')
+		    </if>
+		    <if test="searchVO.filter4 != null and searchVO.filter4 != ''">
+		    	and (PATNT_SEXDSTN = 'F')
+		    </if>
+		    <if test="searchVO.filter5 != null and searchVO.filter5 != ''">
+		    	and (PATNT_HLTHINS_AT = 'Y')
+		    </if>
+		    <if test="searchVO.filter6 != null and searchVO.filter6 != ''">
+		    	and (PATNT_HLTHINS_AT = 'N')
+		    </if>
+		</if>
+	</sql>
+
+	<!-- 페이징 카운트 -->
+	<select id="selectPatientCout" parameterType="pagingVO" resultType="int">
+		select count(PATNT_NO)
+		from patient
+		where 1=1
+		<include refid="patientSearch"/>
+		<include refid="patientCheckFilter"/>
+	</select>
+
+	<select id="selectPatientPagingList" parameterType="pagingVO" resultType="patientVO">
+		select
+			b.*
+		from(
+			select
+				a.*, row_number() over(order by a.PATNT_NO desc) rnum
+			from(
+				select
+					PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+				    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+				    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+				from patient							
+				where 1=1
+				<include refid="patientSearch"/>
+				<include refid="patientCheckFilter"/>
+				order by PATNT_NO desc
+			) a
+		) b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+
+	<update id="patientUpdate" parameterType="patientVO">
+		update patient
+		set
+			PATNT_NM = #{patntNm},
+			PATNT_RRNO1 = #{patntRrno1},
+			PATNT_RRNO2 = #{patntRrno2},
+			PATNT_TELNO = #{patntTelno},
+			PATNT_ZIP = #{patntZip},
+	        PATNT_ADRES1 = #{patntAdres1},
+	        PATNT_ADRES2 = #{patntAdres2},
+	        PATNT_AGE = #{patntAge},
+	        PATNT_SEXDSTN = #{patntSexdstn},
+	        PRTCTOR_NM = #{prtctorNm},
+	        PRTCTOR_TELNO = #{prtctorTelno},
+	        PATNT_AGRE = #{patntAgre},
+	        PATNT_HEIGHT = #{patntHeight},
+	        PATNT_BDWGH = #{patntBdwgh},
+	        PATNT_BDP = #{patntBdp},
+	        PATNT_HLTHINS_AT = #{patntHlthinsAt},
+	        PATNT_MEMO = #{patntMemo}
+		where PATNT_NO = #{patntNo}
+	</update>
+
+
+
+
+</mapper>

@@ -1,0 +1,15 @@
+package kr.or.ddit.doctor.vo;
+
+import lombok.Data;
+
+//치료 오더 컬럼
+@Data
+public class MedicalTreatmentRecordVO {
+
+	private String clnicNo;		// 진료 번호(식별)  
+	private String rceptNo;		// 접수 번호(식별)   
+	private String mdlrtCd;     // 치료 코드(식별)  
+	private String mdlrtCurer;	// 치료사(Null)
+	private String bodyCd;		// 환부 코드(비식별)(NotNull)
+	
+}

@@ -1,0 +1,424 @@
+package kr.or.ddit.manager.controller;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.google.gson.Gson;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.manager.service.IManagerService;
+import kr.or.ddit.manager.vo.EmpJsonVO;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 직원 관련 컨트롤러
+ * @author PC-20
+ *
+ */
+@Slf4j
+@Controller
+@PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_DIRECTOR')")
+@RequestMapping(value="/mediform/manager/employee")
+public class ManagerEmployeeController {
+
+	@Inject
+	private IManagerService managerService; 
+	
+		// 직원 내역 조회
+		@RequestMapping(value="/list/select")
+		public String employeeConfirm(
+				@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+				@RequestParam(required = false, defaultValue = "default") String searchType,
+				@RequestParam(required = false) String searchWord, 
+				String flag,
+				Model model) {
+//			log.info("employeeConfirm() 실행");
+//			log.info("searchType : " + searchType);
+//			log.info("searchWord : " + searchWord);
+//			log.info("currentPage : " + currentPage );
+			paginationInfoSettings(currentPage, searchType, searchWord, model);
+			model.addAttribute("menuSelected", "employee");
+			model.addAttribute("subMenuSelected", "employeeManagementBtn");
+			
+			return "manager/empConfirm";
+		}
+		
+		private void paginationInfoSettings(
+				int page, String searchType, String searchWord, Model model){
+			PaginationInfoVO<EmployeeVO> pagingVO = new PaginationInfoVO<EmployeeVO>();
+			
+			pagingVO.setSearchType(searchType);
+			model.addAttribute("searchType", searchType);
+			
+			if(StringUtils.isNotBlank(searchWord)) {
+				pagingVO.setSearchWord(searchWord);
+				model.addAttribute("searchWord", searchWord);
+			}
+			
+			EmployeeVO employeeVO = new EmployeeVO();
+			pagingVO.setSearchVO(employeeVO);
+			
+			pagingVO.setCurrentPage(page);
+			int totalRecord = managerService.selectEmpCount(pagingVO); // 총 게시글 수
+			
+			pagingVO.setTotalRecord(totalRecord); // totalpage 결정
+			List<EmployeeVO> dataList = managerService.selectEmpList(pagingVO);
+			pagingVO.setDataList(dataList);
+			
+			model.addAttribute("pagingVO", pagingVO);
+		}
+		
+		/**
+		 * 처리 내역 상세 조회
+		 * @param currentPage
+		 * @param searchType
+		 * @param searchWord
+		 * @param startDate
+		 * @param endDate
+		 * @param model
+		 * @return
+		 */
+		@RequestMapping(value="/confirm/list/select")
+		public String confirmList(
+				@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+				@RequestParam(required = false, defaultValue = "default") String searchType,
+				@RequestParam(required = false) String searchWord,
+				@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+		        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+				Model model) {
+			
+			if (startDate == null) {
+			    Calendar calendar = Calendar.getInstance();
+			    calendar.set(Calendar.YEAR, 0);
+			    calendar.set(Calendar.MONTH, 0);
+			    calendar.set(Calendar.DAY_OF_MONTH, 0);
+			    calendar.set(Calendar.HOUR_OF_DAY, 0);
+			    calendar.set(Calendar.MINUTE, 0);
+			    calendar.set(Calendar.SECOND, 0);
+			    calendar.set(Calendar.MILLISECOND, 0);
+			    startDate = calendar.getTime();
+			}else {
+				model.addAttribute("startDate", startDate);
+			}
+			
+			// endDate는 null이면 안됨
+			// 빈값이면 현재 날짜로 초기화 
+		    if (endDate == null) {
+		        endDate = new Date(); 
+		    }
+		    model.addAttribute("endDate", endDate);
+		    confirmPaginationInfoSettings(currentPage, searchType, searchWord, startDate, endDate, model);
+			
+		    List<EmployeeVO> confirmList = managerService.confirmList();
+		    model.addAttribute("confirmList", confirmList);
+		    
+		    // 메뉴바 선택 CSS를 위한 model
+		    model.addAttribute("menuSelected", "employee");
+			model.addAttribute("subMenuSelected", "employeeCompleteBtn");
+
+		    return "manager/empConfirmAndComplete";
+		}
+		
+		private void confirmPaginationInfoSettings(
+				int page, 
+				String searchType, 
+				String searchWord,
+				Date startDate, 
+				Date endDate, 
+				Model model) {
+			PaginationInfoVO<EmployeeVO> pagingVO = new PaginationInfoVO<EmployeeVO>();
+			pagingVO.setSearchType(searchType);
+			model.addAttribute("searchType", searchType);
+			
+			if(StringUtils.isNotBlank(searchWord)) {
+				pagingVO.setSearchWord(searchWord);
+				model.addAttribute("searchWord", searchWord);
+			}
+			
+			EmployeeVO employeeVO = new EmployeeVO();
+			pagingVO.setStartDate(startDate);
+			pagingVO.setEndDate(endDate);
+			pagingVO.setSearchVO(employeeVO);
+			pagingVO.setCurrentPage(page);
+			int totalRecord = 0;
+			List<EmployeeVO> dataList = new ArrayList<EmployeeVO>();
+			
+			totalRecord = managerService.completeCount(pagingVO);
+			dataList = managerService.completeList(pagingVO);
+			
+			pagingVO.setTotalRecord(totalRecord);
+			pagingVO.setDataList(dataList);
+			
+			model.addAttribute("pagingVO", pagingVO);	
+		}
+		
+		
+		// 해당 직원 상세 조회
+		@PostMapping(value="/getEmployee")
+		public ResponseEntity<EmployeeVO> getEmployee(@RequestBody Map<String, String>map){
+//			log.info("getEmployee() 실행");
+			String empNo = map.get("empNo");
+			EmployeeVO empVO = managerService.getEmployee(empNo);
+			
+			return new ResponseEntity<EmployeeVO>(empVO, HttpStatus.OK); 
+		}
+		
+		// 반려 처리
+		@PostMapping(value="/rejectUpdate")
+		public String rejectUpdate(EmployeeVO empVO, RedirectAttributes ra, Model model) throws MessagingException, UnsupportedEncodingException{
+//			log.info("rejectUpdate() 실행");
+			ServiceResult result = managerService.rejectUpdate(empVO);
+			if(result.equals(ServiceResult.OK)) {
+//				log.info("컨트롤러 성공");
+				ra.addFlashAttribute("msg", "y");
+				ra.addFlashAttribute("thisPage", "confirmList");
+			}else {
+//				log.info("컨트롤러 실패");
+				ra.addFlashAttribute("msg", "n");
+			}
+//			log.info("컨트롤러 serviceResult : " + result);
+			return "redirect:/mediform/manager/employee/confirm/list/select";
+		}
+		
+		// 승인 처리
+		@PostMapping(value="/agree")
+		public String agreeEmployee(EmployeeVO empVO, RedirectAttributes ra, Model model) throws UnsupportedEncodingException, MessagingException {
+			log.info("agreeEmployee() 실행");
+			ServiceResult result = managerService.agreeEmployee(empVO);
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("msg", "y");
+				ra.addFlashAttribute("thisPage", "confirmList");
+			}else {
+				ra.addFlashAttribute("msg", "n");
+			}
+			return "redirect:/mediform/manager/employee/confirm/list/select";
+		}
+		
+		// 회원 수정
+		@PostMapping(value="/update")
+		public String employeeUpdate(@RequestParam Map<String, String> map, RedirectAttributes ra) {
+//			log.info("employeeUpdate() 실행");
+			String check = map.get("empHffcAt");
+			EmployeeVO empVO = new EmployeeVO();
+			empVO.setEmpNo(map.get("empNo"));
+			empVO.setEmpClsf(map.get("empClsf"));
+			empVO.setEmpSe(map.get("empSe"));
+			int deleteAuthRst = 0;
+			int deleteEmpRst = 0;
+			int updateResult = 0;
+			
+			// 퇴직 체크시 권한 삭제, 퇴직 일시 추가
+			if(check != null && check.equals("N")) {
+				// 퇴직 직원 권한 삭제
+				empVO.setEmpHffcAt("N");
+				deleteAuthRst = managerService.deleteAuth(empVO);
+				deleteEmpRst = managerService.retireEmp(empVO);
+				if(deleteAuthRst > 0 && deleteEmpRst > 0) {
+					ra.addFlashAttribute("msg", "y");
+				}else {
+					ra.addFlashAttribute("msg", "n");
+				}
+			}else{
+				// 직원 권한 수정시
+				// 해당 과에 이미 과장이 있을 경우와 없을 경우 구분
+				
+				// 과장을 선택 했을 경우 체크해야 함
+				if(map.get("empClsf").equals("0")) {
+					
+					int clsfCheck = managerService.clsfCheck(empVO);
+					if(clsfCheck > 0) {
+						ra.addFlashAttribute("msg", "e");
+					}else {
+						updateResult = managerService.updateEmp(empVO);
+						if(updateResult > 0) {
+							ra.addFlashAttribute("msg", "y");
+						}else {
+							ra.addFlashAttribute("msg", "n");
+						}
+					}
+				}else {
+					// 일반 직원 선택시
+					updateResult = managerService.updateEmp(empVO);
+					if(updateResult > 0) {
+						ra.addFlashAttribute("msg", "y");
+					}else {
+						ra.addFlashAttribute("msg", "n");
+					}
+				}
+			}
+			
+			return "redirect:/mediform/manager/employee/list/select";
+		}
+		
+		/**
+		 * 직원 조직도 조회
+		 * orgChart 사용
+		 * @param model
+		 * @return
+		 */
+		@GetMapping(value="/chart/select")
+		public String chartPage(Model model) {
+			
+			List<EmployeeVO> empList = managerService.ogzChart();
+			
+			// 병원장
+			EmpJsonVO hospital = new EmpJsonVO();
+			List<EmpJsonVO> leaderChild = new ArrayList<EmpJsonVO>();
+			
+			// 행정관리자
+			EmpJsonVO ManagerLeader = new EmpJsonVO();
+			leaderChild.add(ManagerLeader);
+			
+			// 부원장
+			EmpJsonVO doctorLeader = new EmpJsonVO();
+			leaderChild.add(doctorLeader);
+			// 의사
+			List<EmpJsonVO> doctorList = new ArrayList<EmpJsonVO>();
+			
+			// 원무과장
+			EmpJsonVO adminLeader = new EmpJsonVO();
+			leaderChild.add(adminLeader);
+			// 원무직원
+			List<EmpJsonVO> adminList = new ArrayList<EmpJsonVO>();
+			
+			// 수간호사
+			EmpJsonVO nurseLeader = new EmpJsonVO();
+			leaderChild.add(nurseLeader);
+			// 간호사
+			List<EmpJsonVO> nurseList = new ArrayList<EmpJsonVO>();
+			
+			// 물리치료과장
+			EmpJsonVO therapistLeader = new EmpJsonVO();
+			leaderChild.add(therapistLeader);
+			// 물리 직원
+			List<EmpJsonVO> therapistList = new ArrayList<EmpJsonVO>();
+
+			// List별로 구분
+			for(int i=0; i<empList.size(); i++) {
+				EmpJsonVO jsonVO = new EmpJsonVO();
+				
+				// 병원장
+				if(empList.get(i).getEmpSe().equals("k")) {
+					hospital.setName(empList.get(i).getEmpNm());
+					hospital.setTitle("병원장");
+					hospital.setClassName("k");
+					hospital.setId(empList.get(i).getEmpNo());
+				}
+				// 행정관리자
+				if(empList.get(i).getEmpSe().equals("m")) {
+					ManagerLeader.setName(empList.get(i).getEmpNm());
+					ManagerLeader.setTitle("행정관리자");
+					ManagerLeader.setClassName("m");
+					ManagerLeader.setId(empList.get(i).getEmpNo());
+				}
+				// 하위 List들은 과장과 일반 직원 분류
+				// 의사
+				if(empList.get(i).getEmpSe().equals("d") && empList.get(i).getEmpClsf().equals("0")) {
+					doctorLeader.setName(empList.get(i).getEmpNm());
+					doctorLeader.setTitle("부원장");
+					doctorLeader.setClassName("d");
+					doctorLeader.setId(empList.get(i).getEmpNo());
+				}else if(empList.get(i).getEmpSe().equals("d") && empList.get(i).getEmpClsf().equals("1")) {
+					jsonVO.setName(empList.get(i).getEmpNm());
+					jsonVO.setTitle("의사");
+					jsonVO.setClassName("d");
+					jsonVO.setId(empList.get(i).getEmpNo());
+					doctorList.add(jsonVO);
+				}
+				// 원무과
+				if(empList.get(i).getEmpSe().equals("a") && empList.get(i).getEmpClsf().equals("0")) {
+					adminLeader.setName(empList.get(i).getEmpNm());
+					adminLeader.setTitle("원무과장");
+					adminLeader.setClassName("a");
+					adminLeader.setId(empList.get(i).getEmpNo());
+				}else if(empList.get(i).getEmpSe().equals("a") && empList.get(i).getEmpClsf().equals("1")) {
+					jsonVO.setName(empList.get(i).getEmpNm());
+					jsonVO.setTitle("원무");
+					jsonVO.setClassName("a");
+					jsonVO.setId(empList.get(i).getEmpNo());
+					adminList.add(jsonVO);
+				}
+				// 간호사
+				if(empList.get(i).getEmpSe().equals("n") && empList.get(i).getEmpClsf().equals("0")) {
+					nurseLeader.setName(empList.get(i).getEmpNm());
+					nurseLeader.setTitle("수간호사");
+					nurseLeader.setClassName("n");
+					nurseLeader.setId(empList.get(i).getEmpNo());
+				}else if(empList.get(i).getEmpSe().equals("n") && empList.get(i).getEmpClsf().equals("1")) {
+					jsonVO.setName(empList.get(i).getEmpNm());
+					jsonVO.setTitle("간호");
+					jsonVO.setClassName("n");
+					jsonVO.setId(empList.get(i).getEmpNo());
+					nurseList.add(jsonVO);
+				}
+				// 물리치료사
+				if(empList.get(i).getEmpSe().equals("t") && empList.get(i).getEmpClsf().equals("0")) {
+					therapistLeader.setName(empList.get(i).getEmpNm());
+					therapistLeader.setTitle("물리치료과장");
+					therapistLeader.setClassName("t");
+					therapistLeader.setId(empList.get(i).getEmpNo());
+				}else if(empList.get(i).getEmpSe().equals("t") && empList.get(i).getEmpClsf().equals("1")) {
+					jsonVO.setName(empList.get(i).getEmpNm());
+					jsonVO.setTitle("치료");
+					jsonVO.setClassName("t");
+					jsonVO.setId(empList.get(i).getEmpNo());
+					therapistList.add(jsonVO);
+				}
+				
+			}
+			
+			// 각 과대표의 소속 직원 리스트 추가
+			// 행정관리자는 소속 직원 X
+			doctorLeader.setChildren(doctorList);
+			adminLeader.setChildren(adminList);
+			nurseLeader.setChildren(nurseList);
+			therapistLeader.setChildren(therapistList);
+			
+			// 병원장 바로 아래 직급 리스트 추가(각 과 과장들)
+			hospital.setChildren(leaderChild);
+
+			// 만든 List를 가지고 놀아보자 얼쑤
+			Gson gson = new Gson();
+			
+			// json형태로 변환
+			String listJson = gson.toJson(hospital);
+			
+			model.addAttribute("jsonStr", listJson);
+				
+			// 각 과별 인원 수 
+			Map<String, Integer> allCnt = managerService.allCnt();
+//			log.info("aCnt : " + allCnt.get("aCnt"));
+			model.addAttribute("cntMap", allCnt);
+			
+			// 메뉴바 선택 CSS를 위한 model
+		    model.addAttribute("menuSelected", "employee");
+			model.addAttribute("subMenuSelected", "employeeOrganizationChartBtn");
+			
+			return "manager/organizationChart";
+		}
+		
+	
+}

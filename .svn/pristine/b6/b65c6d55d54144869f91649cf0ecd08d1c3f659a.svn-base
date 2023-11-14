@@ -1,0 +1,73 @@
+package kr.or.ddit.common.vo;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class EmployeeVO {
+
+	private String empNo;
+	private String empNm;
+	private String empPw;
+	private int empRrno1;
+	private int empRrno2;
+	private String empTelno;
+	private String empZip;
+	private String empAdres1;
+	private String empAdres2;
+	private String empEmail;
+	private String empEmail2;
+	private String empSexdstn;
+//	@DateTimeFormat(pattern = "yyyy-MM-dd")
+//	private Date empBrthdy;
+	private String empDep;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date empEncpn;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date empRetire;
+	private String empExp;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date empRgsde;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date empUpdde;
+	private String empHffcAt;
+	
+	private MultipartFile imgFile;
+	private String empProfile;
+	
+	private String empSign;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date empLcns;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date empDoctrLcns;
+	private String empSe;
+	private String empAuthor;
+	private String empClsf;
+	private String empYrycUse;
+	private String empYrycRemndr;
+	private String empOffhodUse;
+	private String empOffhodRemndr;
+	private String empSicknsUse;
+	private String empSicknsRemndr;
+	private String empConfm;
+	private String RjctResn;
+	private String empRqstr;
+	private int empLcnsNo;
+	private int empDoctrLcnsNo;
+	
+	private List<AuthorityVO> authList;
+	
+	// manager/employee/select를 조회할 당시 Tab에서 사용되는 조건 flag에 따라
+	// 목록 조회를 달리하기 위해 사용되는 조건 값
+	private String etcType;
+	
+	// 프로필 사진 구분을 위한 변수
+	private String imgSrc;
+	private String profileFlag;		// 촬영 : 1 , 컴퓨터 파일 : 2
+	
+}

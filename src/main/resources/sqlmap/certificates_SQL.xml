@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.CertificatesMapper">
+	
+	<resultMap type="ClinicVO" id="ClinicVO">
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="empNo" column="EMP_NO"/>
+		<result property="clnicTime" column="CLNIC_TIME"/>
+		<result property="clnicCn" column="CLNIC_CN"/>
+		<result property="clnicAt" column="CLNIC_AT"/>
+		<result property="beforeClnicNo" column="BEFORE_CLNIC_NO"/>
+		<result property="hsptlzAt" column="HSPTLZ_AT"/>
+		<result property="clnicMemo" column="CLNIC_MEMO"/>
+		<result property="atfssDt" column="ATFSS_DT"/>
+		
+		<association property="prescriptionOrderVO"  javaType="PrescriptionOrderVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="medcinCd" column="MEDCIN_CD"/>	
+			<id property="prscrptnCd" column="PRSCRPTN_CD"/>
+			<result property="prscrptnNm" column="PRSCRPTN_NM"/>
+			<result property="mdctnCpcty" column="MDCTN_CPCTY"/>
+			<result property="mdctnUnit" column="MDCTN_UNIT"/>
+			<result property="mdctnCo" column="MDCTN_CO"/>
+			<result property="mdctnPd" column="MDCTN_PD"/>
+			<result property="mdctnCoursUsage" column="MDCTN_COURS_USAGE"/>
+		</association>
+		
+		<association property="medicalTreatmentVO" javaType="MedicalTreatmentVO">
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<result property="mdlrtNm" column="MDLRT_NM"/>	
+			<result property="mdlrtAmount" column="MDLRT_AMOUNT"/>	
+			<result property="mllwncAt" column="MLLWNC_AT"/>
+		</association>
+		
+		<association property="medicalTreatmentRecordVO" javaType="MedicalTreatmentRecordVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<id property="mdlrtrdCd" column="MDLRTRD_CD"/>
+			<result property="mdlrtCurer" column="MDLRT_CURER"/>
+			<result property="bodyCd" column="BODY_CD"/>
+		</association>
+		
+		<association property="healthCheckupVO" javaType="HealthCheckupVO">
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpNm" column="HLTHCHKP_NM"/>	
+			<result property="hlthchkpAmount" column="HLTHCHKP_AMOUNT"/>	
+			<result property="mllwncAt" column="MLLWNC_AT"/>
+		</association>
+			
+		<association property="medicalExaminationOrderVO" javaType="MedicalExaminationOrderVO">
+			<id property="mecCd" column="MEC_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpDt" column="HLTHCHKP_DT"/>
+			<result property="hlthchkpResult" column="HLTHCHKP_RESULT"/>
+			<result property="bodyCd" column="BODY_CD"/>	
+		</association>
+		
+		<association property="rceptVO" javaType="RceptVO">
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="rceptDt" column="RCEPT_DT"/>
+			<result property="rceptReason" column="RCEPT_REASON"/>
+			<result property="rceptSttus" column="RCEPT_STTUS"/>
+			<result property="rceptPriort" column="RCEPT_PRIORT"/>
+			<result property="rceptClnc" column="RCEPT_CLNC"/>
+		</association>
+		
+		<association property="otptRecordVO" javaType="OtptRecordVO">
+			<id property="otptCd" column="OTPT_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="otptAppeal" column="OTPT_APPEAL"/>
+			<result property="otptHistory" column="OTPT_HISTORY"/>
+			<result property="orientTime" column="ORIENT_TIME"/>
+			<result property="orientPlace" column="ORIENT_PLACE"/>
+			<result property="orientPerson" column="ORIENT_PERSON"/>
+			<result property="otptStm" column="OTPT_STM"/>
+			<result property="otptLtm" column="OTPT_LTM"/>
+			<result property="otptSt" column="OTPT_ST"/>
+			<result property="otptDysp" column="OTPT_DYSP"/>
+			<result property="otptPd" column="OTPT_PD"/>
+			<result property="mustUbRight" column="MUST_UB_RIGHT"/>
+			<result property="mustUbLeft" column="MUST_UB_LEFT"/>
+			<result property="mustLbRight" column="MUST_LB_RIGHT"/>
+			<result property="mustLbLeft" column="MUST_LB_LEFT"/>
+			<result property="mainCntrvs" column="MAIN_CNTRVS"/>
+			<result property="lngtrCoal" column="LNGTR_COAL"/>
+			<result property="srtpdCoal" column="SRTPD_COAL"/>
+			<result property="mustPlan" column="MUST_PLAN"/>
+			<result property="mustEtc" column="MUST_ETC"/>
+			<result property="mdlrtDt" column="MDLRT_DT"/>
+		</association>
+		
+		<association property="hospitalizationVO" javaType="HospitalizationVO">
+			<id property="hsptlzCd" column="HSPTLZ_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="hsptlzSckrm" column="HSPTLZ_SCKRM"/>
+			<result property="hsptlzSckbd" column="HSPTLZ_SCKBD"/>
+			<result property="hsptlzDe" column="HSPTLZ_DE"/>
+			<result property="prarndeLhstl" column="PRARNDE_LHSTL"/>
+			<result property="realLhstl" column="REAL_LHSTL"/>
+			<result property="patntIdntfc" column="PATNT_IDNTFC"/>
+		</association>
+		
+		<association property="employeeVO" javaType="EmployeeVO">
+			<id property="empNo" column="EMP_NO"/>
+			<result property="empNm" column="EMP_NM"/>
+			<result property="empPw" column="EMP_PW"/>
+			<result property="empRrno1" column="EMP_RRNO1"/>
+			<result property="empRrno2" column="EMP_RRNO2"/>
+			<result property="empTelno" column="EMP_TELNO"/>
+	 		<result property="empZip" column="EMP_ZIP"/>
+			<result property="empAdres1" column="EMP_ADRES1"/>
+			<result property="empAdres2" column="EMP_ADRES2"/>
+			<result property="empEmail" column="EMP_EMAIL"/>
+			<result property="empSexdstn" column="EMP_SEXDSTN"/>
+			<result property="empBrthdy" column="EMP_BRTHDY"/>
+			<result property="empDep" column="EMP_DEP"/>
+			<result property="empEncpn" column="EMP_ENCPN"/>
+			<result property="empRetire" column="EMP_RETIRE"/>
+			<result property="empExp" column="EMP_EXP"/>
+			<result property="empRgsde" column="EMP_RGSDE"/>
+			<result property="empUpdde" column="EMP_UPDDE"/>
+			<result property="empHffcAt" column="EMP_HFFC_AT"/>
+			<result property="empProfile" column="EMP_PROFILE"/>
+			<result property="empSign" column="EMP_SIGN"/>
+			<result property="empSe" column="EMP_SE"/>
+			<result property="empAuthor" column="EMP_AUTHOR"/>
+			<result property="empClsf" column="EMP_CLSF"/>
+			<result property="empYrycUse" column="EMP_YRYC_USE"/>
+			<result property="empYrycRemndr" column="EMP_YRYC_REMNDR"/>
+			<result property="empOffhodUse" column="EMP_OFFHOD_USE"/>
+			<result property="empOffhodRemndr" column="EMP_OFFHOD_REMNDR"/>
+			<result property="empConfm" column="EMP_CONFM"/>
+			<result property="rjctResn" column="RJCT_RESN"/>
+			<result property="empRqstr" column="EMP_RQSTR"/>
+			<result property="empLcns" column="EMP_LCNS"/>
+			<result property="empDoctrLcns" column="EMP_DOCTR_LCNS"/>
+			<result property="empLcnsNo" column="EMP_LCNS_NO"/>
+			<result property="empDoctrLcnsNo" column="EMP_DOCTR_LCNS_NO"/>
+		</association>
+		
+		<association property="patientVO" javaType="PatientVO">
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="patntNm" column="PATNT_NM"/>
+			<result property="patntRrno1" column="PATNT_RRNO1"/>
+			<result property="patntRrno2" column="PATNT_RRNO2"/>
+			<result property="patntTelno" column="PATNT_TELNO"/>
+			<result property="patntZip" column="PATNT_ZIP"/>
+			<result property="patntAdres1" column="PATNT_ADRES1"/>
+			<result property="patntAdres2" column="PATNT_ADRES2"/>
+			<result property="patntAge" column="PATNT_AGE"/>
+			<result property="patntSexdstn" column="PATNT_SEXDSTN"/>
+			<result property="prtctorNm" column="PRTCTOR_NM"/>
+			<result property="prtctorTelno" column="PRTCTOR_TELNO"/>
+			<result property="patntAgre" column="PATNT_AGRE"/>
+			<result property="patntHeight" column="PATNT_HEIGHT"/>
+			<result property="patntBdwgh" column="PATNT_BDWGH"/>
+			<result property="patntBdp" column="PATNT_BDP"/>
+			<result property="patntHlthinsAt" column="PATNT_HLTHINS_AT"/>
+			<result property="patntMemo" column="PATNT_MEMO"/>
+			<result property="patntHsptlzAt" column="PATNT_HSPTLZ_AT"/>
+		</association>
+		
+		<association property="hospitalCertificatesVO" javaType="HospitalCertificatesVO">
+			<id property="hcrtfNo" column="HCRTF_NO"/>	
+			<result property="hcrtfPapersCl" column="HCRTF_PAPERS_CL"/>	
+			<result property="hcrtfDt" column="HCRTF_DT"/>
+			<result property="hcrtfDocNote" column="HCRTF_DOC_NOTE"/>
+			<result property="hcrtfPrpos" column="HCRTF_PRPOS"/>
+			<result property="hcrtfRm" column="HCRTF_RM"/>
+			<result property="prsmpAt" column="PRSMP_AT"/>
+			<result property="clnicNo" column="CLNIC_NO"/>
+			<result property="rceptNo" column="RCEPT_NO"/>
+			<result property="patntNo" column="PATNT_NO"/>
+		</association>
+		
+		<association property="sickAndWoundedVO" javaType="SickAndWoundedVO">
+			<id property="sckwndCd" column="SCKWND_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="sckwndKr" column="SCKWND_KR"/>
+			<result property="sckwndEn" column="SCKWND_EN"/>
+			<result property="sckwndSe" column="SCKWND_SE"/>
+			<result property="bodyCd" column="BODY_CD"/>
+			<result property="kcd" column="KCD"/>
+		</association>
+		
+		<collection property="prescriptionOrderVOList"  ofType="PrescriptionOrderVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="medcinCd" column="MEDCIN_CD"/>
+			<id property="prscrptnCd" column="PRSCRPTN_CD"/>	
+			<result property="prscrptnNm" column="PRSCRPTN_NM"/>
+			<result property="mdctnCpcty" column="MDCTN_CPCTY"/>
+			<result property="mdctnUnit" column="MDCTN_UNIT"/>
+			<result property="mdctnCo" column="MDCTN_CO"/>
+			<result property="mdctnPd" column="MDCTN_PD"/>
+			<result property="mdctnCoursUsage" column="MDCTN_COURS_USAGE"/>
+		</collection>
+		
+		<collection property="sickAndWoundedVOList" ofType="SickAndWoundedVO">
+			<id property="sckwndCd" column="SCKWND_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="sckwndKr" column="SCKWND_KR"/>
+			<result property="sckwndEn" column="SCKWND_EN"/>
+			<result property="sckwndSe" column="SCKWND_SE"/>
+			<result property="bodyCd" column="BODY_CD"/>
+			<result property="kcd" column="KCD"/>
+		</collection>
+		
+		<collection property="medicalTreatmentVOList" ofType="MedicalTreatmentVO">
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<result property="mdlrtNm" column="MDLRT_NM"/>	
+			<result property="mdlrtAmount" column="MDLRT_AMOUNT"/>	
+			<result property="mllwncAt" column="MLLWNC_AT"/>
+		</collection>
+		
+		<collection property="medicalTreatmentRecordVOList" ofType="MedicalTreatmentRecordVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<id property="mdlrtrdCd" column="MDLRTRD_CD"/>
+			<result property="mdlrtCurer" column="MDLRT_CURER"/>
+			<result property="bodyCd" column="BODY_CD"/>
+		</collection>
+		
+		<collection property="healthCheckupVOList" ofType="HealthCheckupVO">
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpNm" column="HLTHCHKP_NM"/>	
+			<result property="hlthchkpAmount" column="HLTHCHKP_AMOUNT"/>	
+			<result property="mllwncAt" column="MLLWNC_AT"/>
+		</collection>
+			
+		<collection property="medicalExaminationOrderVOList" ofType="MedicalExaminationOrderVO">
+			<id property="mecCd" column="MEC_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpDt" column="HLTHCHKP_DT"/>
+			<result property="hlthchkpResult" column="HLTHCHKP_RESULT"/>
+			<result property="bodyCd" column="BODY_CD"/>	
+		</collection>
+		
+		<collection property="rceptVOList" ofType="RceptVO">
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="rceptDt" column="RCEPT_DT"/>
+			<result property="rceptReason" column="RCEPT_REASON"/>
+			<result property="rceptSttus" column="RCEPT_STTUS"/>
+			<result property="rceptPriort" column="RCEPT_PRIORT"/>
+			<result property="rceptClnc" column="RCEPT_CLNC"/>
+		</collection>
+		
+		<collection property="hospitalizationVOList" ofType="HospitalizationVO">
+			<id property="hsptlzCd" column="HSPTLZ_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="hsptlzSckrm" column="HSPTLZ_SCKRM"/>
+			<result property="hsptlzSckbd" column="HSPTLZ_SCKBD"/>
+			<result property="hsptlzDe" column="HSPTLZ_DE"/>
+			<result property="prarndeLhstl" column="PRARNDE_LHSTL"/>
+			<result property="realLhstl" column="REAL_LHSTL"/>
+			<result property="patntIdntfc" column="PATNT_IDNTFC"/>
+		</collection>
+		
+		<collection property="otptRecordVOList" ofType="OtptRecordVO">
+			<id property="otptCd" column="OTPT_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="otptAppeal" column="OTPT_APPEAL"/>
+			<result property="otptHistory" column="OTPT_HISTORY"/>
+			<result property="orientTime" column="ORIENT_TIME"/>
+			<result property="orientPlace" column="ORIENT_PLACE"/>
+			<result property="orientPerson" column="ORIENT_PERSON"/>
+			<result property="otptStm" column="OTPT_STM"/>
+			<result property="otptLtm" column="OTPT_LTM"/>
+			<result property="otptSt" column="OTPT_ST"/>
+			<result property="otptDysp" column="OTPT_DYSP"/>
+			<result property="otptPd" column="OTPT_PD"/>
+			<result property="mustUbRight" column="MUST_UB_RIGHT"/>
+			<result property="mustUbLeft" column="MUST_UB_LEFT"/>
+			<result property="mustLbRight" column="MUST_LB_RIGHT"/>
+			<result property="mustLbLeft" column="MUST_LB_LEFT"/>
+			<result property="mainCntrvs" column="MAIN_CNTRVS"/>
+			<result property="lngtrCoal" column="LNGTR_COAL"/>
+			<result property="srtpdCoal" column="SRTPD_COAL"/>
+			<result property="mustPlan" column="MUST_PLAN"/>
+			<result property="mustEtc" column="MUST_ETC"/>
+			<result property="mdlrtDt" column="MDLRT_DT"/>
+		</collection>
+		
+		<collection property="employeeVOList" ofType="EmployeeVO">
+			<id property="empNo" column="EMP_NO"/>
+			<result property="empNm" column="EMP_NM"/>
+			<result property="empPw" column="EMP_PW"/>
+			<result property="empRrno1" column="EMP_RRNO1"/>
+			<result property="empRrno2" column="EMP_RRNO2"/>
+			<result property="empTelno" column="EMP_TELNO"/>
+	 		<result property="empZip" column="EMP_ZIP"/>
+			<result property="empAdres1" column="EMP_ADRES1"/>
+			<result property="empAdres2" column="EMP_ADRES2"/>
+			<result property="empEmail" column="EMP_EMAIL"/>
+			<result property="empSexdstn" column="EMP_SEXDSTN"/>
+			<result property="empBrthdy" column="EMP_BRTHDY"/>
+			<result property="empDep" column="EMP_DEP"/>
+			<result property="empEncpn" column="EMP_ENCPN"/>
+			<result property="empRetire" column="EMP_RETIRE"/>
+			<result property="empExp" column="EMP_EXP"/>
+			<result property="empRgsde" column="EMP_RGSDE"/>
+			<result property="empUpdde" column="EMP_UPDDE"/>
+			<result property="empHffcAt" column="EMP_HFFC_AT"/>
+			<result property="empProfile" column="EMP_PROFILE"/>
+			<result property="empSign" column="EMP_SIGN"/>
+			<result property="empSe" column="EMP_SE"/>
+			<result property="empAuthor" column="EMP_AUTHOR"/>
+			<result property="empClsf" column="EMP_CLSF"/>
+			<result property="empYrycUse" column="EMP_YRYC_USE"/>
+			<result property="empYrycRemndr" column="EMP_YRYC_REMNDR"/>
+			<result property="empOffhodUse" column="EMP_OFFHOD_USE"/>
+			<result property="empOffhodRemndr" column="EMP_OFFHOD_REMNDR"/>
+			<result property="empConfm" column="EMP_CONFM"/>
+			<result property="rjctResn" column="RJCT_RESN"/>
+			<result property="empRqstr" column="EMP_RQSTR"/>
+			<result property="empLcns" column="EMP_LCNS"/>
+			<result property="empDoctrLcns" column="EMP_DOCTR_LCNS"/>
+			<result property="empLcnsNo" column="EMP_LCNS_NO"/>
+			<result property="empDoctrLcnsNo" column="EMP_DOCTR_LCNS_NO"/>
+		</collection>
+		
+		<collection property="patientVOList" ofType="PatientVO">
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="patntNm" column="PATNT_NM"/>
+			<result property="patntRrno1" column="PATNT_RRNO1"/>
+			<result property="patntRrno2" column="PATNT_RRNO2"/>
+			<result property="patntTelno" column="PATNT_TELNO"/>
+			<result property="patntZip" column="PATNT_ZIP"/>
+			<result property="patntAdres1" column="PATNT_ADRES1"/>
+			<result property="patntAdres2" column="PATNT_ADRES2"/>
+			<result property="patntAge" column="PATNT_AGE"/>
+			<result property="patntSexdstn" column="PATNT_SEXDSTN"/>
+			<result property="prtctorNm" column="PRTCTOR_NM"/>
+			<result property="prtctorTelno" column="PRTCTOR_TELNO"/>
+			<result property="patntAgre" column="PATNT_AGRE"/>
+			<result property="patntHeight" column="PATNT_HEIGHT"/>
+			<result property="patntBdwgh" column="PATNT_BDWGH"/>
+			<result property="patntBdp" column="PATNT_BDP"/>
+			<result property="patntHlthinsAt" column="PATNT_HLTHINS_AT"/>
+			<result property="patntMemo" column="PATNT_MEMO"/>
+			<result property="patntHsptlzAt" column="PATNT_HSPTLZ_AT"/>
+		</collection>
+		
+		<collection property="hospitalCertificatesVOList" ofType="HospitalCertificatesVO">
+			<id property="hcrtfNo" column="HCRTF_NO"/>	
+			<result property="hcrtfPapersCl" column="HCRTF_PAPERS_CL"/>	
+			<result property="hcrtfDt" column="HCRTF_DT"/>
+			<result property="hcrtfDocNote" column="HCRTF_DOC_NOTE"/>
+			<result property="hcrtfPrpos" column="HCRTF_PRPOS"/>
+			<result property="hcrtfRm" column="HCRTF_RM"/>
+			<result property="prsmpAt" column="PRSMP_AT"/>
+			<result property="clnicNo" column="CLNIC_NO"/>
+			<result property="rceptNo" column="RCEPT_NO"/>
+			<result property="patntNo" column="PATNT_NO"/>
+		</collection>
+		
+	</resultMap>
+	
+<!-- Left Outer Join -->
+	<select id="selectCertificatesList" parameterType="Map" resultMap="ClinicVO">
+		select 
+            c.CLNIC_NO, c.RCEPT_NO, c.PATNT_NO, c.atfss_dt,
+            p.PATNT_NO, 
+            saw.SCKWND_CD, saw.CLNIC_NO, saw.RCEPT_NO,saw.PATNT_NO,
+            meo.MEC_CD,meo.CLNIC_NO,meo.RCEPT_NO,meo.HLTHCHKP_CD,
+            hec.HLTHCHKP_CD,
+            mt.MDLRT_CD,
+            otr.OTPT_CD,otr.CLNIC_NO,otr.RCEPT_NO,otr.PATNT_NO,
+            hz.HSPTLZ_CD,hz.CLNIC_NO,hz.RCEPT_NO,hz.PATNT_NO,
+            r.RCEPT_NO, r.PATNT_NO,
+            e.emp_no,
+            p.patnt_no, p.patnt_nm, p.patnt_rrno1, p.patnt_rrno2, p.patnt_telno, p.patnt_zip, p.patnt_adres1, p.patnt_adres2,
+            hc.hcrtf_no, hc.hcrtf_doc_note, hc.hcrtf_prpos, hc.hcrtf_rm, hc.prsmp_at, hc.CLNIC_NO,
+            meo.hlthchkp_dt,
+            hec.hlthchkp_nm,
+            saw.sckwnd_kr, saw.sckwnd_en,saw.sckwnd_se, saw.kcd,
+            mt.mdlrt_nm,
+            otr.mdlrt_dt,
+            hz.hsptlz_de, hz.real_lhstl,
+            r.rcept_dt,
+            e.emp_nm, e.emp_doctr_lcns_no
+		from clinic c
+        left outer join patient p on c.patnt_no = p.patnt_no
+        left outer join hospital_certificates hc on hc.clnic_no = c.clnic_no
+        left outer join medical_examination_order meo on meo.clnic_no = c.clnic_no
+        left outer join health_checkup hec on hec.hlthchkp_cd = meo.hlthchkp_cd
+        left outer join sick_and_wounded saw on saw.clnic_no = c.clnic_no
+        left outer join medical_treatment_record mtr on mtr.clnic_no = c.clnic_no
+        left outer join medical_treatment mt on mt.mdlrt_cd = mtr.mdlrt_cd
+        left outer join otpt_record otr on otr.clnic_no = c.clnic_no
+        left outer join hospitalization hz on hz.clnic_no = c.clnic_no
+        left outer join rcept r on c.patnt_no = r.patnt_no
+		left outer join employee e on e.emp_no = c.emp_no	
+		where p.patnt_no = #{patntNo} and c.clnic_no = #{clnicNo}
+        order by r.rcept_dt desc
+	</select>
+	
+<!-- 	<insert id="insertCertificatesCd" parameterType="Map" useGeneratedKeys="true"> -->
+<!-- 		<selectKey keyProperty="hcrtfNo" resultType="String" order="BEFORE"> -->
+<!-- 			SELECT 'HD' || SEQ_PATIENT.NEXTVAL FROM DUAL -->
+<!-- 		</selectKey> -->
+		
+<!-- 		INSERT INTO HOSPITAL_CERTIFICATES ( -->
+<!-- 			HCRTF_NO, HCRTF_PAPERS_CL, HCRTF_DT, HCRTF_DOC_NOTE, HCRTF_PRPOS, CLNIC_NO, RCEPT_NO, PATNT_NO, HCRTF_RM, PRSMP_AT -->
+<!-- 			) -->
+<!-- 		VALUES( -->
+<!-- 			#{hcrtfNo}, #{hcrtfPapersCl}, '', #{hcrtfDocNote}, '', #{clnicNo}, #{rceptNo}, #{patntNo}, '', #{prsmpAt} -->
+<!-- 			) -->
+	
+<!-- 	</insert> -->
+	
+	<select id="selectMtcList" parameterType="Map" resultMap="ClinicVO">
+		select 
+            p.patnt_no, p.patnt_nm, p.patnt_sexdstn, p.patnt_age, p.patnt_rrno1, p.patnt_rrno2, p.patnt_zip, p.patnt_adres1, p.patnt_adres2,
+            c.patnt_no, c.rcept_no, c.clnic_no, c.clnic_cn,
+            hc.hcrtf_no, hc.clnic_no, hc.rcept_no, hc.patnt_no,
+            saw.sckwnd_cd, saw.clnic_no, saw.rcept_no, saw.patnt_no, saw.sckwnd_kr, saw.sckwnd_en, saw.sckwnd_se, saw.body_cd,
+            hz.hsptlz_cd, hz.clnic_no, hz.rcept_no, hz.patnt_no, hz.hsptlz_de, hz.real_lhstl,
+            r.patnt_no, r.rcept_no, r.rcept_dt,
+            e.emp_no ,e.emp_nm, e.emp_doctr_lcns_no
+		from clinic c
+        left join patient p on c.patnt_no = p.patnt_no
+        left join hospital_certificates hc on hc.clnic_no = c.clnic_no
+        left join sick_and_wounded saw on saw.clnic_no = c.clnic_no
+        left join hospitalization hz on hz.clnic_no = c.clnic_no
+        left join rcept r on c.patnt_no = r.patnt_no
+		left join employee e on e.emp_no = c.emp_no	
+		where p.patnt_no = #{patntNo} and c.clnic_no = #{clnicNo}
+        order by r.rcept_dt desc
+	</select>
+	
+<!-- 진단서 1대1관계 -->
+	<select id="selectCertificatesClinic" parameterType="Map" resultType="ClinicVO">
+		select 
+			c.CLNIC_NO, 
+	        c.RCEPT_NO, 
+	        c.PATNT_NO,
+	        c.CLNIC_TIME,
+	        c.ATFSS_DT,
+	        p.PATNT_NO,
+	        p.PATNT_NM,
+	        p.PATNT_RRNO1,
+	        p.PATNT_RRNO2,
+	        p.PATNT_ZIP,
+	        p.PATNT_ADRES1,
+	        p.PATNT_ADRES2,
+	        p.PATNT_TELNO,
+	        hc.HCRTF_NO,
+	        hc.HCRTF_DOC_NOTE,
+	        hc.HCRTF_RM,
+	        hc.HCRTF_PRPOS,
+	        hc.PRSMP_AT,
+	        e.EMP_NO,
+	        e.EMP_NM,
+	        e.EMP_DOCTR_LCNS_NO,
+	        h.HSPTLZ_CD,
+	        h.HSPTLZ_DE,
+	        h.REAL_LHSTL
+		from clinic c
+		left join patient p on p.patnt_no = c.patnt_no
+		left join rcept r on r.rcept_no = c.rcept_no
+		left join employee e on e.emp_no = c.emp_no
+		left join HOSPITAL_CERTIFICATES hc on hc.clnic_no = c.clnic_no
+		left join HOSPITALIZATION h on h.clnic_no = c.clnic_no
+		where c.clnic_no = #{clnicNo}
+	</select>
+	
+<!-- 진단서 검사 관련 -->
+	<select id="selectCertificatesMEO" parameterType="Map" resultType="MedicalExaminationOrderVO">
+		select 
+		    hc.HLTHCHKP_CD,
+		    hc.HLTHCHKP_NM,
+		    meo.MEC_CD,
+		    meo.HLTHCHKP_DT,
+		    meo.HLTHCHKP_RESULT
+		from MEDICAL_EXAMINATION_ORDER meo
+		left join HEALTH_CHECKUP hc on hc.HLTHCHKP_CD = meo.HLTHCHKP_CD
+		where meo.clnic_no = #{clnicNo}
+	</select>
+	
+<!-- 진단서 상병 관련 -->
+	<select id="selectCertificatesSAW" parameterType="Map" resultType="SickAndWoundedVO">
+		select
+		    SCKWND_CD,
+		    SCKWND_KR,
+		    SCKWND_EN,
+		    KCD,
+		    SCKWND_SE
+		from SICK_AND_WOUNDED
+		where clnic_no = #{clnicNo}
+		order by sckwnd_se asc
+	</select>
+
+<!-- 진단서 치료 관련 -->
+	<select id="selectCertificatesMTR" parameterType="Map" resultType="SelectAllMedicalTreatmentRecordVO">
+		select 
+		    mt.MDLRT_CD,
+		    mt.MDLRT_NM,
+		    mtr.MDLRT_DT 
+		from MEDICAL_TREATMENT_RECORD mtr
+		left join MEDICAL_TREATMENT mt on mt.MDLRT_CD = mtr.MDLRT_CD
+		where mtr.clnic_no = #{clnicNo}
+	</select>
+	
+<!-- 진단서 insert -->
+	<insert id="cdInsert" parameterType="hospitalCertificatesVO" useGeneratedKeys="true">
+		<selectKey keyProperty="hcrtfNo" order="BEFORE" resultType="String">
+			SELECT 'HC' || SEQ_HOSPITAL_CERTIFICATES.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO HOSPITAL_CERTIFICATES
+		
+			(
+			HCRTF_NO, 
+			HCRTF_PAPERS_CL, 
+			HCRTF_DT, 
+			HCRTF_DOC_NOTE, 
+			HCRTF_PRPOS, 
+			CLNIC_NO, 
+			RCEPT_NO, 
+			PATNT_NO, 
+			HCRTF_RM, 
+			PRSMP_AT
+			)
+		VALUES
+			(
+			 #{hcrtfNo},
+			 #{hcrtfPapersCl}, 
+			 #{hcrtfDt}, 
+			 #{hcrtfDocNote}, 
+			 #{hcrtfPrpos}, 
+			 #{clnicNo}, 
+			 #{rceptNo}, 
+			 #{patntNo},
+			 #{hcrtfRm}, 
+			 #{prsmpAt}
+			 )
+	</insert>
+	
+	<select id="selectFileExist" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM FILEMASTER
+		WHERE FILE_ORIGIN = #{mecCd}
+	</select>
+	
+	
+	
+	
+</mapper>

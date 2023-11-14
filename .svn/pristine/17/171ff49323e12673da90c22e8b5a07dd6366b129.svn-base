@@ -1,0 +1,152 @@
+package kr.or.ddit.administration.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.administration.service.IBoardService;
+import kr.or.ddit.administration.vo.NoticeBoardVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class BoardController {
+
+	@Inject
+	private IBoardService boardService;
+	
+	@RequestMapping(value="/board/list")
+	public String boardList(
+			@RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(required = false, defaultValue = "title") String searchType,
+			@RequestParam(required = false) String searchWord,
+			Model model) {
+		
+		log.info("boardList() 실행!!!");
+
+		PaginationInfoVO<NoticeBoardVO> pagingVO = new PaginationInfoVO<NoticeBoardVO>();
+
+		if(StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			model.addAttribute("searchType", searchType);
+			model.addAttribute("searchWord", searchWord);
+		}
+		
+		pagingVO.setCurrentPage(currentPage); // startRow, endRow, startPage, endPage가 결정
+		int totalRecord = boardService.selectBoardCount(pagingVO); // 총게시글 수
+		
+		pagingVO.setTotalRecord(totalRecord); // totalpage 결정
+		List<NoticeBoardVO> dataList = boardService.selectBoardList(pagingVO);
+		pagingVO.setDataList(dataList);
+		
+		model.addAttribute("pagingVO", pagingVO);
+		
+		
+		return "admin/boardList"; 
+		
+	}
+	
+	@RequestMapping(value="/board/insert", method=RequestMethod.GET)
+	public String insertForm() {
+		
+		return "admin/boardInsert";
+	}
+	
+	@RequestMapping(value="/board/insert", method=RequestMethod.POST)
+	public String noticeInsert(
+			HttpServletRequest req,
+			HttpSession session,
+			RedirectAttributes ra,
+			NoticeBoardVO noticeBoardVO, Model model) {
+		
+		String goPage = "";
+		Map<String, String> errors = new HashMap<String, String>();
+		
+		if(StringUtils.isBlank(noticeBoardVO.getNtbdSj())) {
+			errors.put("boTitle", "제목을 입력해주세요");
+		}
+		if(StringUtils.isBlank(noticeBoardVO.getNtbdCn())) {
+			errors.put("boContent", "내용을 입력해주세요");
+		}
+		
+		
+		if(errors.size() > 0) {
+			model.addAttribute("errors", errors);
+			model.addAttribute("noticeBoardVO", noticeBoardVO);
+			goPage = "admin/boardInsert";
+		}else {
+			
+			// 방법 2 - 스프링 시큐리티를 이용한 사용자명 처리
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			
+//			if(memberVO != null) {
+				// 로그인 후 등록된 세션 정보(로그인한 회원 정보가 들어있음)
+				// 회원 정보 중 id를 작성자로 셋팅
+//				noticeVO.setBoWriter(memberVO.getMemId());
+				noticeBoardVO.setNtbdWriter(user.getUsername());
+				
+				ServiceResult result = boardService.insertBoard(req, noticeBoardVO);
+				if(result.equals(ServiceResult.OK)) {
+					goPage = "redirect:/mediform/admin/board/detail?ntbdNo=" + noticeBoardVO.getNtbdNo();
+				}else {
+					model.addAttribute("message", "서버에러, 다시시도해주세요");
+					goPage = "admin/boardInsert";
+				}
+			
+		}
+		
+		return goPage;
+	}
+	
+	
+	@RequestMapping(value="/board/detail")
+	public String boardDetail(String ntbdNo, Model model) {
+		log.info("boardDetail() 실행!!!");
+		NoticeBoardVO noticeBoardVO = boardService.selectBoard(ntbdNo);
+		model.addAttribute("noticeBoardVO", noticeBoardVO);
+		
+		return "admin/boardDetail";
+	}
+	
+	@RequestMapping(value="board/delete", method=RequestMethod.POST)
+	public String boardDelete(
+						HttpServletRequest req,
+						RedirectAttributes ra, String ntbdNo, Model model
+							) {
+		
+		log.info("boardDelete() 실행!!!");
+		
+		log.info("게시글 번호 >>>>> " + ntbdNo);
+		
+		ServiceResult result = boardService.deleteNotice(req, ntbdNo);
+		
+		
+		return "redirect:/mediform/admin/board/list";
+	}
+	
+	
+//	@RequestMapping(value="/update")
+	
+	
+	
+	
+}

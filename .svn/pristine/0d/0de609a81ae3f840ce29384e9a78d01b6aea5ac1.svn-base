@@ -1,0 +1,17 @@
+package kr.or.ddit.common.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class NotificationVO {
+	
+    private String ntcnNo;     //알림번호
+	private String empNo;      //사번
+	private String ntcnWriter; //작성자
+	private String ntcnCn;     //알림내용
+	private Date ntcnDttm;     //알림일시
+	private String ntcnCnfirm; //확인여부
+	private String ntcnDelete; //삭제여부
+}

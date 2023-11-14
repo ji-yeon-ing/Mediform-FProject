@@ -1,0 +1,86 @@
+package kr.or.ddit.manager.controller;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.manager.service.IManagerService;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping(value="/mediform/manager/employee")
+public class ManagerEmployeeController {
+
+	@Inject
+	private IManagerService managerService; 
+	
+		// 회원가입 신청 내역 확인 페이지
+		@GetMapping(value="/select")
+		public String employeeConfirm(Model model) {
+			log.info("employeeConfirm() 실행");
+			List<EmployeeVO> empList = managerService.ApplicationList();
+			model.addAttribute("empList", empList);
+			
+			return "manager/empConfirm";
+		}
+		
+		// 상세 조회
+		@PostMapping(value="/getEmployee")
+		public ResponseEntity<EmployeeVO> getEmployee(@RequestBody Map<String, String>map){
+			log.info("getEmployee() 실행");
+			String empNo = map.get("empNo");
+			EmployeeVO empVO = managerService.getEmployee(empNo);
+			
+			return new ResponseEntity<EmployeeVO>(empVO, HttpStatus.OK); 
+		}
+		
+		// 반려 처리
+		@PostMapping(value="/rejectUpdate")
+		public String rejectUpdate(EmployeeVO empVO, RedirectAttributes ra) throws MessagingException, UnsupportedEncodingException{
+			log.info("rejectUpdate() 실행");
+			ServiceResult result = managerService.rejectUpdate(empVO);
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("msg", "정상적으로 처리 되었습니다.");
+			}else {
+				ra.addFlashAttribute("msg", "해당 요청 실행 중 오류가 발생했습니다.");
+			}
+			return "redirect:/mediform/manager/employee/select";
+		}
+		
+		// 승인 처리
+		@PostMapping(value="/agree")
+		public String agreeEmployee(EmployeeVO empVO, RedirectAttributes ra) throws UnsupportedEncodingException, MessagingException {
+			log.info("agreeEmployee() 실행");
+			ServiceResult result = managerService.agreeEmployee(empVO);
+			if(result.equals(ServiceResult.OK)) {
+				ra.addFlashAttribute("msg", "정상적으로 처리 되었습니다.");
+			}else {
+				ra.addFlashAttribute("msg", "해당 요청 실행 중 오류가 발생했습니다.");
+			}
+			return "redirect:/mediform/manager/employee/select";
+		}
+		
+		@GetMapping(value="/temp")
+		public String tempPage() {
+			return "manager/temp";
+		}
+		
+		
+	
+}

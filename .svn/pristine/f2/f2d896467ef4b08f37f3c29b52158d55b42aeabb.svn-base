@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerStatisticsMapper">
+
+	<select id="dayAuditList" resultType="statisticsVO">
+	    <![CDATA[
+	    select AUDIT_ATNDDU, count
+	    from (
+	        select AUDIT_ATNDDU, count(*) as count
+	        from AUDIT_DCRYMANAGE
+	        where trunc(CNTN_DT) = trunc(SYSDATE)
+	        group by AUDIT_ATNDDU
+	        order by count(*) desc
+	    )
+	    
+	    where rownum <= 5
+	    ]]>
+	</select>
+	
+	<select id="weekAuditList" resultType="statisticsVO">
+	   <![CDATA[
+	    select AUDIT_ATNDDU, count
+	    from (
+	        select AUDIT_ATNDDU, count(*) as count
+	        from AUDIT_DCRYMANAGE
+	        where trunc(CNTN_DT) >= trunc(SYSDATE) - 7
+	        and trunc(CNTN_DT) <= trunc(SYSDATE)
+	        group by AUDIT_ATNDDU
+	        order by count(*) desc
+	    )
+	    
+	    where rownum <= 5
+	    ]]>
+	</select>
+	
+	<select id="monthAuditList" resultType="statisticsVO">
+		<![CDATA[
+	    select AUDIT_ATNDDU, count
+	    from (
+	        select AUDIT_ATNDDU, count(*) as count
+	        from AUDIT_DCRYMANAGE
+	        where extract(MONTH from CNTN_DT) = extract(MONTH from SYSDATE)
+	        and extract(YEAR from CNTN_DT) = extract(YEAR from SYSDATE)
+	        group by AUDIT_ATNDDU
+	        order by count(*) desc
+	    )
+	    where rownum <= 5
+	    ]]>
+	</select>
+	
+	<select id="yearAuditList" resultType="statisticsVO">
+	    <![CDATA[
+	    SELECT AUDIT_ATNDDU, count
+		FROM (
+		    SELECT AUDIT_ATNDDU, COUNT(*) AS count
+		    FROM AUDIT_DCRYMANAGE
+		    WHERE EXTRACT(YEAR FROM CNTN_DT) = EXTRACT(YEAR FROM SYSDATE)
+		    GROUP BY AUDIT_ATNDDU
+		    ORDER BY COUNT(*) DESC
+		)
+		WHERE ROWNUM <= 5
+	    ]]>
+	</select>
+	
+	<select id="accessAuditList" resultType="statisticsVO">
+		SELECT
+		    CASE
+		        WHEN SUBSTR(emp_no, 1, 1) = 'a' THEN '원무'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'm' THEN '관리자'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'n' THEN '간호사'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'd' THEN '의사'
+		        WHEN SUBSTR(emp_no, 1, 1) = 't' THEN '치료사'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'k' THEN '병원장'
+		        ELSE SUBSTR(emp_no, 1, 1)
+		    END AS name,
+		    COUNT(*) AS value
+		FROM AUDIT_DCRYMANAGE
+		GROUP BY SUBSTR(emp_no, 1, 1)
+		ORDER BY name
+	</select>
+
+	<select id="genderSumList" resultType="statisticsVO">
+		select 
+			case 
+				WHEN PATNT_SEXDSTN = 'M' THEN '남자'
+				WHEN PATNT_SEXDSTN = 'F' THEN '여자'
+				ELSE PATNT_SEXDSTN
+			END AS name, 
+			count(*) as value 
+		from patient 
+		group by PATNT_SEXDSTN
+		order by name asc
+	</select>
+	
+	<select id="ageSumList" resultType="statisticsVO">
+	<![CDATA[
+	SELECT
+	    name,
+	    COUNT(*) AS value
+	FROM (
+	    SELECT
+	        CASE
+	            WHEN PATNT_AGE < 20 THEN '20대 이하'
+	            WHEN PATNT_AGE < 30 THEN '20대'
+	            WHEN PATNT_AGE < 40 THEN '30대'
+	            WHEN PATNT_AGE < 50 THEN '40대'
+	            WHEN PATNT_AGE < 60 THEN '50대'
+	            WHEN PATNT_AGE < 70 THEN '60대'
+	            ELSE '70대 이상'
+	        END AS name
+	    FROM PATIENT
+	) 
+	GROUP BY name
+	ORDER BY name
+	]]>
+	</select>
+	
+	<select id="addrList" resultType="statisticsVO">
+		SELECT
+		    '중구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 중구 %'
+		UNION ALL
+		SELECT
+		    '대덕구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 대덕구 %'
+		UNION ALL
+		SELECT
+		    '유성구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 유성구 %'
+		UNION ALL
+		SELECT
+		    '서구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 서구 %'
+		UNION ALL
+		SELECT
+		    '동구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 동구 %'
+		UNION ALL
+		SELECT
+		    '타지' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 NOT LIKE '% 중구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 대덕구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 유성구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 서구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 동구 %'
+	</select>
+	
+	<select id="timeList" resultType="statisticsVO">
+	<![CDATA[
+	WITH TimeSlots AS (
+	  SELECT LEVEL + 8 AS TIMESLOT
+	  FROM DUAL
+	  CONNECT BY LEVEL <= 9
+	)
+	SELECT 
+	  TO_CHAR(TimeSlots.TIMESLOT, 'FM00') || ':00' AS "name",
+	  COALESCE(COUNT(clinic.CLNIC_TIME), 0) AS "value"
+	FROM TimeSlots
+	LEFT JOIN clinic ON TO_NUMBER(TO_CHAR(clinic.CLNIC_TIME, 'HH24')) = TimeSlots.TIMESLOT
+	GROUP BY TimeSlots.TIMESLOT
+	ORDER BY TimeSlots.TIMESLOT
+	]]>
+	</select>
+	
+	<select id="revisitList" resultType="statisticsVO">
+	<![CDATA[
+		SELECT '재원' AS name, COUNT(*) AS value
+		FROM (
+		  SELECT PATNT_NO, COUNT(*) AS visit_count
+		  FROM RCEPT
+		  GROUP BY PATNT_NO
+		  HAVING COUNT(*) >= 2
+		)
+		UNION
+		SELECT 'Other' AS name, COUNT(*) AS value
+		FROM (
+		  SELECT PATNT_NO, COUNT(*) AS visit_count
+		  FROM RCEPT
+		  GROUP BY PATNT_NO
+		  HAVING COUNT(*) = 1
+		)
+	]]>
+	</select>
+	
+	<select id="doctorStatisticsList" resultType="statisticsVO">
+	<![CDATA[
+	WITH DateList AS (
+	    SELECT TRUNC(SYSDATE) - LEVEL + 1 AS days
+	    FROM DUAL
+	    CONNECT BY LEVEL <= 7
+	)
+	SELECT
+	    E.EMP_NM AS empNm,
+	    TO_CHAR(DL.days, 'YYYY-MM-DD') AS sevenDays,
+	    C.CLNIC_NO AS clinicNo,
+	    COUNT(R.RCEPT_NO) AS value
+	FROM
+	    DateList DL
+	JOIN
+	    CLINIC_ASSIGNMENT C ON 1 = 1
+	JOIN
+	    EMPLOYEE E ON C.EMP_NO = E.EMP_NO
+	LEFT JOIN
+	    RCEPT R ON R.RCEPT_CLNC = C.CLNIC_NO
+	    AND TRUNC(R.RCEPT_DT) = DL.days
+	WHERE 
+	    C.CLNIC_NO IN ('d1', 'd2', 'd3', 'd4')
+	GROUP BY
+	    E.EMP_NM, TO_CHAR(DL.days, 'YYYY-MM-DD'), C.CLNIC_NO
+	ORDER BY
+	    E.EMP_NM, TO_CHAR(DL.days, 'YYYY-MM-DD')
+	]]>
+	</select>
+	
+	<select id="dayReceiveList" resultType="statisticsVO">
+	<![CDATA[
+	WITH DateList AS (
+	    SELECT TRUNC(SYSDATE) - LEVEL + 1 AS days
+	    FROM DUAL
+	    CONNECT BY LEVEL <= 7
+	)
+	SELECT TO_CHAR(DL.days, 'YYYY-MM-DD') AS name,
+	       COALESCE(SUM(R.RECIV_TOTAMT), 0) AS value
+	FROM DateList DL
+	LEFT JOIN RCEPT RC ON TO_CHAR(TRUNC(RC.RCEPT_DT), 'YYYY-MM-DD') = TO_CHAR(DL.days, 'YYYY-MM-DD')
+	LEFT JOIN RECEIVE R ON RC.RCEPT_NO = R.RCEPT_NO
+	GROUP BY TO_CHAR(DL.days, 'YYYY-MM-DD')
+	ORDER BY TO_CHAR(DL.days, 'YYYY-MM-DD') DESC
+	]]>
+	</select>
+	
+	<select id="weekReceiveList" resultType="statisticsVO">
+	WITH Weeks AS (
+	    SELECT TO_CHAR(TRUNC(SYSDATE, 'WW'), 'YYYY-MM-DD') AS name
+	    FROM DUAL
+	    UNION ALL
+	    SELECT TO_CHAR(TRUNC(SYSDATE, 'WW') - 7, 'YYYY-MM-DD') AS name
+	    FROM DUAL
+	    UNION ALL
+	    SELECT TO_CHAR(TRUNC(SYSDATE, 'WW') - 14, 'YYYY-MM-DD') AS name
+	    FROM DUAL
+	    UNION ALL
+	    SELECT TO_CHAR(TRUNC(SYSDATE, 'WW') - 21, 'YYYY-MM-DD') AS name
+	    FROM DUAL
+	    UNION ALL
+	    SELECT TO_CHAR(TRUNC(SYSDATE, 'WW') - 28, 'YYYY-MM-DD') AS name
+	    FROM DUAL
+	)
+	SELECT 
+	    CASE 
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW'), 'YYYY-MM-DD') THEN 'this_week'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 7, 'YYYY-MM-DD') THEN 'last_week'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 14, 'YYYY-MM-DD') THEN '2_weeks_ago'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 21, 'YYYY-MM-DD') THEN '3_weeks_ago'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 28, 'YYYY-MM-DD') THEN '4_weeks_ago'
+	        ELSE 'previous_weeks'
+	    END AS name,
+	    COALESCE(SUM(R.RECIV_TOTAMT), 0) AS value
+	FROM Weeks
+	LEFT JOIN RCEPT RC ON TO_CHAR(TRUNC(RC.RCEPT_DT, 'WW'), 'YYYY-MM-DD') = Weeks.name
+	LEFT JOIN RECEIVE R ON RC.RCEPT_NO = R.RCEPT_NO
+	GROUP BY 
+	    CASE 
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW'), 'YYYY-MM-DD') THEN 'this_week'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 7, 'YYYY-MM-DD') THEN 'last_week'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 14, 'YYYY-MM-DD') THEN '2_weeks_ago'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 21, 'YYYY-MM-DD') THEN '3_weeks_ago'
+	        WHEN weeks.name = TO_CHAR(TRUNC(SYSDATE, 'WW') - 28, 'YYYY-MM-DD') THEN '4_weeks_ago'
+	        ELSE 'previous_weeks'
+	    END
+	ORDER BY 
+	    CASE 
+	        WHEN name = 'this_week' THEN 1
+	        WHEN name = 'last_week' THEN 2
+	        WHEN name = '2_weeks_ago' THEN 3
+	        WHEN name = '3_weeks_ago' THEN 4
+	        WHEN name = '4_weeks_ago' THEN 5
+	        ELSE 6
+	    END
+	</select>
+	
+	<select id="monthReceiveList" resultType="statisticsVO">
+	<![CDATA[
+	SELECT TO_CHAR(To_Date(MonthList.MonthNum, 'MM'), 'YYYY-MM') AS name,
+	       COALESCE(SUM(NVL(R.RECIV_TOTAMT, 0)), 0) AS value
+	FROM (
+	  SELECT LEVEL AS MonthNum
+	  FROM dual
+	  CONNECT BY LEVEL <= 12
+	) MonthList
+	LEFT JOIN RCEPT RC ON TO_CHAR(RC.RCEPT_DT, 'MM') = MonthList.MonthNum
+	LEFT JOIN RECEIVE R ON RC.RCEPT_NO = R.RCEPT_NO
+	GROUP BY To_Date(MonthList.MonthNum, 'MM')
+	ORDER BY To_Date(MonthList.MonthNum, 'MM')
+	]]>
+	</select>
+	
+	<select id="yearReceiveList" resultType="statisticsVO">
+	WITH YearList AS (
+	    SELECT EXTRACT(YEAR FROM SYSDATE) AS year FROM DUAL
+	    UNION ALL
+	    SELECT EXTRACT(YEAR FROM SYSDATE) - 1 AS year FROM DUAL
+	    UNION ALL
+	    SELECT EXTRACT(YEAR FROM SYSDATE) - 2 AS year FROM DUAL
+	    UNION ALL
+	    SELECT EXTRACT(YEAR FROM SYSDATE) - 3 AS year FROM DUAL
+	    UNION ALL
+	    SELECT EXTRACT(YEAR FROM SYSDATE) - 4 AS year FROM DUAL
+	)
+	SELECT
+	    TO_CHAR(year) AS name,
+	    COALESCE(SUM(NVL(RECIV_TOTAMT, 0)), 0) AS value
+	FROM YearList
+	LEFT JOIN RCEPT RC ON EXTRACT(YEAR FROM RC.RCEPT_DT) = YearList.year
+	LEFT JOIN RECEIVE R ON RC.RCEPT_NO = R.RCEPT_NO
+	GROUP BY year
+	ORDER BY year DESC
+	</select>
+	
+	<select id="avgDayList" resultType="statisticsVO">
+	SELECT
+	    TO_CHAR(RC.RCEPT_DT, 'DAY') AS name,
+	    TRUNC(COALESCE(AVG(NVL(R.RECIV_TOTAMT, 0)), 0)) AS value
+	FROM RCEPT RC
+	LEFT JOIN RECEIVE R ON RC.RCEPT_NO = R.RCEPT_NO
+	GROUP BY TO_CHAR(RC.RCEPT_DT, 'DAY')
+	ORDER BY
+	    CASE
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '월요일' THEN 1
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '화요일' THEN 2
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '수요일' THEN 3
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '목요일' THEN 4
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '금요일' THEN 5
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '토요일' THEN 6
+	        WHEN TO_CHAR(RC.RCEPT_DT, 'DAY') = '일요일' THEN 7
+	    END
+	</select>
+	
+	<select id="sickStatisticsList" resultType="statisticsVO">
+	<![CDATA[
+	SELECT NAME, VALUE
+	FROM (
+	    SELECT SCKWND_KR AS NAME, COUNT(*) AS VALUE
+	    FROM SICK_AND_WOUNDED
+	    GROUP BY SCKWND_KR
+	    ORDER BY COUNT(*) DESC
+	)
+	WHERE ROWNUM <= 5
+	]]>
+	</select>
+	
+	<select id="getPatientStatistics" resultType="patientStatisticsVO">
+	WITH RCEPT_DATA AS (
+	    SELECT
+	        COALESCE(SUM(CASE WHEN TRUNC(RCEPT_DT) = TRUNC(SYSDATE) THEN 1 ELSE 0 END), 0) AS todayPatientCount,
+	        COALESCE(SUM(CASE WHEN TRUNC(RCEPT_DT) = TRUNC(SYSDATE - 1) THEN 1 ELSE 0 END), 0) AS yesterdayPatientCount
+	    FROM
+	        RCEPT
+	),
+	HOSPITALIZATION_DATA AS (
+	    SELECT 
+	        COALESCE(SUM(CASE WHEN TRUNC(HSPTLZ_DE) = TRUNC(SYSDATE) THEN 1 ELSE 0 END), 0) AS todayAdmissionCount, 
+	        COALESCE(SUM(CASE WHEN TRUNC(HSPTLZ_DE) = TRUNC(SYSDATE - 1) THEN 1 ELSE 0 END), 0) AS yesterdayAdmissionCount,
+	        COALESCE(SUM(CASE WHEN TRUNC(REAL_LHSTL) = TRUNC(SYSDATE) THEN 1 ELSE 0 END), 0) AS dischargeCount
+	    FROM 
+	        HOSPITALIZATION
+	),
+	CLINIC_DATA AS (
+	    SELECT COALESCE(COUNT(*), 0) AS clinicWaitCount
+	    FROM RCEPT
+	    WHERE RCEPT_STTUS = 0
+	),
+	CLINIC_COUNT AS (
+	    SELECT
+	        COALESCE(SUM(CASE WHEN TRUNC(CLNIC_TIME) = TRUNC(SYSDATE) THEN 1 ELSE 0 END), 0) AS clinicCount
+	    FROM
+	        CLINIC
+	),
+	TREATMENT_COUNT AS (
+	    SELECT
+	        COALESCE(SUM(CASE WHEN TRUNC(MDLRT_DT) = TRUNC(SYSDATE) THEN 1 ELSE 0 END), 0) AS treatmentCount
+	    FROM
+	        OTPT_RECORD
+	)
+	SELECT
+	    RP.todayPatientCount,
+	    RP.yesterdayPatientCount,
+	    HD.todayAdmissionCount,
+	    HD.yesterdayAdmissionCount,
+	    HD.dischargeCount,
+	    CC.clinicWaitCount,
+	    CT.clinicCount,
+	    TT.treatmentCount
+	FROM
+	    RCEPT_DATA RP
+	CROSS JOIN
+	    HOSPITALIZATION_DATA HD
+	CROSS JOIN
+	    CLINIC_DATA CC
+	CROSS JOIN
+	    CLINIC_COUNT CT
+	CROSS JOIN
+	    TREATMENT_COUNT TT
+	</select>
+
+	
+	
+
+
+</mapper>

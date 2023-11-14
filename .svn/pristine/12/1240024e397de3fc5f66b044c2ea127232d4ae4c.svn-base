@@ -1,0 +1,392 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PatientList</title>
+
+</head>
+<body>
+
+<div class="card shadow-none">
+	<div class="card-header">
+		<div class="row flex-between-center">
+			<div class="col-6 col-sm-auto d-flex align-items-center pe-0">
+				<h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">환자목록 </h5>
+			</div>
+			<div class="col-6 col-sm-auto ms-auto text-end ps-0">
+				<div class="d-none" id="table-simple-pagination-actions">
+					<div class="d-flex">
+						<select class="form-select form-select-sm" aria-label="Bulk actions">
+							<option value="Delete">Delete</option>
+						</select>
+						<button class="btn btn-falcon-default btn-sm ms-2" type="button">Apply</button>
+					</div>
+				</div>
+				<div id="table-simple-pagination-replace-element">
+					<button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1" data-bs-toggle="modal" data-bs-target="#newPatient-modal" id="newPatientBtn">신규환자등록</span></button>
+					<button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">필터</span></button>
+					<button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-external-link-alt" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">execel저장</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="card-body px-0 pt-0">
+		<table class="table table-sm mb-0 overflow-hidden data-table fs--1" data-datatables='{"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"language":{"info":"_START_ to _END_ Items of _TOTAL_"}}'>
+			<thead class="bg-200">
+				<tr>
+					<th class="text-900 no-sort white-space-nowrap">
+						<div class="form-check mb-0 d-flex align-items-center">
+							<input class="form-check-input" id="checkbox-bulk-item-select" type="checkbox" data-bulk-select='{"body":"table-simple-pagination-body","actions":"table-simple-pagination-actions","replacedElement":"table-simple-pagination-replace-element"}' />
+						</div>
+					</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">환자번호</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">이름</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">주민번호</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">연락처</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">우편번호</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">주소</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">나이</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">성별</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">보호자이름</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">보호자연락처</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">개인정보동의여부</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">키(cm)</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">몸무게(kg)</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">혈액형</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">보험여부</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">메모사항</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">입원여부</th>
+					<th class="text-900 no-sort pe-1 align-middle data-table-row-action"></th>
+				</tr>
+			</thead>
+			<tbody class="list" id="table-simple-pagination-body">
+				<c:set value="${patientList }" var="patientList"/>
+				<c:choose>
+					<c:when test="${empty patientList }">
+						<tr>
+							<td colspan="17" align="center">환자정보가 존재하지 않습니다.</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<c:forEach items="${patientList }" var="patient">
+							<tr class="btn-reveal-trigger">
+								<td class="align-middle" style="width: 28px;">
+									<div class="form-check mb-0">
+										<input class="form-check-input" type="checkbox" id="simple-pagination-item-13" data-bulk-select-row="data-bulk-select-row" />
+									</div>
+								</td>
+								<td class="align-middle white-space-nowrap fw-semi-bold text-center">${patient.patntNo }</td>
+								<td class="align-middle white-space-nowrap fw-semi-bold text-center"><a href="#">${patient.patntNm }</a></td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntRrno1 } - ${patient.patntRrno2 }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntTelno }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntZip }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntAdres1 } ${patient.patntAdres2 }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntAge }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntSexdstn }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.prtctorNm }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.prtctorTelno }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntAgre }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntHeight }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntBdwgh }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntBdp }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntHlthinsAt }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patntMemo }</td>
+								<td class="align-middle white-space-nowrap text-center">${patient.patientHsptlzAt }</td>
+								<td class="align-middle white-space-nowrap text-end">
+									<div class="dropstart font-sans-serif position-static d-inline-block">
+										<button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal float-end" type="button" id="dropdown-simple-pagination-table-item-13" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+											<span class="fas fa-ellipsis-h fs--1"></span>
+										</button>
+										<div class="dropdown-menu dropdown-menu-end border py-2" aria-labelledby="dropdown-simple-pagination-table-item-13">
+											<a class="dropdown-item" href="#!">상세보기</a>
+											<a class="dropdown-item" href="#!">수정</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item text-danger" href="#!">삭제</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+			</tbody>
+		</table>
+	</div>
+</div>
+	
+<!-- 신규 환자 등록 modal(정적) 시작 -->
+<!-- <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Launch static backdrop modal</button> -->
+<div class="modal fade" id="newPatient-modal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg mt-6" role="document">
+		<div class="modal-content border-0">
+			<div class="position-absolute top-0 end-0 mt-3 me-3 z-1">
+				<button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 bg-body-tertiary py-3 ps-4 pe-6">
+					<h4 class="mb-1" id="">신규 환자 등록</h4>
+				</div>
+				<div class="p-4">
+					<form action="/mediform/patient/insert" method="post" class="row g-3" id="insertForm">
+						<div class="col-md-6">
+							<label class="form-label" for="patntNm">환자명</label>
+							<input class="form-control" id="patntNm" name="patntNm" type="text" placeholder="환자명" />
+							<p><font id="pNm" color="red" class="text-danger"></font></p>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label" for="patntTelno">환자 연락처</label>
+							<input class="form-control" id="patntTelno" name="patntTelno" type="text" placeholder="환자연락처" />
+							<p><font id="pTelno" color="red" class="text-danger"></font></p>
+						</div>
+						<div class="col-md-8">
+						    <label class="form-label" for="patntRrno">주민등록번호</label>
+						    <div class="input-group">
+					            <input class="form-control" id="patntRrno1" name="patntRrno1" type="text" placeholder="앞 6자리" />&nbsp;&nbsp;
+					            - &nbsp;&nbsp;
+					            <input class="form-control" id="patntRrno2" name="patntRrno2" type="text" placeholder="뒤 7자리" />
+						    </div>
+				            <p><font id="pRrno1" color="red" class="text-danger"></font></p>
+				            <p><font id="pRrno2" color="red" class="text-danger"></font></p>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label" for="patntAge">만 나이</label>
+							<input class="form-control" id="patntAge" name="patntAge" type="text" placeholder="만 나이"/>
+							<p><font id="pAge" color="red" class="text-danger"></font></p>
+						</div>
+						<div class="col-mb-2">
+							<div class="col-sm-12">
+								<div class="form-check-inline">
+							        <input class="form-check-input" id="M" type="radio" name="patntSexdstn" checked="checked" value="M"/>
+							        <label class="form-check-label mb-0" for="M">남성</label>
+							    </div>
+							    <div class="form-check-inline">
+							        <input class="form-check-input" id="F" type="radio" name="patntSexdstn" value="M"/>
+							        <label class="form-check-label mb-0" for="F">여성</label>
+							    </div>
+								<div class="form-check-inline">
+									<input class="form-check-input" id="patntHlthinsAt" type="checkbox" checked="checked" value="Y"/>
+									<input type="hidden" name="patntHlthinsAt" id="patntHlthinsAtHidden" value=""/>
+									<label class="form-check-label" for="patntHlthinsAt">건강보험 유</label>
+								</div>
+								<div class="form-check-inline">
+									<input class="form-check-input" id="patientHsptlzAt" type="checkbox" value="Y"/>
+									<input type="hidden" name="patientHsptlzAt" id="patientHsptlzAtHidden" value=""/>
+									<label class="form-check-label" for="patientHsptlzAt">입원환자</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label" for="patntHeight">신장(cm)</label>
+							<input class="form-control" id="patntHeight" name="patntHeight" type="text" placeholder="신장" />
+						</div>
+						<div class="col-md-4">
+							<label class="form-label" for="patntBdwgh">몸무게(kg)</label>
+							<input class="form-control" id="patntBdwgh" name="patntBdwgh" type="text" placeholder="몸무게" />
+						</div>
+						<div class="col-md-4">
+						    <label class="form-label" for="patntBdp">혈액형(ABO)</label>
+						    <select class="form-select" id="patntBdp" name="patntBdp">
+						      <option selected="selected" value="A">A</option>
+						      <option value="B">B</option>
+						      <option value="B">B</option>
+						      <option value="AB">AB</option>
+						      <option value="O">O</option>
+						      <option value="기타">기타</option>
+						    </select>
+						  </div>
+					    <div class="col-sm-12">
+					        <label class="form-label" for="patntZip">우편번호</label>
+					        <div class="input-group">
+					            <input class="form-control" id="patntZip" name="patntZip" type="text" placeholder="우편번호" />
+					            <button type="button" onclick="DaumPostcode()" class="btn btn-secondary btn-flat">우편번호 찾기</button>
+					        </div>
+				            <p><font id="pZip" color="red" class="text-danger"></font></p>
+					    </div>
+						    <div class="col-sm-12">
+							<label class="form-label" for="patntAdres">주소</label>
+							<input class="form-control" id="patntAdres1" name="patntAdres1" type="text" placeholder="주소" />
+							<p><font id="pAdres1" color="red" class="text-danger"></font></p>
+							<input class="form-control" id="patntAdres2" name="patntAdres2" type="text" placeholder="상세주소" />
+							<p><font id="pAdres2" color="red" class="text-danger"></font></p>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label" for="prtctorNm">보호자 성명</label>
+							<input class="form-control" id="prtctorNm" name="prtctorNm" type="text" placeholder="보호자 성명" />
+						</div>
+						<div class="col-md-6">
+							<label class="form-label" for="prtctorTelno">보호자 연락처</label>
+							<input class="form-control" id="prtctorTelno" name="prtctorTelno" type="text" placeholder="보호자 연락처" />
+						</div>
+						<div class="col-md-12">
+							<label class="form-label" for="patntMemo">메모사항</label>
+							<textarea class="form-control" id="patntMemo" name="patntMemo" rows="3" placeholder="메모사항"></textarea>
+						</div>
+						<div align="right" class="form-check-inline">
+							<input class="form-check-input" id="patntAgre" name="patntAgre" type="checkbox" checked="checked" value="Y"/>
+							<label class="form-check-label" for="patntAgre">개인 정보 제공 동의</label>
+							<p><font id="pAgre" color="red" class="text-danger"></font></p>
+						</div>
+						<div class="col-md-12">
+							<div align="right">
+								<button class="btn" type="reset">초기화</button>
+								<button class="btn btn-primary" id="insertBtn">저장</button>
+							</div>
+						</div>
+						<sec:csrfInput /> 
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 신규 환자 등록 modal(정적) 끝 -->
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript">
+
+
+// 신규환자등록(Modal창)
+$(function(){
+	var newPatientBtn = $("#newPatientBtn");
+	
+	newPatientBtn.on("click",function(){
+		$('#newPatient-modal').modal();
+	});
+	
+	var insertBtn = $("#insertBtn");
+	
+	$("#insertBtn").on("click", function() {
+		var insertForm = $("#insertForm");
+		var patntNm = $("#patntNm").val();
+		var patntTelno = $("#patntTelno").val();
+		var patntRrno1 = $("#patntRrno1").val();
+		var patntRrno2 = $("#patntRrno2").val();
+		var patntAge = $("#patntAge").val();
+		var patntZip = $("#patntZip").val();
+		var patntAdres1 = $("#patntAdres1").val();
+		var patntAdres2 = $("#patntAdres2").val();
+		var patntAgre = $("#patntAgre:checked").val();
+		var patntHlthinsAt = $("#patntHlthinsAt:checked").val();
+		var patientHsptlzAt = $("#patientHsptlzAt:checked").val();
+		
+		if (patntNm == null || patntNm == "") {
+		    $("#pNm").html("환자명을 입력해주세요.");
+		    $("#patntNm").focus();
+		    return false;
+		}
+		if (patntTelno == null || patntTelno == "") {
+		    $("#pTelno").html("환자 연락처를 입력해주세요.");
+		    $("#patntTelno").focus();
+		    return false;
+		}
+		if (patntRrno1 == null || patntRrno1 == "") {
+		    $("#pRrno1").html("주민번호를 입력해주세요.");
+		    $("#patntRrno1").focus();
+		    return false;
+		}
+		if (patntRrno2 == null || patntRrno2 == "") {
+		    $("#pRrno2").html("주민번호를 입력해주세요.");
+		    $("#patntRrno2").focus();
+		    return false;
+		}
+		if (patntAge == null || patntAge == "") {
+		    $("#pAge").html("나이를 입력해주세요.");
+		    $("#patntAge").focus();
+		    return false;
+		}
+		if (patntZip == null || patntZip == "") {
+		    $("#pZip").html("우편번호를 입력해주세요.");
+		    $("#patntZip").focus();
+		    return false;
+		}
+		if (patntAdres1 == null || patntAdres1 == "") {
+		    $("#pAdres1").html("주소를 입력해주세요.");
+		    $("#patntAdres1").focus();
+		    return false;
+		}
+		if (patntAdres2 == null || patntAdres2 == "") {
+		    $("#pAdres2").html("주소를 입력해주세요.");
+		    $("#patntAdres2").focus();
+		    return false;
+		}
+		if (patntAgre != 'Y' || patntAgre == "") {
+		    $("#pAgre").html("개인 정보 제공에 동의하셔야합니다.");
+		    $("#patntAgre").focus();
+		    return false;
+		}
+		
+		if($("#patientHsptlzAt").is(":checked")){
+			$("#patientHsptlzAtHidden").val("Y");
+		}else{
+			$("#patientHsptlzAtHidden").val("N");
+		}
+		if($("#patntHlthinsAt").is(":checked")){
+			$("#patntHlthinsAtHidden").val("Y");
+		}else{
+			$("#patntHlthinsAtHidden").val("N");
+		}
+		
+		insertForm.submit();
+		
+	});
+});
+
+function DaumPostcode() {
+	new daum.Postcode({
+		oncomplete : function(data) {
+			// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+			// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+			// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+			var addr = ''; // 주소 변수
+			var extraAddr = ''; // 참고항목 변수
+
+			//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+			if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+				addr = data.roadAddress;
+			} else { // 사용자가 지번 주소를 선택했을 경우(J)
+				addr = data.jibunAddress;
+			}
+
+			// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+			if (data.userSelectedType === 'R') {
+				// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+				// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+				if (data.bname !== ''
+						&& /[동|로|가]$/g.test(data.bname)) {
+					extraAddr += data.bname;
+				}
+				// 건물명이 있고, 공동주택일 경우 추가한다.
+				if (data.buildingName !== ''
+						&& data.apartment === 'Y') {
+					extraAddr += (extraAddr !== '' ? ', '
+							+ data.buildingName : data.buildingName);
+				}
+				// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+				if (extraAddr !== '') {
+					extraAddr = ' (' + extraAddr + ')';
+				}
+			} 
+
+			// 우편번호와 주소 정보를 해당 필드에 넣는다.
+			document.getElementById('patntZip').value = data.zonecode;
+			document.getElementById("patntAdres1").value = addr;
+			// 커서를 상세주소 필드로 이동한다.
+			document.getElementById("patntAdres2").focus();
+		}
+	}).open();
+}
+
+
+</script>
+
+</body>
+</html>
+
+
+
+

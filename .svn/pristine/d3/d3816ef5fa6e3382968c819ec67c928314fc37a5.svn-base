@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.doctor.DoctorMapper">
+	
+	<resultMap type="ClinicVO" id="ClinicVO">
+	
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="empNo" column="EMP_NO"/>
+		<result property="clnicTime" column="CLNIC_TIME"/>
+		<result property="clnicCn" column="CLNIC_CN"/>
+		<result property="clnicAt" column="CLNIC_AT"/>
+		<result property="beforeClnicNo" column="BEFORE_CLNIC_NO"/>
+		<result property="hsptlzAt" column="HSPTLZ_AT"/>
+		<result property="clnicMemo" column="CLNIC_MEMO"/>
+		
+		<association property="prescriptionOrderVO" javaType="prescriptionOrderVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="medcinCd" column="MEDCIN_CD"/>	
+			<result property="prscrptnNm" column="PRSCRPTN_NM"/>
+			<result property="mdctnCpcty" column="MDCTN_CPCTY"/>
+			<result property="mdctnUnit" column="MDCTN_UNIT"/>
+			<result property="mdctnCo" column="MDCTN_CO"/>
+			<result property="mdctnPd" column="MDCTN_PD"/>
+			<result property="mdctnCoursUsage" column="MDCTN_COURS_USAGE"/>
+		</association>
+		
+		<association property="sickAndWoundedVO" javaType="sickAndWoundedVO">
+			<id property="sckwndCd" column="SCKWND_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="sckwndMain" column="SCKWND_MAIN"/>
+			<result property="sckwndSub" column="SCKWND_SUB"/>
+			<result property="sckwndEx" column="SCKWND_EX"/>
+			<result property="atfssDt" column="ATFSS_DT"/>
+			<result property="bodyCd" column="BODY_CD"/>
+			<result property="prsmpAt" column="PRSMP_AT"/>
+			<result property="kcd" column="KCD"/>
+		</association>
+		
+		<association property="medicalTreatmentRecordVO" javaType="medicalTreatmentRecordVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<result property="mdlrtCurer" column="MDLRT_CURER"/>
+			<result property="bodyCd" column="BODY_CD"/>
+		</association>
+		
+		<association property="medicalExaminationOrderVO" javaType="medicalExaminationOrderVO">
+			<id property="mecCd" column="MEC_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpDt" column="HLTHCHKP_DT"/>
+			<result property="hlthchkpResult" column="HLTHCHKP_RESULT"/>
+			<result property="hlthchkpSn" column="HLTHCHKP_SN"/>
+			<result property="bodyCd" column="BODY_CD"/>
+		</association>
+		
+		<association property="rceptVO" javaType="rceptVO">
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="rceptDt" column="RCEPT_DT"/>
+			<result property="recptReason" column="RECPT_REASON"/>
+			<result property="recptSttus" column="RECPT_STTUS"/>
+			<result property="recptPriort" column="RECPT_PRIORT"/>
+			<result property="recptClnc" column="RECPT_CLNC"/>
+		</association>
+		
+	</resultMap>
+	
+	<!-- 이전 진료 기록 전체 조회 -->
+	<select id="selectClinicList" parameterType="Map" resultMap="ClinicVO">
+	select c.CLNIC_NO, c.RCEPT_NO, c.PATNT_NO, c.EMP_NO, c.CLNIC_TIME, c.CLNIC_CN, c.CLNIC_AT, c.BEFORE_CLNIC_NO, c.HSPTLZ_AT, c.CLNIC_MEMO,
+        meo.MEC_CD, meo.HLTHCHKP_CD, meo.HLTHCHKP_DT, meo.HLTHCHKP_RESULT, meo.HLTHCHKP_SN, meo.BODY_CD,
+        saw.SCKWND_CD, saw.SCKWND_MAIN, saw.SCKWND_SUB, saw.SCKWND_EX, saw.ATFSS_DT, saw.BODY_CD, saw.PRSMP_AT, saw.KCD,
+        mtr.MDLRT_CD, mtr.MDLRT_CURER, mtr.BODY_CD,
+        po.MEDCIN_CD, po.PRSCRPTN_NM, po.MDCTN_CPCTY, po.MDCTN_UNIT, po.MDCTN_CO, po.MDCTN_PD, po.MDCTN_COURS_USAGE,
+        r.RCEPT_NO, r.RCEPT_DT, r.RECPT_REASON, r.RECPT_CLNC
+	from CLINIC c
+	inner join PRESCRIPTION_ORDER po on po.CLNIC_NO = c.CLNIC_NO
+	inner join patient p on c.PATNT_NO = p.PATNT_NO
+	INNER JOIN RCEPT r ON c.PATNT_NO = r.PATNT_NO
+	inner join sick_and_wounded saw on saw.CLNIC_NO = c.CLNIC_NO
+	inner join medical_treatment_record mtr on mtr.CLNIC_NO = c.CLNIC_NO
+	inner join medical_examination_order meo on meo.CLNIC_NO = c.CLNIC_NO
+	where p.patnt_no = #{patntNo}
+	
+	</select>
+</mapper>

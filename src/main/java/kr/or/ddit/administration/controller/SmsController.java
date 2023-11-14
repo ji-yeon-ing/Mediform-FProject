@@ -1,0 +1,186 @@
+package kr.or.ddit.administration.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.administration.service.ISmsService;
+import kr.or.ddit.administration.vo.SmsSndingCnVO;
+import kr.or.ddit.administration.vo.SmsWordVO;
+import kr.or.ddit.common.ServiceResult;
+import lombok.extern.slf4j.Slf4j;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class SmsController {
+
+	@Inject
+	private ISmsService smsService;
+	
+	@RequestMapping(value="/sms/main", method=RequestMethod.GET)
+	public String Sms(Model model) {
+		
+		log.info("Sms() 실행!!");
+		model.addAttribute("menuSelected", "sms");
+		
+		return "admin/sms";
+	}
+	
+	
+	
+	/**
+	 * sms 양식 리스트 ajax
+	 * @return sms 양식 리스트
+	 */
+	@ResponseBody
+	@RequestMapping(value="/sms/list")
+	public List<SmsWordVO> smsWordList(){
+		
+		log.info("smsWordList() 실행!!!");
+		
+		List<SmsWordVO> smsList = smsService.smsWordList();
+		
+		return smsList;
+		
+	}
+	
+	/**
+	 * sms 양식 추가 ajax
+	 * @param map
+	 * @return 성공 상태
+	 */
+	@ResponseBody
+	@RequestMapping(value="/sms/insert", method=RequestMethod.POST)
+	public String smsWordInsert(
+							@RequestBody Map<String, String> map
+								) {
+		
+		log.info("smsWordInsert() 실행!!!");
+		
+		ServiceResult result = smsService.smsWordInsert(map);
+		
+		String stattus = "";
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("인서트 성공!!!!");
+			stattus = "success";
+		}else {
+			log.info("인서트 실패!!!");
+			stattus = "fail";
+		}
+		
+		return stattus;
+		
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/sms/select", method=RequestMethod.POST)
+	public SmsWordVO smsSelect(
+							@RequestBody Map<String, String> map
+								) {
+		log.info("smsSelect() 실행!!");
+		
+		SmsWordVO smsWordVO = smsService.smsSelect(map);
+		
+		log.info("가져온 SMS 내용 >>> " + smsWordVO.getSmsCn());
+		
+		return smsWordVO;
+		
+		
+	}
+	
+	/**
+	 * sms 문구 update ajax
+	 * @param map
+	 * @return 성공 상태
+	 */
+	@ResponseBody
+	@RequestMapping(value="/sms/update", method=RequestMethod.POST)
+	public String smsUpdate(
+							@RequestBody Map<String, String> map
+							) {
+		
+		log.info("smsUpdate() 실행!!!");
+		
+		ServiceResult result = smsService.smsUpdate(map);
+		
+		String stattus = "";
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("업데이트 성공!!!!");
+			stattus = "success";
+		}else {
+			log.info("업데이트 실패!!!");
+			stattus = "fail";
+		}
+		
+		return stattus;
+		
+	}
+	
+	
+	
+	/**
+	 * sms 문구 delete ajax
+	 * @param map
+	 * @return 성공 상태 리턴
+	 */
+	@ResponseBody
+	@RequestMapping(value="/sms/delete", method=RequestMethod.POST)
+	public String voiceDelete(
+								@RequestBody Map<String, String> map
+								) {
+		
+		
+		log.info("voiceDelete() 실행!!!");
+		
+		ServiceResult result = smsService.smsDelete(map);
+		
+		String stattus = "";
+		
+		if(result.equals(ServiceResult.OK)) {
+			log.info("삭제 성공!!!!");
+			stattus = "success";
+		}else {
+			log.info("삭제 실패!!!");
+			stattus = "fail";
+		}
+		
+		return stattus;
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/smsSndingCn/list", method=RequestMethod.POST)
+	public List<SmsSndingCnVO> sendSmsList(
+									@RequestBody Map<String, String> map
+										){
+		
+		log.info("sendSmsList() 실행!!!");
+		
+		
+		List<SmsSndingCnVO> sendSmsList = smsService.sendSmsList(map);
+		
+		return sendSmsList;
+		
+		
+	}
+	
+	
+	
+	
+}

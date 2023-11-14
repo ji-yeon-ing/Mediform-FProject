@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.therapist.TherapistSOAPMapper">
+
+	<sql id="clinicSearch">
+		<if test='searchWord != null'>
+         and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+      	</if>
+	</sql>
+
+	<select id="soap" parameterType="Map" resultType="otptRecordVO">
+	
+		select
+			OTPT_CD, CLNIC_NO, RCEPT_NO, PATNT_NO, OTPT_APPEAL
+			, OTPT_HISTORY, ORIENT_TIME, ORIENT_PLACE, ORIENT_PERSON
+			, OTPT_STM, OTPT_LTM, OTPT_ST, OTPT_DYSP, OTPT_PD
+			, MUST_UB_RIGHT, MUST_UB_LEFT, MUST_LB_RIGHT, MUST_LB_LEFT
+			, MAIN_CNTRVS, LNGTR_COAL, SRTPD_COAL, MUST_PLAN, MUST_ETC, MDLRT_DT
+		from OTPT_RECORD
+		where clnic_no = #{clnicNo}
+	
+	</select>
+
+	<select id="checkSoap" parameterType="Map" resultType="int">
+	
+		select
+			COUNT(OTPT_CD)
+		from OTPT_RECORD
+		where clnic_no = #{clnicNo}
+	
+	</select>
+
+	<insert id="soapInsert" parameterType="Map">
+	
+		insert into OTPT_RECORD(
+			OTPT_CD, CLNIC_NO, RCEPT_NO, PATNT_NO, OTPT_APPEAL
+			, OTPT_HISTORY, ORIENT_TIME, ORIENT_PLACE, ORIENT_PERSON
+			, OTPT_STM, OTPT_LTM, OTPT_ST, OTPT_DYSP, OTPT_PD
+			, MUST_UB_RIGHT, MUST_UB_LEFT, MUST_LB_RIGHT, MUST_LB_LEFT
+			, MAIN_CNTRVS, LNGTR_COAL, SRTPD_COAL, MUST_PLAN, MUST_ETC, MDLRT_DT
+		) values (
+			seq_otpt_cd.nextval, #{clnicNo}, (select rcept_no from clinic where clnic_no = #{clnicNo}), #{patntNo}, #{otptAppeal}
+			, #{otptHistory}, #{orientTime}, #{orientPlace}, #{orientPerson}
+			, #{otptStm}, #{otptLtm}, #{otptSt}, #{otptDysp}, #{otptPd}
+			, #{mustUbRight}, #{mustUbLeft}, #{mustLbRight}, #{mustLbLeft}
+			, #{mainCntrvs}, #{lngtrCoal}, #{srtpdCoal}, #{mustPlan}, #{mustEtc}, sysdate
+		)
+	
+	</insert>
+
+
+	<update id="soapUpdate" parameterType="Map">
+	
+		update OTPT_RECORD
+		set
+			OTPT_APPEAL = #{otptAppeal}
+			, OTPT_HISTORY = #{otptHistory}
+			, ORIENT_TIME = #{orientTime}
+			, ORIENT_PLACE = #{orientPlace}
+			, ORIENT_PERSON = #{orientPerson}
+			, OTPT_STM = #{otptStm}
+			, OTPT_LTM = #{otptLtm}
+			, OTPT_ST = #{otptSt}
+			, OTPT_DYSP = #{otptDysp}
+			, OTPT_PD = #{otptPd}
+			, MUST_UB_RIGHT = #{mustUbRight}
+			, MUST_UB_LEFT = #{mustUbLeft}
+			, MUST_LB_RIGHT = #{mustLbRight}
+			, MUST_LB_LEFT = #{mustLbLeft}
+			, MAIN_CNTRVS = #{mainCntrvs}
+			, LNGTR_COAL = #{lngtrCoal}
+			, SRTPD_COAL = #{srtpdCoal}
+			, MUST_PLAN = #{mustPlan}
+			, MUST_ETC = #{mustEtc}
+			, MDLRT_DT = sysdate
+		where clnic_no = #{clnicNo}
+	
+	
+	
+	</update>
+
+
+	<select id="soapClinic" parameterType="Map" resultType="soapClinicVO">
+		
+		SELECT
+		    p.patnt_no, p.patnt_nm, p.patnt_sexdstn, p.patnt_age,
+		    r.rcept_no,
+		    h.hsptlz_cd, h.hsptlz_sckrm, h.hsptlz_sckbd,
+		    c.clnic_no, c.clnic_cn, c.atfss_dt,
+		    saw.sckwnd_cd, saw.sckwnd_kr, saw.sckwnd_se
+		FROM
+		    PATIENT p
+		    LEFT JOIN RCEPT r ON p.patnt_no = r.patnt_no
+		    LEFT JOIN HOSPITALIZATION h ON p.patnt_no = h.patnt_no
+		    LEFT JOIN CLINIC c ON r.rcept_no = c.rcept_no
+		    LEFT JOIN SICK_AND_WOUNDED saw ON c.clnic_no = saw.clnic_no
+		WHERE
+		    c.clnic_no = #{clnicNo}
+		    AND saw.sckwnd_se = 1
+	
+	</select>
+
+
+
+	<select id="mtrList" parameterType="Map" resultType="therapistMedicalTreatmentRecordVO">
+	
+		select
+			MDLRT_DT, mt.MDLRT_CD, MDLRT_NM, MDLRT_CL
+		from MEDICAL_TREATMENT_RECORD mtr, MEDICAL_TREATMENT mt
+		where mt.MDLRT_CD = mtr.MDLRT_CD
+			and clnic_no = #{clnicNo}
+		
+		
+	</select>
+
+
+	<select id="therapistPatientCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(MTR.CLNIC_NO)
+		FROM CLINIC C 
+		JOIN MEDICAL_TREATMENT_RECORD MTR ON MTR.CLNIC_NO = C.CLNIC_NO
+		JOIN PATIENT P ON P.PATNT_NO = C.PATNT_NO
+		WHERE 1=1
+		AND TO_CHAR(C.CLNIC_TIME, 'YYYY-MM-DD') = #{endDate}
+		<include refid="clinicSearch"/>
+	</select>
+	
+	<select id="therapistPatientList" parameterType="pagingVO" resultType="therapistPatientVO">
+	   select 
+	        b.*
+	    from (
+	        select 
+	            a.*, row_number() over (order by a.clnic_time desc) rnum
+	        from (
+	            SELECT
+	            	C.CLNIC_NO
+	            	, P.PATNT_NM 
+	            	, P.PATNT_RRNO1
+	            	, C.CLNIC_TIME
+		        FROM CLINIC C 
+					JOIN MEDICAL_TREATMENT_RECORD MTR ON MTR.CLNIC_NO = C.CLNIC_NO
+					JOIN PATIENT P ON P.PATNT_NO = C.PATNT_NO
+				WHERE 1=1
+					 AND TO_CHAR(C.CLNIC_TIME, 'YYYY-MM-DD') = #{endDate}
+	            <include refid="clinicSearch"/>
+	            order by C.clnic_time desc
+	        ) a
+	    ) b
+	    <![CDATA[
+	        where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+	    ]]>   
+	</select>
+
+</mapper>

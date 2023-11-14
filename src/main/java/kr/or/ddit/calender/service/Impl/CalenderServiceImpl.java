@@ -1,0 +1,72 @@
+package kr.or.ddit.calender.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.calender.service.ICalenderService;
+import kr.or.ddit.calender.vo.CalenderVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.calender.CalenderMapper;
+
+@Service
+public class CalenderServiceImpl implements ICalenderService{
+	
+	@Inject
+	private CalenderMapper calenderMapper;
+	
+	// 일정 목록 조회
+	@Override
+	public List<CalenderVO> calenderList() {
+		return calenderMapper.calenderList();
+	}
+
+	// 일정 등록
+	@Override
+	public ServiceResult calenderInsert(CalenderVO calenderVO) {
+		ServiceResult result = null;
+		
+		int status = calenderMapper.calenderInsert(calenderVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+	
+	// 일정 수정
+	@Override
+	public ServiceResult calenderUpdate(CalenderVO calenderVO) {
+		ServiceResult result = null;
+		
+		int status = calenderMapper.calenderUpdate(calenderVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	// 일정 삭제
+	@Override
+	public ServiceResult calenderDelete(String schdlCd) {
+		ServiceResult result = null;
+		
+		int status = calenderMapper.calenderDelete(schdlCd);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+}

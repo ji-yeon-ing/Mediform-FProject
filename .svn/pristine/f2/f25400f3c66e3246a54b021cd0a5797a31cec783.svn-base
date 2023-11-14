@@ -1,0 +1,19 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.SickbedVO;
+
+public interface IHospitalizationService {
+
+	List<SickbedVO> selectSickbedList();
+
+	ServiceResult hospitalizationInsert(Map<String, Object> map);
+
+	SickbedVO hospitalizationSelect(Map<String, String> map);
+
+	ServiceResult hospitalizationUpdate(Map<String, Object> map);
+
+}

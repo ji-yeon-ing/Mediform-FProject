@@ -1,0 +1,25 @@
+package kr.or.ddit.administration.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/admin")
+public class Hospitalization {
+
+	@RequestMapping(value="hospitalization/main")
+	public String hospitalizationMain() {
+		
+		log.info("hospitalizationMain() 실행!!!");
+		
+		
+		
+		
+		return "admin/hospitalizationMain";
+	}
+	
+	
+}

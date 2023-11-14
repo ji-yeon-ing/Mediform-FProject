@@ -1,0 +1,18 @@
+package kr.or.ddit.doctor.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+// 접수 컬럼
+@Data
+public class RceptVO {
+	
+	private String rceptNo;
+	private String patntNo;
+	private Date rceptDt;
+	private String recptReason;
+	private int recptSttus;
+	private int recptPriort;
+	private String recptClnc;
+	
+}

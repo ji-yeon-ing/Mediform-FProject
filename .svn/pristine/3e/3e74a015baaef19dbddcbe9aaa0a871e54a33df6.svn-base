@@ -1,0 +1,25 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.ReservationVO;
+import kr.or.ddit.mapper.common.ReservationMapper;
+
+@Service
+public class ReservationServiceImpl implements IReservationService {
+
+	@Inject
+	private ReservationMapper reservationMapper;
+	
+	@Override
+	public List<ReservationVO> selectList(Map<String, String> map) {
+		return reservationMapper.selectList(map);
+	}
+
+
+}

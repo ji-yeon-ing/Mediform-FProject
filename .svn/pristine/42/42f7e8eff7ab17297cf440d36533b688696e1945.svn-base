@@ -1,0 +1,61 @@
+package kr.or.ddit.doctor.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.doctor.service.IDoctorRoundService;
+import kr.or.ddit.doctor.vo.DoctorRoundClinicVO;
+import kr.or.ddit.doctor.vo.DoctorRoundInpatientRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundNurseRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundOtptRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundPrescriptionOrderVO;
+import kr.or.ddit.doctor.vo.DoctorRoundSickAndWoundedVO;
+import kr.or.ddit.doctor.vo.DoctorRoundVO;
+import kr.or.ddit.mapper.doctor.DoctorRoundMapper;
+
+@Service
+public class DoctorRoundServiceImpl implements IDoctorRoundService{
+	
+	@Inject
+	private DoctorRoundMapper roundMapper;
+
+	@Override
+	public List<DoctorRoundInpatientRecordVO> getInpatientRecordDateList(DoctorRoundVO roundVO) {
+		return roundMapper.getInpatientRecordDateList(roundVO);
+	}
+
+	@Override
+	public List<DoctorRoundClinicVO> getClinicDateList(DoctorRoundVO roundVO) {
+		return roundMapper.getClinicDateList(roundVO);
+	}
+
+	@Override
+	public List<DoctorRoundOtptRecordVO> getOtptRecordDateList(DoctorRoundVO roundVO) {
+		return roundMapper.getOtptRecordDateList(roundVO);
+	}
+
+	@Override
+	public List<DoctorRoundNurseRecordVO> getNurseRecordDateList(DoctorRoundVO roundVO) {
+		return roundMapper.getNurseRecordDateList(roundVO);
+	}
+
+	@Override
+	public DoctorRoundClinicVO getClinicVO(DoctorRoundClinicVO clinicVO) {
+		return roundMapper.getClinicVO(clinicVO);
+	}
+
+	@Override
+	public List<DoctorRoundSickAndWoundedVO> roundSickAndWoundedList(DoctorRoundClinicVO clinicVO) {
+		return roundMapper.roundSickAndWoundedList(clinicVO);
+	}
+
+	@Override
+	public List<DoctorRoundPrescriptionOrderVO> prescriptionOrderList(DoctorRoundClinicVO clinicVO) {
+		return roundMapper.prescriptionOrderList(clinicVO);
+	}
+
+
+}

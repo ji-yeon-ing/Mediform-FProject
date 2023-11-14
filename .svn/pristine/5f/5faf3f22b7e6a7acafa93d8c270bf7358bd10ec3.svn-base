@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+
+import kr.or.ddit.common.vo.AlarmVO;
+
+public interface AlarmMapper {
+
+	public int selectAlarm(int empNo);
+
+	public List<AlarmVO> selectAlarmList(int empNo);
+
+}

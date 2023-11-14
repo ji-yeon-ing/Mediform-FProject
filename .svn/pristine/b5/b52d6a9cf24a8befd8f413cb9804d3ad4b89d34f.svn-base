@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper.manager;
+
+import java.util.List;
+
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface ManagerEmployeeMapper {
+
+	public List<EmployeeVO> ApplicationList();
+
+	public EmployeeVO getEmployee(String empNo);
+
+	public int rejectUpdate(EmployeeVO empVO);
+
+	public int agreeEmployee(EmployeeVO empVO);
+
+}

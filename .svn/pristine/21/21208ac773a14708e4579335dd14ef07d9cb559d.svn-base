@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.HoslitalizationMapper">
+
+
+	<update id="receiveDetailUpdate2" parameterType="Map">
+	
+		update RECEIVE_DETAIL
+		set 
+			RCIVD_HSPTLZ = #{hosptDay} * #{price}
+		where clnic_no = (select h.clnic_no from hospitalization h where hsptlz_cd = #{hsptlzCd})
+	
+	</update>
+
+
+
+	<update id="receiveDetailUpdate" parameterType="Map">
+	
+		update RECEIVE_DETAIL
+		set 
+			RCIVD_HSPTLZ = #{hosptDay} * #{price}
+		where clnic_no = #{clnicNo}
+	
+	</update>
+
+
+	<select id="selectSickbedList" resultType="sickbedVO">
+	
+		select sckbd_no
+				, a.sckrm_no
+				, a.patnt_no
+				, c.patnt_nm
+				, sckbd_sttus        
+				, b.emp_no
+				, d.emp_nm
+				, sckrm_cnt
+				, sckrm_price
+				, hsptlz_cd
+		from sickbed a, sickroom b, patient c, employee d
+		where a.sckrm_no = b.sckrm_no
+				and a.patnt_no = c.patnt_no
+				and b.emp_no = d.emp_no
+	
+	</select>
+	
+	
+	
+	<update id="patientOutUpdate" parameterType="Map">
+	
+		update patient
+		set
+			patnt_hsptlz_at = 'N'
+		where patnt_no = #{patntNo}
+	
+	
+	</update>
+	
+	
+	
+	
+	<insert id="hospitalizationInsert" parameterType="Map">
+	
+		insert into hospitalization(
+			
+			HSPTLZ_CD, CLNIC_NO
+			, RCEPT_NO, PATNT_NO
+			, HSPTLZ_SCKRM, HSPTLZ_SCKBD
+			, HSPTLZ_DE, PRARNDE_LHSTL
+		
+		)values(
+		
+			seq_hsptlz.nextval, #{clnicNo}
+			, (select rcept_no from clinic where clnic_no = #{clnicNo}), #{patntNo}
+			, #{hsptlzSckrm}, #{hsptlzSckbd}
+			, #{hsptlzDe}, #{prarndeLhstl}
+		)
+	
+	</insert>
+
+	<update id="sickBedUpdate" parameterType="Map">
+	
+		update sickbed
+		set 
+			patnt_no = #{patntNo}
+			, sckbd_sttus= 'Y'
+			, hsptlz_cd = seq_hsptlz.currval
+		where sckbd_no = (#{hsptlzSckrm} || '-' || #{hsptlzSckbd})
+	
+	</update>
+
+	<update id="patientUpdate" parameterType="Map">
+	
+		update patient
+		set
+			patnt_hsptlz_at = 'Y'
+		where patnt_no = #{patntNo}
+	
+	</update>
+
+
+	<select id="hospitalizationSelect" parameterType="Map" resultType="sickbedVO">
+	
+		select
+			hsptlz_cd 
+			, hsptlz_sckrm, hsptlz_sckbd
+			, hsptlz_de, prarnde_lhstl
+			, a.patnt_no, patnt_nm
+			, patnt_rrno1, patnt_telno
+			, patnt_zip, patnt_adres1, patnt_adres2
+			, patnt_Age, patnt_sexdstn, patnt_height
+			, patnt_bdwgh, patnt_bdp, patnt_Hlthins_at
+			, prtctor_nm, prtctor_telno, patnt_memo
+		from patient a, hospitalization b
+		where a.patnt_no = b.patnt_no
+			and hsptlz_cd = #{hsptlzCd}
+	
+	
+	</select>
+
+
+	<update id="hospitalizationUpdate" parameterType="Map">
+	
+		update hospitalization
+		set 
+			REAL_LHSTL = #{realLhstl}
+		where hsptlz_cd = #{hsptlzCd}
+	
+	</update>
+
+	<update id="hospitalizationBedUpdate" parameterType="Map">
+		update sickbed
+		set patnt_no = null,
+			sckbd_sttus = 'N',
+			hsptlz_cd = null
+		where hsptlz_cd = #{hsptlzCd}
+	
+	</update>
+
+
+</mapper>

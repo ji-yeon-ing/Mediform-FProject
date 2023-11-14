@@ -1,0 +1,59 @@
+package kr.or.ddit.common.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.service.ICertificatesService;
+import kr.or.ddit.doctor.service.IDoctorService;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import lombok.extern.slf4j.Slf4j;
+// 제증명 컨트롤러
+@Slf4j
+@Controller
+@RequestMapping("/mediform/common")
+public class CertificatesController {
+	
+	@Inject
+	private ICertificatesService certificatesService;
+	
+	// 진단서 조회 ajax
+	@ResponseBody
+	@PostMapping("/diagnosis/select")
+	public ClinicVO cdSelect(@RequestBody Map<String, String> map ) {
+		
+		ClinicVO selectCdVal = certificatesService.selectCertificatesList(map);
+		
+		return selectCdVal;
+	}
+	// 진단서 등록 ajax
+	@ResponseBody
+	@PostMapping("/diagnosis/insert")
+	public ServiceResult cdInsert(@RequestBody Map<String, String> map ) {
+		
+		ServiceResult result = certificatesService.insertCertificatesCd(map);
+		
+		return result;
+	}
+	
+	// 진료확인서 조회 ajax
+	@ResponseBody
+	@PostMapping("/mtc/select")
+	public List<ClinicVO> mtcSelect(@RequestBody Map<String, String> map ) {
+		
+		List<ClinicVO> selectMtcClinic = certificatesService.selectMtcList(map);
+		
+		return selectMtcClinic;
+	}
+	
+		
+}

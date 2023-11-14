@@ -1,0 +1,40 @@
+package kr.or.ddit.administration.service;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.mapper.administration.ReceiptMapper;
+
+@Service
+public class ReceiptServiceImpl implements IReceiptService {
+
+	@Inject
+	private ReceiptMapper receiptMapper;
+	
+	
+	@Override
+	public ServiceResult receiptInsert(Map<String, String> map) {
+		
+		
+		ServiceResult result = null;
+		
+		int status = receiptMapper.receiptInsert(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	
+	
+	
+	
+}

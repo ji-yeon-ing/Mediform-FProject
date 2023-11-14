@@ -1,0 +1,55 @@
+package kr.or.ddit.therapist.controller;
+
+import java.util.Locale;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import kr.or.ddit.security.CustomUser;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/therapist")
+public class TherapistHomeController {
+
+	// 메인홈 메서드
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public String home() {
+		
+		log.info("오호!");	
+		
+//		CustomUser customUser = SecurityContextHolder.
+		
+		return "therapist/home";
+	}
+	
+	// 치료실 메서드
+	@RequestMapping(value = "/care", method = RequestMethod.GET)
+	public String therapistForm(Model model) {
+		log.info("therapistForm() 실행");
+		
+		return "therapist/care";
+	}
+	
+	// SOAP 메서드
+	@RequestMapping(value = "/SOAP", method = RequestMethod.GET)
+	public String therapistSOAP(Model model) {
+		log.info("therapistSOAP() 실행");
+		
+		return "therapist/SOAP";
+	}
+	
+	// MHRLS 메서드
+	@RequestMapping(value = "/MHRLS", method = RequestMethod.GET)
+	public String therapistMHRLS(Model model) {
+		log.info("therapistMHRLS() 실행");
+		
+		return "therapist/MHRLS";
+	}
+	
+	
+}

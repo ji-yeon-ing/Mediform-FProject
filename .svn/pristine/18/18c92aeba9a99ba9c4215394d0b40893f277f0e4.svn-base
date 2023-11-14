@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.SchedulerMapper">
+
+
+	<insert id="schedulerinsert" parameterType="schedulerVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="schdlCd" resultType="String" order="BEFORE">
+	        SELECT 's' || SEQ_SCHEDULE.NEXTVAL FROM DUAL
+	</selectKey>
+	insert into HOSPITAL_SCHEDULE(SCHDL_CD, SCHDL_NM, SCHDL_CN, PSTG_DT, 
+	SCHDL_BGNG_DT, SCHDL_END_DT, SCHDL_COLOR
+	) values(
+	 #{schdlCd},#{schdlNm},#{schdlCn},SYSDATE,#{schdlBgngDt},#{schdlEndDt},#{schdlColor}
+	)
+	
+	</insert>
+	
+	<select id="schedulerList" resultType="schedulerVO">
+		SELECT
+			SCHDL_CD, SCHDL_NM, SCHDL_CN, PSTG_DT, SCHDL_BGNG_DT, SCHDL_END_DT, SCHDL_COLOR
+		FROM HOSPITAL_SCHEDULE
+	</select>
+
+
+
+
+
+</mapper>

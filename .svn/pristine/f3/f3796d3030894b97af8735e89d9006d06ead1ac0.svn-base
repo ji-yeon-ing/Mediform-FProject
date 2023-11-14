@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.MedicineMapper">
+
+	<resultMap type="medicineVO" id="medicineMap">
+		<id property="medcinCd" column="MEDCIN_CD" />
+		<id property="porderCd" column="PORDER_CD" />
+		<result property="medcinCd" column="MEDCIN_CD" />
+		<result property="medcinNm" column="MEDCIN_NM" />
+		<result property="medcinInvntry" column="MEDCIN_INVNTRY" />
+		<result property="medcinMfbiz" column="MEDCIN_MFBIZ" />
+		<result property="medcinCl2" column="MDCTN_COURS" />
+		<result property="medcinPc" column="MEDCIN_PC" />
+		<result property="medcinStandard" column="MEDCIN_STANDARD" />
+		<result property="medcinUnit" column="MEDCIN_UNIT" />
+	</resultMap>
+
+	<sql id="searchMedicine">
+		<if test="medcinNm != null and medcinNm != ''">
+			and MEDCIN_NM like '%'||#{medcinNm}||'%'
+		</if>
+	</sql>
+
+	<!-- 약품 list 조회 -->
+	<select id="selectMedicineList" resultType="medicineVO">
+		select
+		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_MFBIZ, MDCTN_COURS, MEDCIN_PC,
+		MEDCIN_STANDARD, MEDCIN_UNIT
+		from medicine
+		where 1=1
+		<include refid="searchMedicine" />
+		order by MEDCIN_CD desc
+	</select>
+
+	<select id="selectOrderList" parameterType="Map"
+		resultType="medicineVO">
+		select
+		PORDER_CD, PORDER_CT, PORDER_DATE, PORDER_TOTAL, PORDER_CONFM
+		from purchase_order
+		order by PORDER_CD desc
+	</select>
+
+	<!-- 10개 미만약품 list 조회 -->
+	<!-- <select id="selectLowStockMedicineList" resultType="medicineVO"> -->
+	<!-- SELECT * -->
+	<!-- from medicine -->
+	<!-- <![CDATA[ -->
+	<!-- where MEDCIN_INVNTRY <= 10 -->
+	<!-- ]]> -->
+	<!-- </select> -->
+
+	<!-- 약품 검색 & 페이징 list 조회 -->
+	<select id="medicineSearch" parameterType="Map"
+		resultType="medicineVO">
+		select
+		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_PC
+		from medicine
+		where MEDCIN_NM like
+		'%'||#{keyword}||'%'
+		order by MEDCIN_NM asc
+	</select>
+
+	<select id="selectMedicine" parameterType="Map"
+		resultType="medicineVO">
+		select
+		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_MFBIZ, MDCTN_COURS, MEDCIN_PC,
+		MEDCIN_STANDARD, MEDCIN_UNIT
+		from medicine
+		where MEDCIN_NM = #{medcinNm}
+	</select>
+
+	<!-- 약품정보 조회 -->
+	<select id="selectMedicineOne" parameterType="String"
+		resultType="medicineVO">
+		select
+		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_MFBIZ, MDCTN_COURS, MEDCIN_PC,
+		MEDCIN_STANDARD, MEDCIN_UNIT
+		from medicine
+		where MEDCIN_NM = #{medcinNm}
+	</select>
+
+	<!-- 페이징 카운트 -->
+	<select id="selectMedicineCount" parameterType="pagingVO"
+		resultType="int">
+		select count(MEDCIN_NM)
+		from medicine
+		where 1=1
+	</select>
+
+	<select id="selectMedicinePagingList" parameterType="pagingVO"
+		resultType="medicineVO">
+		select
+		b.*
+		from(
+		select
+		a.*, row_number() over(order by a.MEDCIN_NM desc) rnum
+		from(
+		select
+		MEDCIN_CD, MEDCIN_NM, MEDCIN_INVNTRY, MEDCIN_MFBIZ, MDCTN_COURS, MEDCIN_PC,
+		MEDCIN_STANDARD, MEDCIN_UNIT
+		from medicine
+		where 1=1
+		<include refid="medicineSearchCondition" />
+		order by MEDCIN_NM desc
+		) a
+		) b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+
+	<insert id="insertOrderDetail"	parameterType="orderDetailVO">
+		INSERT INTO purchase_order_detail
+			PODETAIL_CD, PODETAIL_NM, PODETAIL_MFBIZ, PODETAIL_UNIT, PODETAIL_AMOUNT, PODETAIL_TOTAL, PODETAIL_MEMO
+		VALUES
+		(#{podetailCd}, #{porderCd}, #{podetailNm}, #{podetailUnit}, #{podetailAmount},
+		#{podetailTotal}, #{podetailMemo})
+	</insert>
+
+
+	<sql id="medicineSearchCondition">
+		<if test="searchType != null and searchType == 'medcinNm'">
+			and (MEDCIN_NM like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+
+</mapper>

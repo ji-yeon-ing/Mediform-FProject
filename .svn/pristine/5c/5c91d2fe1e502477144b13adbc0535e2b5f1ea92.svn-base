@@ -1,0 +1,36 @@
+package kr.or.ddit.therapist.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+// 물리/작업치료 기록지 VO
+@Data
+public class OtptRecordVO {
+
+	private String otptCd;		// 치료 기록지 코드(기본키)
+	private String clnicNo;     // 진료 번호(식별)
+	private String rceptNo;     // 접수 번호(식별)
+	private String patntNo;     // 환자 번호(식별)
+	private String otptAppeal;  // 주효소(Null)
+	private String otptHistory; // 과거력(Null)
+	private String orientTime;  // 인지지남력시간(Null)
+	private String orientPlace; // 인지지남력장소(Null)
+	private String orientPerson;// 인지지남력사람(Null)
+	private String otptStm;     // 인지 단기기억력(Null)
+	private String otptLtm;     // 인지 장기기억력(Null)
+	private String otptSt;      // 언어(Null)
+	private String otptDysp;    // 삼킴(Null)
+	private String otptPd;      // 이동(Null)
+	private String mustUbRight; // 근긴장도 상지오른쪽(Null)
+	private String mustUbLeft;  // 근긴장도 상지왼쪽(Null)
+	private String mustLbRight; // 근긴장도 하지오른쪽(Null)
+	private String mustLbLeft;  // 근긴장도 하지왼쪽(Null)
+	private String mainCntrvs;  // 주요문제점(Null)
+	private String lngtrCoal;   // 장기목표(Null)
+	private String srtpdCoal;   // 단기목표(Null)
+	private String mustPlan;    // 계획(Null)
+	private String mustEtc;     // 기타사항(Null)
+	private Date mdlrtDt;       // 치료 일시(NotNull)
+	
+}

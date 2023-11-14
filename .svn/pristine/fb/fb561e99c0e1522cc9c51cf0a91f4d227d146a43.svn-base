@@ -1,0 +1,10 @@
+package kr.or.ddit.therapist.vo;
+
+import lombok.Data;
+
+@Data
+public class PhysicalClinicRoomVO {
+	private String physicalSckrm;
+	private String physicalSttus;
+	private String patntNo;
+}

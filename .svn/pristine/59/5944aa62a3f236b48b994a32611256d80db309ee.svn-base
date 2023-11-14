@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.ReservationMapper">
+
+	<select id="reservationSchedulerList" resultType="reservationVO">
+		select
+			a.PATNT_NO, a.RPATNT_DTTM, a.RECPT_CLNC, a.EMP_NO, a.RSVT_RESN,
+			a.RSVT_NO, a.RPATNT_TIME, b.PATNT_NM
+		from resve_patient a, patient b
+		where a.patnt_no = b.patnt_no
+	</select>
+	
+	
+	<select id="selectList" parameterType="Map" resultType="reservationVO">
+	
+		select rsvt_no, a.patnt_no, patnt_nm, rpatnt_dttm, rpatnt_time, recpt_clnc
+				, a.emp_no, emp_nm, rsvt_resn
+		from resve_patient a, patient b, employee c
+		where a.patnt_no = #{patntNo}
+			 and a.emp_no = c.emp_no
+			 and a.patnt_no = b.patnt_no
+		order by rpatnt_dttm desc
+			 
+	</select>
+	
+	<sql id="boardSearch">
+ 		<if test="searchType != null and searchType == 'date'">
+ 			and rpatnt_dttm = #{searchWord}
+ 		</if>
+ 		<if test="searchType != null and searchType == 'patient'">
+ 			and (patnt_nm like '%'||#{searchWord}||'%')
+ 			
+ 		</if>
+ 	</sql>
+	
+	
+	<select id="selectReservationCount" parameterType="pagingVO" resultType="int">
+		select count(rsvt_no)
+		from resve_patient a, patient b
+		where 1=1
+		and a.patnt_no = b.patnt_no
+		<include refid="boardSearch"/>
+	</select>
+	
+	
+	<select id="selectListAll" parameterType="pagingVO" resultType="reservationVO">
+		
+		select
+		 	b.*
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.rpatnt_dttm desc) rnum
+			 from (	
+			 	select 
+				 	rsvt_no, a.patnt_no, patnt_nm, rpatnt_dttm, rpatnt_time, recpt_clnc
+					, a.emp_no, emp_nm, rsvt_resn
+				from resve_patient a, patient b, employee c
+				where a.emp_no = c.emp_no
+					 and a.patnt_no = b.patnt_no
+			 	<include refid="boardSearch"/>
+				order by rpatnt_dttm desc 
+			 ) a
+		) b
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	
+	</select>
+	
+
+
+	<insert id="reservationInsert" parameterType="Map">
+	
+		<selectKey keyProperty="rsvtNo" resultType="String" order="BEFORE">
+			select seq_rsvt_no.nextval from dual
+		</selectKey>
+	
+	
+		insert into RESVE_PATIENT(
+			rsvt_no, patnt_no, rpatnt_dttm, rpatnt_time
+			,emp_no, rsvt_resn 			
+		)values(
+			#{rsvtNo}, #{patntNo}, #{rpatntDttm}, #{rpatntTime}
+			, #{empNo}, #{rsvtResn}		
+		)
+	
+	
+	</insert>
+
+
+	<select id="reservationSelect" parameterType="Map" resultType="reservationVO">
+	
+		select rsvt_no, a.patnt_no, patnt_nm, rpatnt_dttm, rpatnt_time, recpt_clnc
+				, a.emp_no, emp_nm, rsvt_resn
+		from resve_patient a, patient b, employee c
+		where rsvt_no = #{rsvtNo}
+			 and a.emp_no = c.emp_no
+			 and a.patnt_no = b.patnt_no
+	
+	</select>
+
+
+	<delete id="reservationDelete" parameterType="Map">
+	
+		delete 
+		from resve_patient
+		where rsvt_no = #{rsvtNo}
+	
+	</delete>
+
+	<update id="reservationUpdate" parameterType="Map">
+	
+		update resve_patient
+		set
+			rpatnt_dttm = #{rpatntDttm}
+			, rpatnt_time = #{rpatntTime}
+			,emp_no = #{empNo}
+			, rsvt_resn = #{rsvtResn}
+		where rsvt_no = #{rsvtNo}
+	
+	
+	</update>
+	
+	
+	<select id="selectDateList" parameterType="Map" resultType="reservationVO">
+	
+		select rsvt_no, a.patnt_no, patnt_nm, rpatnt_dttm, rpatnt_time, recpt_clnc
+				, a.emp_no, emp_nm, rsvt_resn, patnt_telno
+		from resve_patient a, patient b, employee c
+		where rpatnt_dttm = #{rpatntDttm}
+			 and a.emp_no = c.emp_no
+			 and a.patnt_no = b.patnt_no
+	
+	</select>
+
+
+
+</mapper>

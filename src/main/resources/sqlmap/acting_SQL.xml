@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.ActingMapper">
+	
+	<!-- xray 파일 업로드 -->
+	<insert id="insertXrayFile" parameterType="fileVO">
+		insert into filemaster(
+			FILE_NO, FILE_ORIGIN, FILE_NM, FILE_EXTSN, FILE_FLPTH, FILE_RCEPT_NO
+		)values(
+			seq_file_no.nextval
+			, #{fileOrigin}
+			, #{fileNm}
+			, #{fileExtsn}
+			, #{fileFlpth}
+			, #{fileRceptNo}
+
+		)
+	
+	</insert>
+	
+	
+	
+	<select id="vitalResultselect" parameterType="map" resultType="MedicalExaminationOrderVO">
+	
+		select MEC_CD, HLTHCHKP_CD
+		from MEDICAL_EXAMINATION_ORDER
+		where clnic_no = #{clnicNo}
+	
+	</select>
+	
+	<!-- 바이탈 조회 -->
+	<select id="selectVitalList" parameterType="Map" resultType="VitalVO">
+		SELECT VITAL_CD, HGHRK_HHPRS, LWTRK_HHPRS, BDHEAT, EMP_NO, PATNT_NO, VITAL_DATE
+		FROM VITALS
+		where PATNT_NO = #{patntNo}
+		ORDER BY VITAL_DATE DESC
+	</select>
+	
+	
+	<!-- 바이탈 등록  수정수정수정수저우!!!!!!!!!!--> 
+	<insert id="vitalResultInsert" parameterType="Map" >
+		<selectKey keyProperty="vitalCd" resultType="String" order="BEFORE">
+		    SELECT 'VI' || SEQ_VITALS.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		insert into vitals
+		(
+			VITAL_CD, HGHRK_HHPRS, LWTRK_HHPRS, BDHEAT, EMP_NO, PATNT_NO, VITAL_DATE
+		)values(
+			#{vitalCd}, #{hghrkHhprs}, #{lwtrkHhprs}, #{bdheat}, #{empNo}, #{patntNo}, SYSDATE
+		)
+	</insert>
+	
+	
+	<!-- 	 검사결과 insert -->
+	<update id="examResultInsert" parameterType="Map">
+	    
+		update medical_examination_order
+		set
+			HLTHCHKP_DT = SYSDATE
+			, HLTHCHKP_RESULT = #{hlthchkpResult}
+			, BODY_CD = ' '
+		where mec_cd = #{mecCd}
+			and hlthchkp_cd = #{hlthchkpCd}
+		
+	</update>
+	
+</mapper>

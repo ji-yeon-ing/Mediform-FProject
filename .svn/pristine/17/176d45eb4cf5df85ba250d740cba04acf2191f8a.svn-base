@@ -1,0 +1,650 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 | 행정관리자</title>
+<style type="text/css">
+.footer {
+	bottom: -120px !important;
+}
+
+.pt-6{
+	padding-top : 15px !important;
+	padding-bottom : 15px !important;
+}
+
+#chart-container {
+  margin-top : 20px;
+  font-family: Arial;
+  height: 100vh; 
+  max-height: 100vh;
+  overflow: outo;
+  text-align: center; 
+  max-width: 100%;
+  max-height: 100vh;
+
+  /* 내부 요소 축소 */
+  transform: scale(1.0); 
+
+  margin-left: 0; /* 왼쪽 margin을 제거 */
+  padding-left: 0; /* 왼쪽 padding을 제거 */
+  display: flex; 
+  justify-content: center; 
+}
+
+.node{
+	cursor: pointer;
+}
+
+
+.card-body {
+    overflow: auto;
+      
+}
+
+.orgchart {
+	margin-top: 50px;
+	background-color: dce1f1 !important;
+	text-align: center; 
+}
+
+.content{
+	min-height: initial !important;
+	padding: 0px 0px 0px;
+}
+
+.orgchart {
+  background: #fff; 
+}
+.orgchart td.left, .orgchart td.right, .orgchart td.top {
+  border-color: #aaa;
+}
+.orgchart td>.down {
+  background-color: #aaa;
+}
+.orgchart .node.a .title {
+  background-color: #298ab5;
+}
+.orgchart .node.a .content {
+  border-color: #298ab5;
+}
+.orgchart .node.m .title {
+  background-color: #009933;
+}
+.orgchart .node.m .content {
+  border-color: #009933;
+}
+.orgchart .node.d .title {
+  background-color: #c50e0e;
+}
+.orgchart .node.d .content {
+  border-color: #c50e0e;
+}
+.orgchart .node.k .title {
+  background-color: #1b212a;
+}
+.orgchart .node.k .content {
+  border-color: #1b212a;
+}
+.orgchart .node.t .title {
+  background-color: gray;
+}
+.orgchart .node.t .content {
+  border-color: gray;
+}
+.orgchart .node.n .title {
+  background-color: #f5803e;
+}
+.orgchart .node.n .content {
+  border-color: #f5803e;
+}
+
+.subMenu:hover {
+	border-color: #3f51b5;
+  	background-color: rgba(63, 81, 181, 0.1);
+}
+
+.subMenu {
+	font-size: 16px;
+	margin-left : 20px;
+	margin-right : 20px; 
+}
+
+.mSelected{
+	margin-right: 605px;
+}
+
+.dSelected{
+	margin-right: 130px;
+}
+
+.nSelected{
+	margin-right: 230px;
+}
+
+.aSelected{
+	margin-right: 130px;
+}
+
+.tSelected{
+	margin-right: 30px;
+}
+
+#allLi, #managerLi, #doctorLi, #nurseLi, #adminLi, #therapistLi{
+	cursor: pointer;
+}
+
+
+</style>
+<!-- 아이콘 사용 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css" />
+<!-- <!-- orgChart CDN --> 
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.min.js" integrity="sha512-sH+LFgoJ3xJg6M/Cctv7Z2do3+v3pqrnBQ+syZQ2ba3m+9Pn+DRk9tnrxTNwj0UyobSLH3y5nllfW8NciXFXzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/css/jquery.orgchart.css" integrity="sha512-EI6cAXPQqWMtfipmZL+/sUUkYdtZaLeT4EDr2QPGHALTrMBdG+SRRB1Js/BKp+PhMkSAQDe4EeLNtJEXi4Q2gA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/css/jquery.orgchart.min.css" integrity="sha512-fHRvDahNxYL6wL33k4xHr6AEChx9q8Xas+GeBwmRZd42z9bhNp9z3VJlm8U2I0a3CHl/oId7cCHfV266b2qD9A==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.js" integrity="sha512-9SwA1lt8gV23ocIgfPMJacGlI31kHEYtItc6g/OoB5oc2TIJSeMQZYNXackgzK0IVRdor2Qiw3DlwjoEaslMiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+<!-- OrgChart CSS 파일 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/css/jquery.orgchart.min.css">
+
+<!-- OrgChart JavaScript 파일 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.min.js"></script>
+<!-- html2canvas -->
+<script src="${pageContext.request.contextPath }/resources/assets/js/html2canvas/jspdf.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/html2canvas/bluebird.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/html2canvas/html2canvas.min.js"></script>
+
+</head>
+<body>
+<!-- empList -->
+<!-- 서브 메뉴 -->            
+<ul class="navbar-nav d-flex flex-row" style="margin-bottom: 15px; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed;">
+	<li style="margin-left:15px;"></li>
+    <li class="subMenu nav-item">
+      <a class="nav-link" href="/mediform/manager/employee/list/select" role="button" id="employeeManagementBtn">&nbsp;&nbsp;직원 관리&nbsp;&nbsp;</a>
+    </li>
+    <li class="subMenu nav-item">
+      <a class="nav-link" href="/mediform/manager/employee/confirm/list/select" role="button" id="employeeManagementBtn">&nbsp;&nbsp;신청 내역&nbsp;&nbsp;</a>
+    </li>
+    <li class="subMenu nav-item">
+      <a class="nav-link" href="/mediform/manager/employee/chart/select" role="button" id="employeeOrganizationChartBtn">&nbsp;&nbsp;직원 조직도&nbsp;&nbsp;</a>
+    </li>
+</ul>
+<!-- 서브 메뉴 -->   
+
+<div style="text-align: right; margin-bottom: 5px;" id="temp">
+  <button class="btn btn-falcon-default me-1 mb-1" type="button" style="font-size: 8px; width: 90px; height: 35px;" id="pdfBtn">
+    <span class="text-800 fs-1 bi-download">PDF</span>
+  </button>
+</div>
+<div class="col-xl-12 ps-xl-2" >
+	<div class="card mb-3 h-100" id="pdfDiv">
+			<div class="card-header d-flex flex-between-center py-2 border-bottom" style="border-bottom: 1px solid #ededed; background-color: midnightblue;" >
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h5 class="mb-0 text-white fw-semi-bold" id="" style="font-weight: bold;">
+							직원 조직도
+						</h5>
+					</div>
+				</div>
+			</div>
+			
+		<!-- 통계를 나타낼 영역 시작 -->
+		<div class="card-body px-xxl-0 pt-6" style="border-bottom: 1px solid #ededed;">
+        	<div class="row g-0">
+                <div class="col-xxl-2 col-md-6 px-2 text-center border-end-md border-bottom border-bottom-xxl-0 pb-3 p-xxl-0 ps-md-0">
+                  <div class="icon-circle icon-circle-dark" id="allLi">
+                  	<svg xmlns="http://www.w3.org/2000/svg"  aria-hidden="true" focusable="false" 
+						data-prefix="fas" data-icon="chalkboard-teacher" role="img"  fill="currentColor" class="svg-inline--fa fa-chalkboard-teacher fa-w-20 fs-2 text-dark" viewBox="0 0 16 16">
+					  <path d="M8.5 5.034v1.1l.953-.55.5.867L9 7l.953.55-.5.866-.953-.55v1.1h-1v-1.1l-.953.55-.5-.866L7 7l-.953-.55.5-.866.953.55v-1.1h1ZM13.25 9a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5ZM13 11.25a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5Zm.25 1.75a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5Zm-11-4a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 3 9.75v-.5A.25.25 0 0 0 2.75 9h-.5Zm0 2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5ZM2 13.25a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5Z"/>
+					  <path d="M5 1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1a1 1 0 0 1 1 1v4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3V3a1 1 0 0 1 1-1V1Zm2 14h2v-3H7v3Zm3 0h1V3H5v12h1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3Zm0-14H6v1h4V1Zm2 7v7h3V8h-3Zm-8 7V8H1v7h3Z"/>
+					</svg>
+                  </div>
+                  <h4 class="mb-1 font-sans-serif"><span class="fw-normal text-600">합계</span></h4>
+                  <p class="fs--1 fw-semi-bold mb-0">${cntMap.allCnt } <span class="text-600 fw-normal">명</span></p>
+                </div>
+                
+                <div class="col-xxl-2 col-md-6 px-2 text-center border-end-xxl border-bottom border-bottom-xxl-0 pb-3 pt-4 pt-md-0 pe-md-0 p-xxl-0">
+                  <div class="icon-circle icon-circle-success" id="managerLi">
+                  	<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" 
+						data-prefix="fas" data-icon="chalkboard-teacher" role="img"  fill="currentColor" class="svg-inline--fa fa-chalkboard-teacher fa-w-20 fs-2 text-success" viewBox="0 0 16 16">
+					  <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+					  <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+					</svg>	
+                  </div>
+                  <h4 class="mb-1 font-sans-serif"><span class="fw-normal text-600">관리</span></h4>
+                  <p class="fs--1 fw-semi-bold mb-0">${cntMap.mCnt } <span class="text-600 fw-normal">명</span></p>
+                </div>
+                
+                <div class="col-xxl-2 col-md-6 px-2 text-center border-end-md border-bottom border-bottom-md-0 pb-3 pt-4 p-xxl-0 pb-md-0 ps-md-0">
+                  <div class="icon-circle icon-circle-danger" style="color: #ef1111;" id="doctorLi">
+                  	<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" 
+						data-prefix="fas" data-icon="chalkboard-teacher" role="img"  fill="currentColor" class="svg-inline--fa fa-chalkboard-teacher fa-w-20 fs-2 text-danger" viewBox="0 0 16 16">
+					  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+					</svg>	
+                  </div>
+                  <h4 class="mb-1 font-sans-serif"><span class="fw-normal text-600">전문</span></h4>
+                  <p class="fs--1 fw-semi-bold mb-0">${cntMap.dCnt } <span class="text-600 fw-normal">명</span></p>
+                </div>
+                	
+                <div class="col-xxl-2 col-md-6 px-2 text-center border-end-md border-bottom border-bottom-md-0 pt-4 p-xxl-0 pb-0 pe-md-0">
+                  <div class="icon-circle icon-circle-info" id="adminLi">
+                  	<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" 
+						data-prefix="fas" data-icon="chalkboard-teacher" role="img"  fill="currentColor" class="svg-inline--fa fa-chalkboard-teacher fa-w-20 fs-2 text-info" viewBox="0 0 16 16">
+					  <path d="M7.5 5.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L6 7l-.549.317a.5.5 0 1 0 .5.866l.549-.317V8.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L8 7l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V5.5zm-2 4.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
+					  <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+					</svg>
+                  </div>
+                  <h4 class="mb-1 font-sans-serif"><span class="fw-normal text-600" >원무</span></h4>
+                  <p class="fs--1 fw-semi-bold mb-0">${cntMap.aCnt } <span class="text-600 fw-normal">명</span></p>
+                </div>
+                
+                <div class="col-xxl-2 col-md-6 px-2 text-center border-end-md border-bottom border-bottom-md-0 pt-4 p-xxl-0 pb-0 pe-md-0">
+                  <div class="icon-circle icon-circle-warning" id="nurseLi">
+                  	<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" 
+						data-prefix="fas" data-icon="chalkboard-teacher" role="img"  fill="currentColor" class="svg-inline--fa fa-chalkboard-teacher fa-w-20 fs-2 text-warning" viewBox="0 0 16 16">
+					  <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z"/>
+					</svg>
+                  </div>
+                  <h4 class="mb-1 font-sans-serif"><span class="fw-normal text-600">간호</span></h4>
+                  <p class="fs--1 fw-semi-bold mb-0">${cntMap.nCnt } <span class="text-600 fw-normal">명</span></p>
+                </div>
+                
+                <div class="col-xxl-2 col-md-6 px-2 text-center border-end-md border-bottom border-bottom-md-0 pt-4 p-xxl-0 pb-0 pe-md-0">
+                  <div class="icon-circle icon-circle-secondary" id="therapistLi">
+                  	<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" 
+						data-prefix="fas" data-icon="chalkboard-teacher" role="img"  fill="currentColor" class="svg-inline--fa fa-chalkboard-teacher fa-w-20 fs-2 text-secondary" viewBox="0 0 16 16">
+					  <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
+					  <path d="m5.93 6.704-.846 8.451a.768.768 0 0 0 1.523.203l.81-4.865a.59.59 0 0 1 1.165 0l.81 4.865a.768.768 0 0 0 1.523-.203l-.845-8.451A1.492 1.492 0 0 1 10.5 5.5L13 2.284a.796.796 0 0 0-1.239-.998L9.634 3.84a.72.72 0 0 1-.33.235c-.23.074-.665.176-1.304.176-.64 0-1.074-.102-1.305-.176a.72.72 0 0 1-.329-.235L4.239 1.286a.796.796 0 0 0-1.24.998l2.5 3.216c.317.316.475.758.43 1.204Z"/>
+					</svg>
+                  </div>
+                  <h4 class="mb-1 font-sans-serif"><span class="fw-normal text-600">치료</span></h4>
+       				<p class="fs--1 fw-semi-bold mb-0">${cntMap.tCnt } <span class="text-600 fw-normal">명</span></p>
+        		</div>
+        	</div>
+        </div>
+		<!-- 통계를 나타낼 영역 끝 -->
+		
+		<!-- 차트를 넣어 줄 div -->
+		<div class="card-body d-flex align-items-center justify-content-center" style="background-color: white; overflow: auto; padding-top:0;" id="chartDiv">
+			<div id="chart-container" class="" style="width:600px; margin-left: 350px; padding-top:0;"></div>
+		</div>
+	</div>
+	
+</div>
+
+
+<!-- 1 직원 내역 모달 탬플릿 시작 -->
+<div class="modal fade" id="memberDetail-modal" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document"
+		style="max-width: 1200px">
+		<div class="modal-content position-relative">
+			<div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+				<button
+					class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+					data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary">
+					<h4 class="modalHeader mb-1" id="modalExampleDemoLabel">직원내역 상세보기</h4>
+				</div>
+				<div class="p-4 pb-0">
+					<div class="text-center">
+                    	<img class="profileImg rounded-circle img-thumbnail shadow-sm" width="150" height="150" src="/resources/image/profile/profileImg.png" alt="User profile picture" id="empProfile">
+                    </div>
+                    <div class="row"> 
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for=empNoInput>사번</label> 
+							<input class="form-control" id="empNoInput" type="text" name="" readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for=empNm>이름</label> 
+							<input class="form-control" id="empNm" type="text" name="" readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="empSexdstn">성별</label> 
+							<input class="form-control" id="empSexdstn" type="text" name=""
+								readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="empSe">소속</label>
+							<input class="form-control" id="empSe" type="text" name="" readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group"> 
+							<label class="col-form-label" for="empClsf">직급</label> <br>
+	               			<input class="form-control" id="empClsf" type="text" name="empClsf" readonly="readonly">
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="empEncpn">입사일자</label> 
+							<input class="form-control" id="empEncpn" type="text" name="" readonly="readonly" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="empRrno">주민등록번호</label> <input
+								class="form-control" id="empRrno" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="empTelno">연락처</label> <input
+								class="form-control" id="empTelno" type="text" name=""
+								readonly="readonly" />
+						</div>
+						<div class="col-4 mb-3 form-group">
+							<label class="col-form-label" for="empEmailInput">이메일</label> <input
+								class="form-control" id="empEmailInput" type="text"
+								name="empEmail" readonly="readonly" />
+						</div>
+					</div>
+					<div class="mb-3 form-group">
+						<label class="col-form-label" for="empAdres">주소</label> <input
+							class="form-control" id="empAdres" type="text" name=""
+							readonly="readonly" />
+					</div>
+					
+					
+					
+					<div class="mb-3 form-group">
+						<label class="col-form-label" for="empRetireInput">퇴직 일자</label>
+						<input class="form-control" id="empRetireInput" type="text" name="" readonly="readonly"/>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" id="modifyEmpBtn">수정</button>
+				<button class="btn btn-primary" type="button" id=""
+					data-bs-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 1 직원 내역 모달 탬플릿 끝 -->
+
+
+</body>
+
+
+
+<script type="text/javascript">
+$(function() {
+	   var oc = $('#chart-container').orgchart({
+	     'data' : JSON.parse('${jsonStr}'),
+	     'nodeContent': 'title',
+	     'depth': 1,
+	     'direction': 'l2r',
+		 
+	   });
+	   
+	   var chartDiv = $('#chartDiv'); 
+	   function removeCss(){
+		   chartDiv.removeClass('mSelected');
+		   chartDiv.removeClass('dSelected');
+		   chartDiv.removeClass('nSelected');
+		   chartDiv.removeClass('aSelected');
+		   chartDiv.removeClass('tSelected');
+		   
+	   }
+	   
+		// '전체' 버튼 클릭 시
+	   $('#allLi').on('click', function() {
+// 	       console.log("allLi Click...!");
+		   removeCss();
+	       oc.$chart.find('.node').show(); // 모든 노드 보이기
+	       
+	       
+	       
+	   });
+
+	   // '매니저' 버튼 클릭 시
+	   $('#managerLi').on('click', function() {
+// 	       console.log("managerLi Click...!"); 
+		   removeCss();
+		   chartDiv.addClass('mSelected');
+
+	       oc.$chart.find('.node').hide(); 
+	       oc.$chart.find('.k').show(); 
+	       oc.$chart.find('.m').show(); 
+	   });
+
+	   // '의사' 버튼 클릭 시
+	   $('#doctorLi').on('click', function() {
+// 	       console.log("doctorLi Click...!");
+           removeCss();
+		   chartDiv.addClass('dSelected');
+	       oc.$chart.find('.node').hide();
+	       oc.$chart.find('.d').show(); 
+	   });
+
+	   // '간호사' 버튼 클릭 시
+	   $('#nurseLi').on('click', function() {
+// 	       console.log("nurseLi Click...!");
+           removeCss();
+	       chartDiv.addClass('nSelected');
+	       oc.$chart.find('.node').hide();
+	       oc.$chart.find('.n').show(); 
+	   });
+
+	   // '원무' 버튼 클릭 시
+	   $('#adminLi').on('click', function() {
+// 	       console.log("adminLi Click...!");
+           removeCss();
+	       chartDiv.addClass('aSelected');
+	       oc.$chart.find('.node').hide();
+	       oc.$chart.find('.a').show();
+	   });
+
+	   // '치료사' 버튼 클릭 시
+	   $('#therapistLi').on('click', function() {
+// 	       console.log("therapistLi Click...!");
+           removeCss();
+	       chartDiv.addClass('tSelected');
+	       
+	       oc.$chart.find('.node').hide();
+	       oc.$chart.find('.t').show(); 
+	   });
+	   
+	   
+	});	
+	// PDF 파일 생성을 위한 함수
+	$(function(){
+		
+		 function pdfPrint(){
+				
+// 			 	var pdfDiv = $('#temp');
+			 	var pdfDiv = $('#pdfDiv');
+			 	
+			 	// A4 가로 크기 (mm 단위)
+			 	var a4Width = 210;
+			 	
+		        // 현재 document.body의 html을 A4 크기에 맞춰 PDF로 변환
+		        html2canvas(pdfDiv, {
+		            onrendered: function (canvas) {
+		            	var imgData = canvas.toDataURL('image/png');
+			            var pageWidth = a4Width;
+			            var scaleFactor = 1.4; // 이미지 확대 비율
+			            var imgHeight = canvas.height * pageWidth / canvas.width * scaleFactor;
+			            var imgWidth = pageWidth * scaleFactor;
+
+			            var doc = new jsPDF('l', 'mm', 'a4'); // 'l'은 가로 방향
+
+			            var position = 0;
+
+			            // 이미지의 가로 중앙 정렬
+			            var x = (pageWidth - imgWidth) / 2 + 45; 
+			            // 페이지의 세로 중앙에 위치
+			            var y = (a4Width - imgHeight) / 2;
+
+			            doc.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+
+		                // 파일 저장
+		                doc.save('직원조직도.pdf');
+
+		                //이미지로 표현
+// 		                document.write('<img src="'+imgData+'" />');
+		            }
+		            
+		        });
+		        
+		    }
+		 
+		 var pdfBtn = $('#pdfBtn');
+		 pdfBtn.on('click', function(){
+			 $('body').find('svg').each(function() {
+				    $(this).attr('width', this.getBoundingClientRect().width);
+				    $(this).attr('height', this.getBoundingClientRect().height);
+				    $(this).css('width', null);
+				    $(this).css('height', null);
+			 });
+			 
+			 pdfPrint();
+// 			 console.log("pdfBtn Click!!!!");
+		 });
+		 
+
+		var token = $("input[name='_csrf']").val();
+		var header = $("input[name='_csrf_header']").val();
+		
+		// 전화번호 형식을 변경하는 함수
+	    function formatPhoneNumber(phoneNumber) {
+	        return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+	    }
+		
+		// 타임스탬프 날짜 변환 함수(시,분,초 포함)
+		function formatDate(timeStamp){
+		    var date = new Date(timeStamp);
+
+		    var year = date.getFullYear();
+		    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고, 두 자리로 만듭니다.
+		    var day = date.getDate().toString().padStart(2, '0'); // 일도 두 자리로 만듭니다.
+		    var hours = date.getHours().toString().padStart(2, '0'); // 시도 두 자리로 만듭니다.
+		    var minutes = date.getMinutes().toString().padStart(2, '0'); // 분도 두 자리로 만듭니다.
+		    var seconds = date.getSeconds().toString().padStart(2, '0'); // 초도 두 자리로 만듭니다.
+
+		    var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+
+		    return formattedDate;
+		}
+		
+		function formatDateNoTime(timeStamp){
+		    var date = new Date(timeStamp);
+		    
+		    var year = date.getFullYear();
+		    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고, 문자열로 변환하여 두 자리로 만듭니다.
+		    var day = date.getDate().toString().padStart(2, '0'); // 일도 마찬가지로 두 자리로 만듭니다.
+		    
+		    var formattedDate = year + '-' + month + '-' + day;
+		    
+		    return formattedDate;
+		}
+		 
+		// 직원 목록 상세조회
+			var selectDetail = $('.node');
+
+			selectDetail.on('click', function() {
+
+				// 해당 데이터의 값을 상세 조회 모달로 이동
+				var empNo = $(this).attr("id");
+				var data = {
+					empNo : empNo
+				};
+
+				$.ajax({
+					type : "post",
+					url : "/mediform/manager/employee/getEmployee",
+					data : JSON.stringify(data),
+					contentType : "application/json; charset=utf-8",
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					success : function(emp) {
+//						console.log("empNo : " + emp.empNo);
+
+						var empNo = emp.empNo;
+						var empNm = emp.empNm;
+						var empRrno = emp.empRrno1 + "-" + emp.empRrno2;
+						var empSeCd = emp.empSe;
+						var empSeName = "";
+						if (empSeCd == "d") {
+							empSeName = "전문의";
+						} else if (empSeCd == "n") {
+							empSeName = "간호"
+						} else if (empSeCd == "t") {
+							empSeName = "치료"
+						} else if (empSeCd == "m") {
+							empSeName = "관리"
+						} else if (empSeCd == "a") {
+							empSeName = "원무"
+						} else if (empSeCd == "k") {
+							empSeName = "병원장"
+						}
+						var empTelno = emp.empTelno;
+						var empAdres = emp.empAdres1 + " " + emp.empAdres2;
+						var empSexdstn = emp.empSexdstn;
+						var empSexdstnName = "";
+						if (empSexdstn == "F") {
+							empSexdstnName = "여자";
+						} else {
+							empSexdstnName = "남자";
+						}
+						var empEmail = emp.empEmail;
+						var empClsf = emp.empClsf;
+						var empHffcAt = emp.empHffcAt;
+						var empEncpn = emp.empEncpn;
+						var empProfile = emp.empProfile;
+//						console.log("empHffcAt : " + empHffcAt );
+
+						// 모달창에 해당 상세 정보 넣기
+// 						console.log("empNo : " + empNo);
+						$('#rejectEmpNo').val(empNo);
+						$('#empNoInput').val(empNo);
+						$('#empNo').val(empNo);
+						$('#empNoUpdate').val(empNo);
+						$('#empNm').val(empNm);
+						$('#empRrno').val(empRrno);
+						$('#empSe').val(empSeName);
+						$('#empSeUpdate').val(empSeCd);
+						var formatTelNo = formatPhoneNumber(empTelno);
+						$('#empTelno').val(formatTelNo);
+						$('#empAdres').val(empAdres);
+						$('#empSexdstn').val(empSexdstnName);
+						$('#empEmail').val(empEmail);
+						$('#empEmailInput').val(empEmail);
+						$('#rejectEmpEmail').val(empEmail);
+						var formatEmpEncpn = formatDateNoTime(empEncpn);
+						$('#empEncpn').val(formatEmpEncpn);
+						
+						// 프로필 사진이 비어있지 않으면
+						if(empProfile != null){
+							$('#empProfile').attr("src", empProfile);
+						}
+
+						var empClsfNm = "";
+						if(empClsf == "0"){
+							empClsfNm = "과장"
+						}else{
+							empClsfNm = "일반사원"
+						}
+						
+						$('#empClsf').val(empClsfNm);
+						
+					}
+				});
+
+				// 모달창 show
+				$("#memberDetail-modal").modal("show");
+			});
+			
+
+			
+			
+		 
+	});
+</script>
+</html>

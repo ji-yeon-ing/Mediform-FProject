@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.therapist.TherapistReceiptMapper">
+	<select id="waitingList" resultType="rceptVO">
+		select 
+			rcept_no, a.patnt_no, patnt_nm, patnt_rrno1, rcept_dt, rcept_reason, rcept_sttus, rcept_priort, rcept_clnc
+		from rcept a, patient b
+		where a.patnt_no = b.patnt_no
+			and (rcept_sttus = 5
+			or rcept_sttus = 6
+			or rcept_sttus = 7
+			or rcept_sttus = 8)
+		order by rcept_dt desc
+	</select>
+</mapper>

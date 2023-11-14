@@ -1,0 +1,25 @@
+package kr.or.ddit.nurse.vo;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class MedicineVO {
+
+	private String medcinCd;
+	private String medcinNm;
+	private String medcinInvntry;
+	private String medcinUsage;
+	private int medcinMdctnCo;
+	private String medcinActing;
+	private int medcinCont;
+	private String medcinCd1;
+	private String medcinCd2;
+	private String medcinCd3;
+	private String medcinCl1;
+	private String medcinCl2;
+	private String mdctnCours;
+	private int medcinPc;
+	
+}

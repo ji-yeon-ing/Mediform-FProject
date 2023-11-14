@@ -1,0 +1,39 @@
+package kr.or.ddit.mapper.calender;
+
+import java.util.HashMap;
+import java.util.List;
+
+import kr.or.ddit.calender.vo.SchedulerVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+
+public interface ManagerSchedulerMapper {
+	
+	// calender 일정 목록 조회
+	public List<SchedulerVO> schedulerMapList();
+	
+	// calender 필터링 조회
+	public List<SchedulerVO> schedulerMapFilterList(HashMap<String, String> searchSchMap);
+	
+	// 일정 등록
+	public int schedulerInsert(SchedulerVO schedulerVO);
+	
+	// 일정 수정
+	public int schedulerUpdate(SchedulerVO schedulerVO);
+	
+	// 일정 삭제
+	public int schedulerDelete(String schdlCd);
+
+	// count 조회
+	public int selectSchedulerCount(PaginationInfoVO<SchedulerVO> pagingVO);
+
+	// list 조회
+	public List<SchedulerVO> selectSchedulerList(PaginationInfoVO<SchedulerVO> pagingVO);
+	
+	// 필터된 count
+	public int selectSchedulerFilterCount(PaginationInfoVO<SchedulerVO> pagingVO);
+
+	// 필터된 list
+	public List<SchedulerVO> selectSchedulerFilterList(PaginationInfoVO<SchedulerVO> pagingVO);
+
+
+}

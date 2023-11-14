@@ -1,0 +1,135 @@
+package kr.or.ddit.calender.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.calender.ServiceResult;
+import kr.or.ddit.calender.service.IManagerVacationService;
+import kr.or.ddit.calender.vo.VacationVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.mapper.calender.ManagerVacationMapper;
+
+@Service
+public class ManagerVacationServiceImpl implements IManagerVacationService{
+	
+	@Inject
+	private ManagerVacationMapper managerVacationMapper;
+	
+	// 캘린더 리스트 조회
+	@Override
+	public List<VacationVO> vacationMapList() {
+		return managerVacationMapper.vacationMapList();
+	}
+	
+	// 휴가 신청
+	@Override
+	public ServiceResult vacationInsert(VacationVO vacationVO) {
+		ServiceResult result = null;
+		
+		int status = managerVacationMapper.vacationInsert(vacationVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	// 직원 상세
+	@Override
+	public List<VacationVO> vacationDetailEmp(String searchEmpWord) {
+		return managerVacationMapper.vacationDetailEmp(searchEmpWord);
+	}
+	
+	// 휴가 상세
+	@Override
+	public List<VacationVO> vacationDetail(VacationVO vacationVO) {
+		return managerVacationMapper.vacationDetail(vacationVO);
+	}
+
+	// 1차 승인
+	@Override
+	public ServiceResult vacationUpdate(Map<String, String> map) {
+		ServiceResult result = null;
+		
+		int status = managerVacationMapper.vacationUpdate(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	// 2차 승인
+	@Override
+	public ServiceResult vacationUpdateLast(Map<String, String> map) {
+		ServiceResult result = null;
+		
+		int status = managerVacationMapper.vacationUpdateLast(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+	
+	// 휴가 반려
+	@Override
+	public ServiceResult vacationUpdateReject(Map<String, String> map) {
+		ServiceResult result = null;
+		
+		int status = managerVacationMapper.vacationUpdateReject(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+	
+	// 휴가 삭제
+	@Override
+	public ServiceResult vacationDelete(String vcatnCode) {
+		return managerVacationMapper.vacationDelete(vcatnCode);
+	}
+
+	// 휴가 리스트 조회
+	@Override
+	public List<VacationVO> selectVacationList(VacationVO vacationVO) {
+		return managerVacationMapper.selectVacationList(vacationVO);
+	}
+
+	// 휴가 신청 리스트
+	@Override
+	public List<VacationVO> selectSignupList(VacationVO vacationVO) {
+		return managerVacationMapper.selectSignupList(vacationVO);
+	}
+
+	// 휴가 승인 리스트
+	@Override
+	public List<VacationVO> selectApprovalList(VacationVO vacationVO) {
+		return managerVacationMapper.selectApprovalList(vacationVO);
+	}
+
+	// 휴가 반려 리스트
+	@Override
+	public List<VacationVO> selectRejectList(VacationVO vacationVO) {
+		return managerVacationMapper.selectRejectList(vacationVO);
+	}
+
+
+}

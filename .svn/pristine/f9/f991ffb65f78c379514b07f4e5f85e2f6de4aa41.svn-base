@@ -1,0 +1,35 @@
+package kr.or.ddit.mapper.administration;
+
+import java.util.List;
+
+import kr.or.ddit.administration.vo.NoticeBoardVO;
+import kr.or.ddit.common.vo.FileVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+
+public interface BoardMapper {
+
+	int selectBoardCount(PaginationInfoVO<NoticeBoardVO> pagingVO);
+
+	List<NoticeBoardVO> selectBoardList(PaginationInfoVO<NoticeBoardVO> pagingVO);
+
+	int insertBoard(NoticeBoardVO noticeBoardVO);
+
+	void incrementHit(String ntbdNo);
+
+	NoticeBoardVO selectBoard(String ntbdNo);
+
+	void insertNoticeFile(FileVO fileVO);
+
+	FileVO download(String fileNo);
+
+	void deleteNoticeFileByBoNo(String ntbdNo);
+
+	int deleteNotice(String ntbdNo);
+
+	int updateBoard(NoticeBoardVO noticeBoardVO);
+
+	FileVO selectNoticeFile(String fileNo);
+
+	void deleteNoticeFile(String fileNo);
+
+}

@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.doctor.DoctorMapper">
+	
+	<resultMap type="ClinicVO" id="ClinicVO">
+	
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="empNo" column="EMP_NO"/>
+		<result property="clnicTime" column="CLNIC_TIME"/>
+		<result property="clnicCn" column="CLNIC_CN"/>
+		<result property="clnicAt" column="CLNIC_AT"/>
+		<result property="beforeClnicNo" column="BEFORE_CLNIC_NO"/>
+		<result property="hsptlzAt" column="HSPTLZ_AT"/>
+		<result property="clnicMemo" column="CLNIC_MEMO"/>
+		<result property="atfssDt" column="ATFSS_DT"/>
+		<result property="clnicFe" column="CLNIC_FE"/>
+		
+		<association property="prescriptionOrderVO"  javaType="PrescriptionOrderVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="medcinCd" column="MEDCIN_CD"/>	
+			<id property="prscrptnCd" column="PRSCRPTN_CD"/>
+			<result property="prscrptnNm" column="PRSCRPTN_NM"/>
+			<result property="mdctnCpcty" column="MDCTN_CPCTY"/>
+			<result property="mdctnUnit" column="MDCTN_UNIT"/>
+			<result property="mdctnCo" column="MDCTN_CO"/>
+			<result property="mdctnPd" column="MDCTN_PD"/>
+			<result property="mdctnCoursUsage" column="MDCTN_COURS_USAGE"/>
+		</association>
+		
+		<association property="medicalTreatmentRecordVO" javaType="MedicalTreatmentRecordVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<id property="mdlrtrdCd" column="MDLRTRD_CD"/>
+			<result property="mdlrtCurer" column="MDLRT_CURER"/>
+			<result property="bodyCd" column="BODY_CD"/>
+		</association>
+		
+		<association property="medicalExaminationOrderVO" javaType="MedicalExaminationOrderVO">
+			<id property="mecCd" column="MEC_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpDt" column="HLTHCHKP_DT"/>
+			<result property="hlthchkpResult" column="HLTHCHKP_RESULT"/>
+			<result property="bodyCd" column="BODY_CD"/>	
+		</association>
+		
+		<association property="sickAndWoundedVO" javaType="SickAndWoundedVO">
+			<id property="sckwndCd" column="SCKWND_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="sckwndKr" column="SCKWND_KR"/>
+			<result property="sckwndEn" column="SCKWND_EN"/>
+			<result property="sckwndSe" column="SCKWND_SE"/>
+			<result property="bodyCd" column="BODY_CD"/>
+			<result property="kcd" column="KCD"/>
+		</association>
+		
+		<association property="employeeVO" javaType="EmployeeVO">
+			<id property="empNo" column="EMP_NO"/>
+			<result property="empNm" column="EMP_NM"/>
+			<result property="empPw" column="EMP_PW"/>
+			<result property="empRrno1" column="EMP_RRNO1"/>
+			<result property="empRrno2" column="EMP_RRNO2"/>
+			<result property="empTelno" column="EMP_TELNO"/>
+	 		<result property="empZip" column="EMP_ZIP"/>
+			<result property="empAdres1" column="EMP_ADRES1"/>
+			<result property="empAdres2" column="EMP_ADRES2"/>
+			<result property="empEmail" column="EMP_EMAIL"/>
+			<result property="empSexdstn" column="EMP_SEXDSTN"/>
+			<result property="empBrthdy" column="EMP_BRTHDY"/>
+			<result property="empDep" column="EMP_DEP"/>
+			<result property="empEncpn" column="EMP_ENCPN"/>
+			<result property="empRetire" column="EMP_RETIRE"/>
+			<result property="empExp" column="EMP_EXP"/>
+			<result property="empRgsde" column="EMP_RGSDE"/>
+			<result property="empUpdde" column="EMP_UPDDE"/>
+			<result property="empHffcAt" column="EMP_HFFC_AT"/>
+			<result property="empProfile" column="EMP_PROFILE"/>
+			<result property="empSign" column="EMP_SIGN"/>
+			<result property="empSe" column="EMP_SE"/>
+			<result property="empAuthor" column="EMP_AUTHOR"/>
+			<result property="empClsf" column="EMP_CLSF"/>
+			<result property="empYrycUse" column="EMP_YRYC_USE"/>
+			<result property="empYrycRemndr" column="EMP_YRYC_REMNDR"/>
+			<result property="empOffhodUse" column="EMP_OFFHOD_USE"/>
+			<result property="empOffhodRemndr" column="EMP_OFFHOD_REMNDR"/>
+			<result property="empConfm" column="EMP_CONFM"/>
+			<result property="rjctResn" column="RJCT_RESN"/>
+			<result property="empRqstr" column="EMP_RQSTR"/>
+			<result property="empLcns" column="EMP_LCNS"/>
+			<result property="empDoctrLcns" column="EMP_DOCTR_LCNS"/>
+			<result property="empLcnsNo" column="EMP_LCNS_NO"/>
+			<result property="empDoctrLcnsNo" column="EMP_DOCTR_LCNS_NO"/>
+		</association>
+		
+		<collection property="employeeVOList" ofType="EmployeeVO">
+			<id property="empNo" column="EMP_NO"/>
+			<result property="empNm" column="EMP_NM"/>
+			<result property="empPw" column="EMP_PW"/>
+			<result property="empRrno1" column="EMP_RRNO1"/>
+			<result property="empRrno2" column="EMP_RRNO2"/>
+			<result property="empTelno" column="EMP_TELNO"/>
+	 		<result property="empZip" column="EMP_ZIP"/>
+			<result property="empAdres1" column="EMP_ADRES1"/>
+			<result property="empAdres2" column="EMP_ADRES2"/>
+			<result property="empEmail" column="EMP_EMAIL"/>
+			<result property="empSexdstn" column="EMP_SEXDSTN"/>
+			<result property="empBrthdy" column="EMP_BRTHDY"/>
+			<result property="empDep" column="EMP_DEP"/>
+			<result property="empEncpn" column="EMP_ENCPN"/>
+			<result property="empRetire" column="EMP_RETIRE"/>
+			<result property="empExp" column="EMP_EXP"/>
+			<result property="empRgsde" column="EMP_RGSDE"/>
+			<result property="empUpdde" column="EMP_UPDDE"/>
+			<result property="empHffcAt" column="EMP_HFFC_AT"/>
+			<result property="empProfile" column="EMP_PROFILE"/>
+			<result property="empSign" column="EMP_SIGN"/>
+			<result property="empSe" column="EMP_SE"/>
+			<result property="empAuthor" column="EMP_AUTHOR"/>
+			<result property="empClsf" column="EMP_CLSF"/>
+			<result property="empYrycUse" column="EMP_YRYC_USE"/>
+			<result property="empYrycRemndr" column="EMP_YRYC_REMNDR"/>
+			<result property="empOffhodUse" column="EMP_OFFHOD_USE"/>
+			<result property="empOffhodRemndr" column="EMP_OFFHOD_REMNDR"/>
+			<result property="empConfm" column="EMP_CONFM"/>
+			<result property="rjctResn" column="RJCT_RESN"/>
+			<result property="empRqstr" column="EMP_RQSTR"/>
+			<result property="empLcns" column="EMP_LCNS"/>
+			<result property="empDoctrLcns" column="EMP_DOCTR_LCNS"/>
+			<result property="empLcnsNo" column="EMP_LCNS_NO"/>
+			<result property="empDoctrLcnsNo" column="EMP_DOCTR_LCNS_NO"/>
+		</collection>
+		
+		<collection property="prescriptionOrderVOList"  ofType="PrescriptionOrderVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="medcinCd" column="MEDCIN_CD"/>	
+			<id property="prscrptnCd" column="PRSCRPTN_CD"/>	
+			<result property="prscrptnNm" column="PRSCRPTN_NM"/>
+			<result property="mdctnCpcty" column="MDCTN_CPCTY"/>
+			<result property="mdctnUnit" column="MDCTN_UNIT"/>
+			<result property="mdctnCo" column="MDCTN_CO"/>
+			<result property="mdctnPd" column="MDCTN_PD"/>
+			<result property="mdctnCoursUsage" column="MDCTN_COURS_USAGE"/>
+		</collection>
+		
+		<collection property="sickAndWoundedVOList" ofType="SickAndWoundedVO">
+			<id property="sckwndCd" column="SCKWND_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="sckwndKr" column="SCKWND_KR"/>
+			<result property="sckwndEn" column="SCKWND_EN"/>
+			<result property="sckwndSe" column="SCKWND_SE"/>
+			<result property="bodyCd" column="BODY_CD"/>
+			<result property="kcd" column="KCD"/>
+		</collection>
+		
+		<collection property="medicalTreatmentRecordVOList" ofType="MedicalTreatmentRecordVO">
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<id property="mdlrtrdCd" column="MDLRTRD_CD"/>	
+			<result property="mdlrtCurer" column="MDLRT_CURER"/>
+			<result property="bodyCd" column="BODY_CD"/>
+		</collection>
+				
+		<collection property="medicalExaminationOrderVOList" ofType="MedicalExaminationOrderVO">
+			<id property="mecCd" column="MEC_CD"/>	
+			<id property="clnicNo" column="CLNIC_NO"/>	
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpDt" column="HLTHCHKP_DT"/>
+			<result property="hlthchkpResult" column="HLTHCHKP_RESULT"/>
+			<result property="bodyCd" column="BODY_CD"/>	
+		</collection>
+		
+		<collection property="rceptVOList" ofType="RceptVO">
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="rceptDt" column="RCEPT_DT"/>
+			<result property="rceptReason" column="RCEPT_REASON"/>
+			<result property="rceptSttus" column="RCEPT_STTUS"/>
+			<result property="rceptPriort" column="RCEPT_PRIORT"/>
+			<result property="rceptClnc" column="RCEPT_CLNC"/>
+		</collection>
+		
+		
+		<collection property="healthCheckupVOList" ofType="HealthCheckupVO">
+			<id property="hlthchkpCd" column="HLTHCHKP_CD"/>	
+			<result property="hlthchkpNm" column="HLTHCHKP_NM"/>	
+			<result property="hlthchkpAmount" column="HLTHCHKP_AMOUNT"/>	
+			<result property="mllwncAt" column="MLLWNC_AT"/>
+		</collection>
+		
+		
+		<collection property="medicalTreatmentVOList" ofType="MedicalTreatmentVO">
+			<id property="mdlrtCd" column="MDLRT_CD"/>	
+			<result property="mdlrtNm" column="MDLRT_NM"/>	
+			<result property="mdlrtAmount" column="MDLRT_AMOUNT"/>	
+			<result property="mllwncAt" column="MLLWNC_AT"/>
+		</collection>
+		
+		
+	</resultMap>
+	
+	<!-- 이전 진료 기록 전체 조회 -->
+	<select id="selectClinicList" parameterType="Map" resultMap="ClinicVO">
+select c.clnic_no, c.rcept_no, c.patnt_no, c.emp_no, c.clnic_time, c.clnic_cn, c.clnic_at, c.before_clnic_no, 
+				c.hsptlz_at, c.clnic_memo, c.atfss_dt, c.clnic_fe,
+	        meo.mec_cd, meo.CLNIC_NO, meo.RCEPT_NO, meo.hlthchkp_cd, meo.hlthchkp_dt, meo.hlthchkp_result, meo.body_cd,
+	        saw.sckwnd_cd,saw.CLNIC_NO, saw.RCEPT_NO, saw.PATNT_NO, saw.sckwnd_kr, saw.sckwnd_en, saw.body_cd, saw.kcd, saw.sckwnd_se,
+	        mtr.mdlrtrd_cd, mtr.CLNIC_NO, mtr.RCEPT_NO, mtr.mdlrt_cd, mtr.mdlrt_curer, mtr.body_cd,
+	        po.CLNIC_NO, po.RCEPT_NO, po.prscrptn_cd, po.medcin_cd, po.prscrptn_nm, po.mdctn_cpcty, po.mdctn_unit, po.mdctn_co, po.mdctn_pd, po.mdctn_cours_usage,
+	        r.rcept_no, r.PATNT_NO, r.rcept_dt, r.rcept_reason, r.rcept_clnc, hc.hlthchkp_nm, mt.mdlrt_nm,
+			e.emp_no, e.emp_nm
+		from clinic c
+		left outer join prescription_order po on po.clnic_no = c.clnic_no
+		left outer join patient p on c.patnt_no = p.patnt_no
+		left outer join rcept r on c.patnt_no = r.patnt_no
+		left outer join sick_and_wounded saw on saw.clnic_no = c.clnic_no
+		left outer join medical_treatment_record mtr on mtr.clnic_no = c.clnic_no
+		left outer join medical_examination_order meo on meo.clnic_no = c.clnic_no
+		left outer join employee e on e.emp_no = c.emp_no
+		left outer join health_checkup hc on meo.hlthchkp_cd = meo.hlthchkp_cd
+		left outer join medical_treatment mt on mtr.mdlrt_cd = mt.mdlrt_cd
+		where p.patnt_no = #{patntNo}
+	 	order by r.rcept_dt desc, c.clnic_time desc
+	
+	</select>
+	
+<!-- 환자 상병 조회 -->
+	<select id="selectPatientSAW" parameterType="Map" resultType="SickAndWoundedVO">
+	    select saw.sckwnd_cd, 
+	    		saw.clnic_no, 
+	    		saw.rcept_no, 
+	    		saw.patnt_no, 
+	    		saw.sckwnd_kr, 
+	            saw.sckwnd_en, 
+	            saw.body_cd, 
+	            saw.kcd, 
+	            saw.sckwnd_se
+		from clinic c
+		join sick_and_wounded saw on c.clnic_no = saw.clnic_no
+		where c.clnic_no = #{clnicNo}
+		order by saw.sckwnd_se asc
+	</select>
+	
+<!-- 환자 처방 조회 -->
+	<select id="selectPatientPO" parameterType="Map" resultType="PrescriptionOrderVO">
+	    select po.clnic_no, 
+	    		po.rcept_no, 
+	    		po.medcin_cd, 
+	    		po.prscrptn_nm, 
+	    		po.mdctn_cpcty, 
+	            po.mdctn_unit, 
+	            po.mdctn_co, 
+	            po.mdctn_pd, 
+	            po.mdctn_cours_usage, 
+	            po.prscrptn_cd
+	    from prescription_order po 
+	    left outer join clinic c on c.clnic_no = po.clnic_no
+	    where c.clnic_no = #{clnicNo}
+	    order by po.medcin_cd asc
+	</select>
+	
+<!-- 환자 치료 오더 조회 -->
+	<select id="selectPatientMTR" parameterType="Map" resultType="selectAllMedicalTreatmentRecordVO">
+	    select mtr.clnic_no, 
+	    		mtr.rcept_no, 
+	    		mtr.mdlrt_cd, 
+	    		mtr.mdlrt_curer, 
+	    		mtr.body_cd, 
+	    		mtr.mdlrt_dt, 
+	            mtr.mdlrtrd_cd, 
+	            mtr.mdlrtrd_chk, 
+	            mt.mdlrt_cd, 
+	            mt.mdlrt_nm, 
+	            mt.mdlrt_amount, 
+	            mt.mllwnc_at, 
+	            mt.mdlrt_cl
+	    from medical_treatment_record mtr 
+	    join medical_treatment mt on mt.mdlrt_cd = mtr.mdlrt_cd
+	    join clinic c on c.clnic_no = mtr.clnic_no
+	    where c.clnic_no = #{clnicNo}
+	    order by mtr.mdlrt_cd asc
+	</select>
+	
+	<!-- 진료 기록 조회 끝 -->
+	
+	<!-- 진료 등록 시 진료 생성 후 진료 번호 조회해서 반환 -->
+	<select id="selectClnicNo" parameterType="ClinicVO" resultType="String">
+		select clnic_no
+		from clinic
+		where rcept_no = #{rceptNo}  
+	</select>
+	
+	<!-- 진료 기록 있는 지 체크 -->
+	<select id="checkClinic" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM CLINIC
+		WHERE RCEPT_NO = #{rceptNo}
+	</select>
+	
+	<!-- 진료 등록 시 진료 번호가 이미 존재할 때 -->
+	<update id="updateClinic" parameterType="ClinicVO">
+		UPDATE CLINIC
+		SET 
+		    CLNIC_CN = #{clnicCn}, 
+		    CLNIC_AT = 'Y', 
+		    BEFORE_CLNIC_NO = #{beforeClnicNo}, 
+		    HSPTLZ_AT = #{hsptlzAt}, 
+		    CLNIC_MEMO = #{clnicMemo}, 
+		    <choose>
+			 	<when test="atfssDt != null">
+					ATFSS_DT = #{atfssDt}
+			 	</when>
+				<when test="atfssDt == null">
+					ATFSS_DT = null
+				</when>
+			</choose>
+		WHERE RCEPT_NO = #{rceptNo} AND PATNT_NO = #{patntNo}
+	</update>
+	
+	<!-- 진료 등록 시 진료 번호가 없을 때 -->
+	<insert id="insertClinic" parameterType="ClinicVO" useGeneratedKeys="true">
+		<selectKey keyProperty="clnicNo" order="BEFORE" resultType="String">
+			SELECT 'C' || SEQ_CLINIC.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO CLINIC
+			(CLNIC_NO, RCEPT_NO, PATNT_NO, EMP_NO, CLNIC_TIME, CLNIC_CN, 
+			CLNIC_AT, BEFORE_CLNIC_NO, HSPTLZ_AT, CLNIC_MEMO, ATFSS_DT, CLNIC_FE)
+		VALUES
+			(#{clnicNo}, #{rceptNo}, #{patntNo}, #{empNo}, #{clnicTime}, #{clnicCn},
+			 #{clnicAt}, #{beforeClnicNo}, #{hsptlzAt}, #{clnicMemo}, 
+			 <choose>
+			 	<when test="atfssDt != null">
+					#{atfssDt},
+			 	</when>
+				<when test="atfssDt == null">
+					null,
+				</when>
+			 </choose>
+			#{clnicFe})
+	</insert>
+	
+	<select id="checkReceive" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM RECEIVE
+		WHERE CLNIC_NO = #{clnicNo}
+	</select>
+	
+	<!-- 수납 테이블 생성한 키 가져오기 -->
+	<select id="selectRcivNo" parameterType="Map" resultType="String">
+		SELECT RCIV_NO
+		FROM RECEIVE
+		WHERE clnic_no = #{clnicNo}
+	</select>
+	
+	<!-- 수납 상세 테이블 생성 및 등록 -->
+	<insert id="insertReceiveDetail" parameterType="Map">
+		INSERT INTO RECEIVE_DETAIL
+			(RCIV_NO, CLNIC_NO, PATNT_NO, RCIVD_MDCXM, RCIVD_HSPTLZ, RCIVD_CGFFD, RCIVD_MDCT, RCIVD_INJCTN, 
+			RCIVD_TRT, RCIVD__HLTHCHKP, RCIVD_DGNSS, RCIVD_EQP, RCIVD_REH, RCIVD_TH, RCIVD_TOTAMT)
+		VALUES
+			(#{rcivNo}, #{clnicNo}, #{patntNo}, #{rcivdMdcxm}, 0, 0, #{rcivdMdct}, #{rcivdInjctn}, 
+			0, #{rcivdHlthchkp}, #{rcivdDgnss}, 0, #{rcivdReh}, #{rcivdTh}, 0)
+	</insert>
+	
+	<!-- 상병 등록 -->
+	<insert id="insertSAW" parameterType="SickAndWoundedVO" useGeneratedKeys="true">
+		<selectKey keyProperty="sckwndCd" order="BEFORE" resultType="String">
+			SELECT 'SAW' || SEQ_SICK_AND_WOUNDED.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO SICK_AND_WOUNDED
+			(SCKWND_CD, CLNIC_NO, RCEPT_NO, PATNT_NO, SCKWND_KR, SCKWND_EN, BODY_CD, KCD, SCKWND_SE)
+		VALUES
+			(#{sckwndCd}, #{clnicNo}, #{rceptNo}, #{patntNo}, #{sckwndKr}, #{sckwndEn}, '', #{kcd}, #{sckwndSe})
+	</insert>
+	
+	<!-- 상병 삭제 -->
+	<delete id="deleteSAW" parameterType="String">
+		DELETE FROM SICK_AND_WOUNDED
+		WHERE CLNIC_NO=#{clnicNo}
+	</delete>
+	
+	<!-- 검사 오더 등록 -->
+	<insert id="insertMEO" parameterType="MedicalExaminationOrderVO" useGeneratedKeys="true">
+		<selectKey keyProperty="mecCd" order="BEFORE" resultType="String">
+			SELECT 'MEO' || SEQ_MEDICAL_EXAMINATION_ORDER.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO MEDICAL_EXAMINATION_ORDER
+			(MEC_CD, CLNIC_NO, RCEPT_NO, HLTHCHKP_CD, HLTHCHKP_DT, HLTHCHKP_RESULT, BODY_CD)
+		VALUES(#{mecCd}, #{clnicNo}, #{rceptNo}, #{hlthchkpCd}, 
+			 <choose>
+			 	<when test="hlthchkpDt != null">
+					#{hlthchkpDt},
+			 	</when>
+				<when test="hlthchkpDt == null">
+					null,
+				</when>
+			 </choose>
+			 <choose>
+			 	<when test="hlthchkpResult != null">
+					#{hlthchkpResult},
+			 	</when>
+				<when test="hlthchkpResult == null">
+					null,
+				</when>
+			 </choose>
+			 '')
+	</insert>
+	
+	<!-- 검사 오더 삭제 -->
+	<delete id="deleteMEO" parameterType="String">
+		DELETE FROM MEDICAL_EXAMINATION_ORDER
+		WHERE CLNIC_NO = #{clnicNo}
+	</delete>
+	
+	<!-- 치료 오더 등록 -->
+	<insert id="insertMTR" parameterType="MedicalTreatmentRecordVO" useGeneratedKeys="true">
+		<selectKey keyProperty="mdlrtrdCd" order="BEFORE" resultType="String">
+			SELECT 'MTR' || SEQ_MEDICAL_TREATMENT_RECORD.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO MEDICAL_TREATMENT_RECORD
+			(CLNIC_NO, RCEPT_NO, MDLRT_CD, MDLRT_CURER, BODY_CD, MDLRT_DT, MDLRTRD_CD)
+		VALUES(#{clnicNo}, #{rceptNo}, #{mdlrtCd}, '', '', '', #{mdlrtrdCd})
+	</insert>
+	
+	<!-- 치료 오더 삭제 -->
+	<delete id="deleteMTR" parameterType="String">
+		DELETE FROM MEDICAL_TREATMENT_RECORD
+		WHERE CLNIC_NO = #{clnicNo}
+	</delete>
+	
+	<!-- 처방 오더 등록 -->
+	<insert id="insertPO" parameterType="PrescriptionOrderVO" useGeneratedKeys="true">
+		<selectKey keyProperty="prscrptnCd" order="BEFORE" resultType="String">
+			SELECT 'PNO' || SEQ_PRESCRIPTION_ORDER.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO PRESCRIPTION_ORDER
+			(CLNIC_NO, RCEPT_NO, MEDCIN_CD, PRSCRPTN_NM, MDCTN_CPCTY, MDCTN_UNIT, MDCTN_CO, MDCTN_PD, MDCTN_COURS_USAGE, PRSCRPTN_CD)
+		VALUES(#{clnicNo}, #{rceptNo}, #{medcinCd}, #{prscrptnNm}, #{mdctnCpcty}, #{mdctnUnit}, #{mdctnCo}, #{mdctnPd}, #{mdctnCoursUsage}, #{prscrptnCd})
+	</insert>
+	
+	<!-- 처방 오더 삭제 -->
+	<delete id="deletePO" parameterType="String">
+		DELETE FROM PRESCRIPTION_ORDER
+		WHERE CLNIC_NO = #{clnicNo}
+	</delete>
+	
+	<!-- 상병 전체 조회 -->
+	<select id="selectSAWList" resultType="SickAndWoundedListVO">
+		SELECT a.sickcd, a.krnm, a.sicknm, a.wcd, a.msick, a.cdd, a.sex, a.max_age, a.min_age
+		FROM (
+		    SELECT sickcd, krnm, sicknm, wcd, msick, cdd, sex, max_age, min_age
+		    FROM sick_and_wounded_list
+		    ORDER BY sickcd asc
+		) a
+		WHERE ROWNUM &lt;= 100
+	</select>
+	
+	<!-- 상병 검색 조회 -->
+	<select id="selectSAW" parameterType="Map" resultType="SickAndWoundedListVO">
+		select sickcd, krnm, sicknm, wcd, msick, cdd, sex, max_age, min_age
+		from sick_and_wounded_list
+		where (sickcd like '%'||#{sawlKeyword}||'%' or krnm like '%'||#{sawlKeyword}||'%' or sicknm like '%'||#{sawlKeyword}||'%')
+		and rownum &lt;= 50
+	</select>
+	
+	<!-- 검사 전체 조회 -->
+	<select id="selectHCList" resultType="healthCheckupVO">
+		select hlthchkp_cd, hlthchkp_nm, mllwnc_at, hlthchkp_amount
+		from HEALTH_CHECKUP
+	</select>
+	
+	<!-- 검사 검색 조회 -->
+	<select id="selectHC" parameterType="Map" resultType="healthCheckupVO">
+		select hlthchkp_cd, hlthchkp_nm, mllwnc_at, hlthchkp_amount
+		from HEALTH_CHECKUP
+		where hlthchkp_cd like '%'||#{hCKeyword}||'%' or hlthchkp_nm like '%'||#{hCKeyword}||'%'
+	</select>
+	
+	<!-- 치료 전체 조회 -->
+	<select id="selectMTList" resultType="medicalTreatmentVO">
+		select mdlrt_cd, mdlrt_nm, mllwnc_at, mdlrt_amount, mdlrt_cl
+		from medical_treatment
+	</select>
+	
+	<!-- 치료 검색 조회 -->
+	<select id="selectMT" parameterType="Map" resultType="medicalTreatmentVO">
+		select mdlrt_cd, mdlrt_nm, mllwnc_at, mdlrt_amount, mdlrt_cl
+		from medical_treatment
+		where mdlrt_cd like '%'||#{mtKeyword}||'%' or mdlrt_nm like '%'||#{mtKeyword}||'%'
+	</select>
+	
+	<!-- 약품 전체 조회 -->
+	<select id="selectMedList" resultType="medicineVO">
+		select medcin_cd, medcin_nm, medcin_invntry, medcin_mfbiz, mdctn_cours, medcin_pc, medcin_standard, medcin_unit
+		from medicine
+	</select>
+	
+	<!-- 약품 검색 조회 -->
+	<select id="selectMed" parameterType="Map" resultType="medicineVO">
+		select medcin_cd, medcin_nm, medcin_invntry, medcin_mfbiz, mdctn_cours, medcin_pc, medcin_standard, medcin_unit
+		from medicine
+		where medcin_cd like '%'||#{mKeyword}||'%' or medcin_nm like '%'||#{mKeyword}||'%' or medcin_mfbiz like '%'||#{mKeyword}||'%'
+	</select>
+	
+	<!-- 검사 결과 조회 -->
+	<select id="selectMEOResult" parameterType="Map" resultType="MedicalExaminationOrderVO">
+		select meo.MEC_CD,
+				 meo.CLNIC_NO, 
+				 meo.RCEPT_NO,
+				 meo.HLTHCHKP_CD, 
+				 meo.HLTHCHKP_DT, 
+				 meo.HLTHCHKP_RESULT,
+				 hc.HLTHCHKP_CD,
+				 hc.HLTHCHKP_NM,
+				 hc.HLTHCHKP_AMOUNT,
+				 hc.MLLWNC_AT
+		from MEDICAL_EXAMINATION_ORDER meo
+		join HEALTH_CHECKUP hc on hc.HLTHCHKP_CD = meo.HLTHCHKP_CD
+		join clinic c on c.rcept_no = meo.rcept_no
+		where meo.clnic_no = #{clnicNo}
+	</select>
+	
+	<!-- 검사 xray 조회 -->
+	<select id="selectXrayResult" parameterType="Map" resultType="fileVO">
+		SELECT
+			    F.file_no
+			  , F.file_origin
+			  , F.file_flpth
+			  , MEO.HLTHCHKP_DT
+			FROM filemaster F
+			JOIN MEDICAL_EXAMINATION_ORDER MEO ON F.file_origin = MEO.MEC_CD
+			WHERE MEO.CLNIC_NO = #{clnicNo}
+			ORDER BY MEO.HLTHCHKP_DT
+	</select>
+	
+	<!-- 전처방 진료 날짜 및 진료 번호, 진료 여부 등 -->
+	<select id="selectClnicTime" parameterType="Map" resultMap="ClinicVO">
+		select clnic_no, clnic_time, rcept_no, clnic_at
+		from clinic
+		where patnt_no = #{patntNo}
+		order by clnic_time desc
+	</select>
+	
+	<!-- 날짜 클릭하면 진료번호로 진료 기록 뿌려주는 곳  -->
+	<select id="selectClinic" parameterType="Map" resultType="ClinicVO">
+		select	c.clnic_no,
+				 c.rcept_no, 
+				 c.patnt_no, 
+				 c.emp_no, 
+				 c.clnic_time, 
+				 c.clnic_cn, 
+				 c.clnic_at, 
+				 c.before_clnic_no,
+				 c.hsptlz_at, 
+				 c.clnic_memo, 
+				 c.atfss_dt, 
+				 c.clnic_fe,
+				 e.emp_no,
+				 e.emp_nm
+		from clinic c
+		join employee e on e.emp_no = c.emp_no
+		where clnic_no = #{clnicNo}
+		
+	</select>
+	
+	<!-- 최근 바이탈 하나만 가져오기 -->
+	<select id="selectVital" parameterType="String" resultType="vitalVO">
+		select vital_cd, 
+				hghrk_hhprs, 
+				lwtrk_hhprs, 
+				bdheat, 
+				emp_no, 
+				patnt_no, 
+				vital_date
+		from vitals
+		where patnt_no = #{patntNo}
+		and rownum &lt;= 1
+		order by vital_date desc
+	</select>
+	
+	<!-- 접수 테이블의 진료여부상태 업데이트(대기환자 리스트 출력 때 사용) -->
+	<update id="updateRceptClnicAt" parameterType="Map">
+		UPDATE RCEPT
+			SET RCEPT_CLNIC_AT = #{rceptClnicAt}
+		WHERE RCEPT_NO = #{rceptNo}
+	</update>
+	
+	<!-- 검사완료 환자 재호출시 사용 시작-->
+	<!-- 상병 조회 -->
+	<select id="selectPastTableSAW" parameterType="SickAndWoundedVO" resultType="String">
+		select  msick
+		from sick_and_wounded_list
+	    where sickcd = #{kcd} and krnm = #{sckwndKr} and sicknm = #{sckwndEn}
+	</select>
+	
+	<!-- 치료 조회 -->
+	<select id="selectPastTableMTR" parameterType="String" resultType="selectAllMedicalTreatmentRecordVO">
+		select  
+				mt.MDLRT_CD, mt.MDLRT_NM, mt.MDLRT_AMOUNT, mt.MLLWNC_AT, mt.MDLRT_CL
+		from MEDICAL_TREATMENT_RECORD mtr
+		left outer join MEDICAL_TREATMENT mt on mtr.MDLRT_CD = mt.MDLRT_CD
+	    where mtr.clnic_no = #{clnicNo}
+	</select>
+	
+	<!-- 처방 조회 -->
+	<select id="selectPastTablePO" parameterType="String" resultType="PrescriptionOrderVO">
+		select m.MEDCIN_CD,
+				 m.MEDCIN_NM, 
+				 m.MEDCIN_INVNTRY, 
+				 m.MEDCIN_MFBIZ, 
+				 m.MDCTN_COURS, 
+				 m.MEDCIN_PC, 
+				 m.MEDCIN_STANDARD, 
+				 m.MEDCIN_UNIT,
+				 po.PRSCRPTN_NM,
+                 po.MDCTN_CPCTY, 
+                 po.MDCTN_UNIT, 
+                 po.MDCTN_CO, 
+                 po.MDCTN_PD, 
+                 po.MDCTN_COURS_USAGE, 
+                 po.PRSCRPTN_CD
+		from PRESCRIPTION_ORDER po
+		left outer join MEDICINE m on m.MEDCIN_CD = po.MEDCIN_CD
+	    where po.clnic_no = #{clnicNo}
+	</select>
+	<!-- 검사완료 환자 재호출시 사용 끝 -->
+	
+	<select id="selectClnicAt" parameterType="String" resultType="String">
+		select CLNIC_AT
+		from CLINIC
+		where CLNIC_NO = #{clnicNo}
+	</select>
+	
+</mapper>

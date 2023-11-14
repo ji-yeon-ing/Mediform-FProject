@@ -1,0 +1,216 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 | 행정관리자</title>
+<style type="text/css">
+.footer {
+	bottom: -120px !important;
+}
+
+@media screen and (max-width: 768px) {
+    #chart-container {
+        max-width: 90%; /* 크기를 축소하여 페이지 너비에 맞추어 설정 */
+        max-height: auto; /* 높이를 자동으로 조절 (가로 크기에 맞추어) */
+    }
+}
+
+#chart-container {
+  margin-top : 20px;
+  font-family: Arial;
+  height: 630px; 
+  max-height: 100vh;
+  overflow: outo;
+  text-align: center; 
+  
+  max-width: 100%;
+  max-height: 100vh;
+
+  /* 내부 요소 축소 */
+  transform: scale(0.9);
+  
+  margin-left: 0; /* 왼쪽 margin을 제거 */
+  padding-left: 0; /* 왼쪽 padding을 제거 */
+}
+
+
+
+.card-body {
+    overflow: auto;
+}
+
+
+.orgchart {
+	margin-top: 150px;
+	background-color: dce1f1 !important;
+}
+
+.content{
+	min-height: initial !important;
+	padding: 0px 0px 0px;
+}
+
+.orgchart {
+  background: #fff; 
+}
+.orgchart td.left, .orgchart td.right, .orgchart td.top {
+  border-color: #aaa;
+}
+.orgchart td>.down {
+  background-color: #aaa;
+}
+.orgchart .node.a .title {
+  background-color: #006699;
+}
+.orgchart .node.a .content {
+  border-color: #006699;
+}
+.orgchart .node.m .title {
+  background-color: #009933;
+}
+.orgchart .node.m .content {
+  border-color: #009933;
+}
+.orgchart .node.d .title {
+  background-color: #993366;
+}
+.orgchart .node.d .content {
+  border-color: #993366;
+}
+.orgchart .node.k .title {
+  background-color: rgb(167 120 52 / 80%);
+}
+.orgchart .node.k .content {
+  border-color: rgb(167 120 52 / 80%);
+}
+.orgchart .node.t .title {
+  background-color: #cc0066;
+}
+.orgchart .node.t .content {
+  border-color: #cc0066;
+}
+</style>
+</head>
+<body>
+<!-- empList -->
+
+
+<div class="col-xl-12 ps-xl-2">
+	<div class="card mb-3 h-100">
+			<div class="card-header bg-body-tertiary" style="border-bottom: 1px solid #ededed;">
+				<div class="row flex-between-end">
+					<div class="col-auto align-self-center">
+						<h4 class="mb-0" id="" style="font-weight: bold;">
+							직원 조직도
+						</h4>
+					</div>
+				</div>
+			</div>
+		<!-- 차트를 넣어 줄 div -->
+		<div class="card-body " style="background-color: white;">
+			<div id="chart-container"></div>
+		</div>
+	</div>
+	
+</div>
+
+
+</body>
+
+
+<!-- orgChart CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.min.js" integrity="sha512-sH+LFgoJ3xJg6M/Cctv7Z2do3+v3pqrnBQ+syZQ2ba3m+9Pn+DRk9tnrxTNwj0UyobSLH3y5nllfW8NciXFXzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/css/jquery.orgchart.css" integrity="sha512-EI6cAXPQqWMtfipmZL+/sUUkYdtZaLeT4EDr2QPGHALTrMBdG+SRRB1Js/BKp+PhMkSAQDe4EeLNtJEXi4Q2gA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/css/jquery.orgchart.min.css" integrity="sha512-fHRvDahNxYL6wL33k4xHr6AEChx9q8Xas+GeBwmRZd42z9bhNp9z3VJlm8U2I0a3CHl/oId7cCHfV266b2qD9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.8.0/js/jquery.orgchart.js" integrity="sha512-9SwA1lt8gV23ocIgfPMJacGlI31kHEYtItc6g/OoB5oc2TIJSeMQZYNXackgzK0IVRdor2Qiw3DlwjoEaslMiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+<script type="text/javascript">
+(function($){
+
+	  $(function() {
+		  // 1안
+// 		var jsonStr = "${jsonStr}"; // JSON 문자열로 감싸야 함
+// 		var dataSource = JSON.parse(jsonStr); // JSON 문자열을 JavaScript 객체로 변환
+
+
+		// 2안
+// 		var dataSource = JSON.parse(${jsonStr});
+
+		// 3안
+// 		var dataSource = ${jsonStr };
+		
+		// 입력값을 직접 준 json
+// 	    var dataSource = {
+// 	    /* 병원장 */		
+// 	      'name': '송중호',
+// 	      'title': '병원장',
+// 	      'className': 'k',
+	      
+// 	      /* 병원장 바로 밑의 직급(행정관리자, 원무과장, 부원장, 간호사, 물리치료과장) */
+	      
+// 	      'children': [
+	      
+// 	    	/* 행정관리자 */
+// 	        { 'name': '박지석', 'title': '행정관리자', 'className': 'm'},
+	        
+// 	        /* 원무과장 */
+// 	        { 'name': '오재원', 'title': '원무과장', 'className': 'a',
+// 	          'children': [
+	        	  
+// 	        	/* 원무과 직원 */  
+// 	            { 'name': '송기돈', 'title': '원무', 'className': 'a' },
+// 	            { 'name': '임찬빈', 'title': '원무', 'className': 'a'}	           
+// 	            ]
+// 	        },
+	        
+// 	        /* 부원장 */
+// 	        { 'name': '우태원', 'title': '부원장', 'className': 'd',
+// 	          'children': [
+	        	  
+// 	        	/* 의사 */  
+// 	            { 'name': '남민주', 'title': '의사', 'className': 'd' },
+// 	            { 'name': '이서준', 'title': '의사', 'className': 'd'}	            
+// 	            ]
+// 	        },
+	        
+// 	        /* 간호사 */
+// 	        { 'name': '박유빈', 'title': '간호과장', 'className': 'n',
+// 	          'children': [
+	        	  
+// 	        	/* 간호 */  
+// 	            { 'name': '김지연', 'title': '간호', 'className': 'n' },
+// 	            { 'name': '차수연', 'title': '간호', 'className': 'n'} 
+// 	            ]
+// 	        },
+	            
+// 	        /* 물리치료사 */
+// 	        { 'name': '임찬빈', 'title': '물리치료과장', 'className': 't',
+// 	          'children': [
+	        	  
+// 	        	/* 물리 */  
+// 	            { 'name': '박찬호', 'title': '치료', 'className': 't' },
+// 	            { 'name': '류현진', 'title': '치료', 'className': 't'}, 
+// 	          ]
+// 	        }
+	      
+// 	    /* 여기까지 */    
+// 	      ]
+// 	    };
+		
+	    var oc = $('#chart-container').orgchart({
+	      'data' : JSON.parse('${jsonStr}'),
+	      'nodeContent': 'title'
+	    });
+
+	  });
+
+	})(jQuery);
+</script>
+</html>

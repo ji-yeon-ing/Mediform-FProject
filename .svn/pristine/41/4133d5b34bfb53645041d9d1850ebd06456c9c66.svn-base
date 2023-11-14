@@ -1,0 +1,94 @@
+package kr.or.ddit.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.ChattingRoomVO;
+import kr.or.ddit.common.vo.ChattingVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.mapper.common.ChattingMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class ChattingServiceImpl implements IChattingService {
+
+	@Inject
+	private ChattingMapper chattingMapper;
+	
+	@Override
+	public List<EmployeeVO> friendList() {
+		
+		List<EmployeeVO> friendList = chattingMapper.friendList();
+		
+		log.info("친구 목록 : " + friendList);
+		
+		return friendList;
+	}
+
+	@Override
+	public ServiceResult insertChattMember(String roomName, List<String> selectedFriendValues) {
+		
+		ServiceResult result = null;
+		
+		int status = chattingMapper.createRoom(roomName);
+		
+		if(status > 0) {
+			for(String chattingEmployeerId : selectedFriendValues) {
+				ChattingRoomVO chattingRoomVO = new ChattingRoomVO();
+				
+				chattingRoomVO.setEmpNo(chattingEmployeerId);
+				chattingRoomVO.setChttRoomNm(roomName);
+				
+				
+				chattingMapper.insertChattMember(chattingRoomVO);
+				result = ServiceResult.OK;
+			}
+			chattingMapper.insertFirstInvite();
+			
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		
+		
+		return result;
+	}
+
+	@Override
+	public List<ChattingRoomVO> selectChattingRoomList(Map<String, String> map) {
+		
+		List<ChattingRoomVO> chattingRoomList = chattingMapper.selectChattingRoomList(map);
+		
+		return chattingRoomList;
+	}
+
+	@Override
+	public ServiceResult chattingInsert(Map<String, String> map) {
+		
+		ServiceResult result = null;
+		
+		int status = chattingMapper.chattingInsert(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public List<ChattingVO> chattingList(Map<String, Object> map) {
+	
+		List<ChattingVO> chattingList = chattingMapper.chattingList(map);
+		
+		return chattingList;
+	}
+
+}

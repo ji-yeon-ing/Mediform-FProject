@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper.common;
+
+import java.util.List;
+
+import kr.or.ddit.common.vo.SchedulerVO;
+
+public interface SchedulerMapper {
+
+	public int schedulerinsert(SchedulerVO scheduler);
+
+	public List<SchedulerVO> schedulerList();
+
+	public int schedulerdelete(String schdlCd);
+
+	public int schedulerupdate(SchedulerVO scheduleVO);
+
+}

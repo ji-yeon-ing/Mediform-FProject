@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerStatisticsMapper">
+
+	<select id="dayAuditList" resultType="statisticsVO">
+	    <![CDATA[
+	    select AUDIT_ATNDDU, count
+	    from (
+	        select AUDIT_ATNDDU, count(*) as count
+	        from AUDIT_DCRYMANAGE
+	        where trunc(CNTN_DT) = trunc(SYSDATE)
+	        group by AUDIT_ATNDDU
+	        order by count(*) desc
+	    )
+	    
+	    where rownum <= 5
+	    ]]>
+	</select>
+	
+	<select id="weekAuditList" resultType="statisticsVO">
+	   <![CDATA[
+	    select AUDIT_ATNDDU, count
+	    from (
+	        select AUDIT_ATNDDU, count(*) as count
+	        from AUDIT_DCRYMANAGE
+	        where trunc(CNTN_DT) >= trunc(SYSDATE) - 7
+	        and trunc(CNTN_DT) <= trunc(SYSDATE)
+	        group by AUDIT_ATNDDU
+	        order by count(*) desc
+	    )
+	    
+	    where rownum <= 5
+	    ]]>
+	</select>
+	
+	<select id="monthAuditList" resultType="statisticsVO">
+		<![CDATA[
+	    select AUDIT_ATNDDU, count
+	    from (
+	        select AUDIT_ATNDDU, count(*) as count
+	        from AUDIT_DCRYMANAGE
+	        where extract(MONTH from CNTN_DT) = extract(MONTH from SYSDATE)
+	        and extract(YEAR from CNTN_DT) = extract(YEAR from SYSDATE)
+	        group by AUDIT_ATNDDU
+	        order by count(*) desc
+	    )
+	    where rownum <= 5
+	    ]]>
+	</select>
+	
+	<select id="yearAuditList" resultType="statisticsVO">
+	    <![CDATA[
+	    SELECT AUDIT_ATNDDU, count
+		FROM (
+		    SELECT AUDIT_ATNDDU, COUNT(*) AS count
+		    FROM AUDIT_DCRYMANAGE
+		    WHERE EXTRACT(YEAR FROM CNTN_DT) = EXTRACT(YEAR FROM SYSDATE)
+		    GROUP BY AUDIT_ATNDDU
+		    ORDER BY COUNT(*) DESC
+		)
+		WHERE ROWNUM <= 5
+	    ]]>
+	</select>
+	
+	<select id="accessAuditList" resultType="statisticsVO">
+		SELECT
+		    CASE
+		        WHEN SUBSTR(emp_no, 1, 1) = 'a' THEN '원무'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'm' THEN '관리자'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'n' THEN '간호사'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'd' THEN '의사'
+		        WHEN SUBSTR(emp_no, 1, 1) = 't' THEN '치료사'
+		        WHEN SUBSTR(emp_no, 1, 1) = 'k' THEN '병원장'
+		        ELSE SUBSTR(emp_no, 1, 1)
+		    END AS name,
+		    COUNT(*) AS value
+		FROM AUDIT_DCRYMANAGE
+		GROUP BY SUBSTR(emp_no, 1, 1)
+		ORDER BY name
+	</select>
+
+	<select id="genderSumList" resultType="statisticsVO">
+		select 
+			case 
+				WHEN PATNT_SEXDSTN = 'M' THEN '남자'
+				WHEN PATNT_SEXDSTN = 'F' THEN '여자'
+				ELSE PATNT_SEXDSTN
+			END AS name, 
+			count(*) as value 
+		from patient 
+		group by PATNT_SEXDSTN
+		order by name asc
+	</select>
+	
+	<select id="ageSumList" resultType="statisticsVO">
+	<![CDATA[
+	SELECT
+	    name,
+	    COUNT(*) AS value
+	FROM (
+	    SELECT
+	        CASE
+	            WHEN PATNT_AGE < 20 THEN '20대 이하'
+	            WHEN PATNT_AGE < 30 THEN '20대'
+	            WHEN PATNT_AGE < 40 THEN '30대'
+	            WHEN PATNT_AGE < 50 THEN '40대'
+	            WHEN PATNT_AGE < 60 THEN '50대'
+	            WHEN PATNT_AGE < 70 THEN '60대'
+	            ELSE '70대 이상'
+	        END AS name
+	    FROM PATIENT
+	) 
+	GROUP BY name
+	ORDER BY name
+	]]>
+	</select>
+	
+	<select id="addrList" resultType="statisticsVO">
+		SELECT
+		    '중구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 중구 %'
+		UNION ALL
+		SELECT
+		    '대덕구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 대덕구 %'
+		UNION ALL
+		SELECT
+		    '유성구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 유성구 %'
+		UNION ALL
+		SELECT
+		    '서구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 서구 %'
+		UNION ALL
+		SELECT
+		    '동구' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 LIKE '% 동구 %'
+		UNION ALL
+		SELECT
+		    '타지' AS name,
+		    COUNT(*) AS value
+		FROM PATIENT
+		WHERE PATNT_ADRES1 NOT LIKE '% 중구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 대덕구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 유성구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 서구 %'
+		  AND PATNT_ADRES1 NOT LIKE '% 동구 %'
+	</select>
+	
+	<select id="timeList" resultType="statisticsVO">
+	<![CDATA[
+	WITH TimeSlots AS (
+	  SELECT LEVEL + 8 AS TIMESLOT
+	  FROM DUAL
+	  CONNECT BY LEVEL <= 9
+	)
+	SELECT 
+	  TO_CHAR(TimeSlots.TIMESLOT, 'FM00') || ':00' AS "name",
+	  COALESCE(COUNT(clinic.CLNIC_TIME), 0) AS "value"
+	FROM TimeSlots
+	LEFT JOIN clinic ON TO_NUMBER(TO_CHAR(clinic.CLNIC_TIME, 'HH24')) = TimeSlots.TIMESLOT
+	GROUP BY TimeSlots.TIMESLOT
+	ORDER BY TimeSlots.TIMESLOT
+	]]>
+	</select>
+	
+	<select id="revisitList" resultType="statisticsVO">
+	<![CDATA[
+		SELECT '재원' AS name, COUNT(*) AS value
+		FROM (
+		  SELECT PATNT_NO, COUNT(*) AS visit_count
+		  FROM RCEPT
+		  GROUP BY PATNT_NO
+		  HAVING COUNT(*) >= 2
+		)
+		UNION
+		SELECT 'Other' AS name, COUNT(*) AS value
+		FROM (
+		  SELECT PATNT_NO, COUNT(*) AS visit_count
+		  FROM RCEPT
+		  GROUP BY PATNT_NO
+		  HAVING COUNT(*) = 1
+		)
+	]]>
+	</select>
+	
+	<select id="doctorStatisticsList" resultType="statisticsVO">
+	<![CDATA[
+	WITH DateList AS (
+	    SELECT TRUNC(SYSDATE) - LEVEL + 1 AS days
+	    FROM DUAL
+	    CONNECT BY LEVEL <= 7
+	)
+	SELECT
+	    E.EMP_NM AS empNm,
+	    TO_CHAR(DL.days, 'YYYY-MM-DD') AS sevenDays,
+	    C.CLNIC_NO AS clinicNo,
+	    COUNT(R.RCEPT_NO) AS value
+	FROM
+	    DateList DL
+	JOIN
+	    CLINIC_ASSIGNMENT C ON 1 = 1
+	JOIN
+	    EMPLOYEE E ON C.EMP_NO = E.EMP_NO
+	LEFT JOIN
+	    RCEPT R ON R.RCEPT_CLNC = C.CLNIC_NO
+	    AND TRUNC(R.RCEPT_DT) = DL.days
+	WHERE 
+	    C.CLNIC_NO IN ('d1', 'd2', 'd3', 'd4')
+	GROUP BY
+	    E.EMP_NM, TO_CHAR(DL.days, 'YYYY-MM-DD'), C.CLNIC_NO
+	ORDER BY
+	    E.EMP_NM, TO_CHAR(DL.days, 'YYYY-MM-DD')
+	]]>
+	</select>
+
+	
+	
+
+
+</mapper>

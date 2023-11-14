@@ -1,0 +1,89 @@
+package kr.or.ddit.doctor.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.administration.service.IHospitalizationService;
+import kr.or.ddit.common.vo.SickbedVO;
+import kr.or.ddit.doctor.service.IDoctorRoundService;
+import kr.or.ddit.doctor.vo.DoctorRoundClinicVO;
+import kr.or.ddit.doctor.vo.DoctorRoundInpatientRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundNurseRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundOtptRecordVO;
+import kr.or.ddit.doctor.vo.DoctorRoundPrescriptionOrderVO;
+import kr.or.ddit.doctor.vo.DoctorRoundSickAndWoundedVO;
+import kr.or.ddit.doctor.vo.DoctorRoundVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/mediform/doctor/round")
+@Controller
+public class DoctorWardRoundController {
+
+	// 입원 환자 관련 service
+	@Inject
+	private IHospitalizationService hospitalization;
+	
+	// 회진 관련 service
+	@Inject
+	private IDoctorRoundService roundService;
+	
+	@RequestMapping(value="/main")
+	public String doctorWardRoundMain(Model model) {
+		
+		List<SickbedVO> sickbedList = hospitalization.selectSickbedList();
+		model.addAttribute("sickbedList", sickbedList);
+		
+		return "doctor/roundMain";
+	}
+	
+	@PostMapping(value="/patient/detail")
+	public ResponseEntity<DoctorRoundVO> getPatientList(@RequestBody DoctorRoundVO roundVO){
+		
+		// 회진 내역 날짜 List
+		List<DoctorRoundInpatientRecordVO> inpatientRecordList = roundService.getInpatientRecordDateList(roundVO);
+		
+		// 진료 내역 날짜 List
+		// 진료 일시와 진료번호만 가져옴
+		List<DoctorRoundClinicVO> clinicList = roundService.getClinicDateList(roundVO);
+		
+		// 치료기록지 날짜 List
+		List<DoctorRoundOtptRecordVO> otptRecordList = roundService.getOtptRecordDateList(roundVO);
+		
+		// 간호기록지 날짜 List
+		List<DoctorRoundNurseRecordVO> nurseRecordList = roundService.getNurseRecordDateList(roundVO);
+		
+		DoctorRoundVO responseRoundVO = new DoctorRoundVO();
+		responseRoundVO.setInpatientRecordList(inpatientRecordList);
+		responseRoundVO.setClinicList(clinicList);
+		responseRoundVO.setOtptRecordList(otptRecordList);
+		responseRoundVO.setNurseRecordList(nurseRecordList);
+		
+		return new ResponseEntity<DoctorRoundVO>(responseRoundVO, HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/clinic/detail")
+	public ResponseEntity<DoctorRoundClinicVO> getClinic(@RequestBody DoctorRoundClinicVO clinicVO){
+		
+		
+		log.info("clinicVO.getClnicNo() : " + clinicVO.getClnicNo());
+		
+		DoctorRoundClinicVO responseClinicVO = roundService.getClinicVO(clinicVO);
+		List<DoctorRoundSickAndWoundedVO> roundSickAndWoundedList = roundService.roundSickAndWoundedList(clinicVO);
+		List<DoctorRoundPrescriptionOrderVO> prescriptionOrderList = roundService.prescriptionOrderList(clinicVO);
+		
+//		responseClinicVO.setRoundSickAndWoundedList(roundSickAndWoundedList);
+		responseClinicVO.setPrescriptionOrderList(prescriptionOrderList);
+		
+		return new ResponseEntity<DoctorRoundClinicVO>(responseClinicVO, HttpStatus.OK);
+	}
+}

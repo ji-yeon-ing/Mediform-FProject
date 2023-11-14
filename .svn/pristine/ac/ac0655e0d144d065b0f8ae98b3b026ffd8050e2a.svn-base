@@ -1,0 +1,25 @@
+package kr.or.ddit.nurse.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.nurse.NurseMapper;
+import kr.or.ddit.nurse.service.RecordService;
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+
+@Service
+public class RecordImpl implements RecordService {
+
+	@Inject
+	private NurseMapper nurseMapper;
+	
+	@Override
+	public List<NurseRecordVO> selectRecordList(Map<String, String> map) {
+		return nurseMapper.selectRecordList(map);
+	}
+
+}

@@ -1,0 +1,306 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메디폼 │ 행정관리자</title>
+<style type="text/css">
+#header{
+	font-weight: bold;
+}
+
+body{
+	overflow: hidden !important;
+}
+
+.text-nowrap{
+	cursor: pointer;
+}
+
+#searchBtn, #spanCss{
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* 부모 요소의 높이를 100%로 설정하여 세로 가운데 정렬합니다. */
+}
+
+#pagingArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+</head>
+<body>
+<div class="row mb-3 g-3">
+	
+	<!-- 감사 list -->
+	<div class="col-lg-12">
+	
+		<!-- btn -->
+		<div class="d-flex justify-content-end mt-1" style="margin-bottom: 5px;">
+			<div class="">
+				<button
+					class="btn btn-falcon-primary btn-sm" type="button" id="excelFileExport">EXCEL
+				</button>
+				<button
+					class="btn btn-falcon-primary btn-sm" type="button" id="pdfBtn">PDF
+				</button>
+			</div>
+		</div>
+			
+		<div class="card" style="height: 820px;" id="pdfDiv">
+	       <div class="card-header d-flex flex-between-center py-2 border-bottom" style="background-color: midnightblue">
+	         <div class="row flex-between-end">
+	           <div class="col-auto align-self-center">
+	             <h5 class="mb-0 text-white fw-semi-bold" id="header">감사 기록</h5>
+	           </div>
+	           <div class="col-auto ms-auto">
+	           </div>
+	         </div>
+	       </div>
+	       <div class="card-body pt-0">
+	         <div class="row" style="margin-top:20px; margin-bottom: 20px;">
+			    <form action="/mediform/manager/audit/list/select" method="post" id="searchForm" style="display: flex; padding-left: 0;">
+				   <div style="display: flex; margin-left: 40px;">
+				  		<input type="hidden" name="page" id="page" />    
+				        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="" name="searchType" style="width: initial; ">
+				            <option value="all" <c:if test="${searchType eq 'all'}">selected</c:if>>전체</option>
+				            <option value="a" <c:if test="${searchType eq 'a'}">selected</c:if>>원무</option>
+				            <option value="d" <c:if test="${searchType eq 'd'}">selected</c:if>>전문</option>
+				            <option value="n" <c:if test="${searchType eq 'n'}">selected</c:if>>간호</option>
+				            <option value="t" <c:if test="${searchType eq 't'}">selected</c:if>>치료</option>
+				            <option value="m" <c:if test="${searchType eq 'm'}">selected</c:if>>관리</option>
+				        </select>
+			        	<div class="input-group" id="empSearchBox" style="display: flex;">
+			            <input class="searchInput form-control search-input " type="search" placeholder="사번/성함/URL을 입력해 주세요." 
+			            aria-label="Search" id="searchWordBox"  value="${searchWord }" name="searchWord" style="width:280px;"/>
+			        	</div>
+			       </div>
+			       &nbsp;
+         			<div style="display: flex; justify-content: flex-end;">
+         				<input type="date" id="selectDate1" name="startDate" value="<fmt:formatDate value='${startDate }' pattern='yyyy-MM-dd'/>"> 
+         				<span id="spanCss">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+         				<input type="date" id="selectDate2" name="endDate" value="<fmt:formatDate value='${endDate }' pattern='yyyy-MM-dd'/>">
+         				&nbsp;
+         				<button class="btn btn-outline-secondary me-1 mb-1"  type="button" id="searchBtn">검색</button> 
+					</div>
+			        <sec:csrfInput />
+			    </form>
+	         </div>
+	         <div class="tab-content">
+	           <div class="tab-pane preview-tab-pane active" role="tabpanel" aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923" id="dom-1123d529-5101-4101-b597-dac496b93923">
+	             <div class="table-responsive scrollbar" style="height: 600px;">
+	               <table class="table table-hover table-striped overflow-hidden" id="tableData">
+	                 <thead>
+	                   <tr style="height: 55px;">
+	                     <th class=" text-start" scope="col">접속일시</th>
+	                     <th class=" text-center" scope="col">IP</th>
+	                     <th class=" text-center" scope="col">사번</th>
+	                     <th class=" text-center" scope="col">이름</th>
+	                     <th class=" text-start" scope="col" style="padding-left: 200px;">접근URI</th>
+	                     <th class=" text-start" scope="col" style="padding-left: 100px;">수행 업무</th>
+	                   </tr>
+	                 </thead>
+	                 <tbody>
+               		 <c:set value="${pagingVO.dataList }" var="auditList"/>
+	                 <c:choose>
+	                 	<c:when test="${empty auditList  }">
+		                   <tr style="height: 50px;">
+	    	             		<td class="col-2 text-center" colspan="6" scope="col">해당 내역이 존재하지 않습니다.</td>
+		                   </tr>
+	                 	</c:when>
+	                 	<c:otherwise>
+	                 		<c:forEach items="${auditList }" var="audit">
+			                   <tr style="height: 50px;">
+			                 	 <td class=" text-start" scope="col">
+			                 	 	<fmt:formatDate value="${audit.cntnDt }" pattern="yyyy.MM.dd HH:mm"/>
+			                 	 </td>
+			                 	 <td class=" text-center" scope="col">${audit.ipAdres }</td>
+			                 	 <td class=" text-center" scope="col">${audit.empNo }</td>
+			                 	 <td class=" text-center" scope="col">${audit.empNm }</td>
+			                 	 <td class=" text-start" scope="col" >${audit.cntnScrin }</td>
+			                 	 <td class=" text-start" scope="col">${audit.auditAtnddu }</td>
+			                   </tr>
+		                   </c:forEach>
+	                 	</c:otherwise>
+	                 </c:choose>
+	                 </tbody>
+	               </table>
+	             </div>
+	           </div>
+	         </div>
+	           <div class="clearfix col-auto align-self-center pagingArea" id="pagingArea">
+					${pagingVO.pagingHTML }
+				</div>
+	       </div>
+	     </div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	
+	
+	// 페이징 처리
+	var searchForm = $("#searchForm");
+	var pagingArea = $("#pagingArea");
+	// 검색 버튼 이벤트
+	var searchBtn = $('#searchBtn');
+	searchBtn.on('click', function(){
+		searchForm.submit();
+	});
+	
+	// 해당 검색창에서 엔터 누르면 이벤트 발생
+	$("#searchWordBox").on("keydown", function(e) {
+	    if (e.key === "Enter") { 
+	    	searchForm.submit();
+	    }
+	});
+	
+	pagingArea.on("click", "a", function(event){
+		
+		event.preventDefault();
+		var pageNo = $(this).data("page")
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+		
+	});
+	
+	// 테이블 -> 엑셀 버튼
+	 $("#excelFileExport").click(function(){
+	        exportExcel();
+	 });
+	// =========================================================================
+	// HTML 테이블을 EXCEL로
+	function s2ab(s) { 
+	    var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+	    var view = new Uint8Array(buf);  //create uint8array as viewer
+	    for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+	    return buf;    
+	}
+	function exportExcel(){ 
+	    // step 1. workbook 생성
+	    var wb = XLSX.utils.book_new();
+
+	    // step 2. 시트 만들기 
+	    var newWorksheet = excelHandler.getWorksheet();
+	    
+	    // step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.  
+	    XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler.getSheetName());
+
+	    // step 4. 엑셀 파일 만들기 
+	    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+	    // step 5. 엑셀 파일 내보내기 
+	    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelHandler.getExcelFileName());
+	}	
+	
+	var excelHandler = {
+       	
+	        getExcelFileName : function(){
+	            return '감사기록내역.xlsx';
+	        },
+	        getSheetName : function(){
+	            return '감사기록';
+	        },
+	        getExcelData : function(){
+	        	return document.getElementById('tableData');  
+	        },
+	        getWorksheet : function(){
+	            return XLSX.utils.table_to_sheet(this.getExcelData());
+	        }
+	}
+	// =========================================================================
+		
+	// =========================================================================
+	// pdf 변환	
+	function pdfPrint() {
+	    var pdfDiv = $('#pdfDiv');
+	    var a4Width = 210; // A4 가로 크기 (mm 단위)
+
+	    html2canvas(pdfDiv, {
+	        onrendered: function (canvas) {
+	            var imgData = canvas.toDataURL('image/png');
+	            var pageWidth = a4Width;
+	            var scaleFactor = 1.5; // 이미지 확대 비율
+	            var imgHeight = canvas.height * pageWidth / canvas.width * scaleFactor;
+	            var imgWidth = pageWidth * 1.4;
+
+	            var doc = new jsPDF('l', 'mm', 'a4'); // 'l'은 가로 방향
+
+	            var position = 0;
+
+	            // 이미지의 가로 중앙 정렬
+	            var x = (pageWidth - imgWidth) / 2 + 45; 
+	            // 페이지의 세로 중앙에 위치
+	            var y = (a4Width - imgHeight) / 4.0;
+
+	            doc.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+
+	            // 파일 저장
+	            doc.save('감사기록내역.pdf');
+	        }
+	    });
+	}
+ 
+	 var pdfBtn = $('#pdfBtn');
+	 pdfBtn.on('click', function(){
+		 $('body').find('svg').each(function() {
+			    $(this).attr('width', this.getBoundingClientRect().width);
+			    $(this).attr('height', this.getBoundingClientRect().height);
+			    $(this).css('width', null);
+			    $(this).css('height', null);
+		 });
+		 pdfPrint();
+	 });
+	//=========================================================================		
+	
+	/* 검색 x버튼 누르면 검색창 초기화 */
+	var searchXbtn = $('.btn-close-falcon-container');
+	searchXbtn.on('click', function(){
+		event.preventDefault();
+		$('.fuzzy-search').val("");
+	});
+	
+	// 날짜 유효성 검사
+	$('#selectDate1').on('change', function() {
+        var date1 = new Date($(this).val());
+        var date2 = new Date($('#selectDate2').val());
+
+        if (date1 > date2) {
+        	Swal.fire({
+			      icon: 'error',
+			      title: 'error',
+			      html: '입력한 날짜 범위가 올바르지 않습니다. <br> 시작 날짜는 종료 날짜보다 이전이어야 합니다.',
+			      confirmButtonColor: 'blue'
+			    });
+            $(this).val(''); // 값을 변경하지 않음
+        }
+    });
+
+    // selectDate2 값 변경 감지
+    $('#selectDate2').on('change', function() {
+        var date1 = new Date($('#selectDate1').val());
+        var date2 = new Date($(this).val());
+
+        if (date2 < date1) {
+        	Swal.fire({
+			      icon: 'error',
+			      title: 'error',
+			      html: '입력한 날짜 범위가 올바르지 않습니다. <br> 종료 날짜는 시작 날짜보다 이후여야 합니다.',
+			      confirmButtonColor: 'blue'
+			    });
+            $(this).val(''); // 값을 변경하지 않음
+        }
+    });	
+});
+</script>
+</body>
+</html>

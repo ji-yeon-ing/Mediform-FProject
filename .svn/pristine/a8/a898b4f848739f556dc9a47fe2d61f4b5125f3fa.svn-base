@@ -1,0 +1,25 @@
+package kr.or.ddit.patient.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.patient.PatientMapper;
+import kr.or.ddit.patient.service.IPatientService;
+import kr.or.ddit.patient.vo.PatientVO;
+
+@Service
+public class PatientImpl implements IPatientService{
+
+	@Inject
+	private PatientMapper patientMapper;
+
+	@Override
+	public List<PatientVO> selectPatientList() {
+		return patientMapper.selectPatientList();
+	}
+	
+	
+}

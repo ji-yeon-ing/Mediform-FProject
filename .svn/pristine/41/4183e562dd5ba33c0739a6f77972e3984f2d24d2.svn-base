@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.RoomMapper">
+	
+	<resultMap type="NurseRecordVO" id="NurseRecordVO">
+		<id property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="clnicNo" column="CLNIC_NO"/>
+		<result property="rceptNo" column="RCEPT_NO"/>
+		<result property="nrsRcordCd" column="NRS_RCORD_CD"/>
+		<result property="nrsRcordDe" column="NRS_RCORD_DE"/>
+		<result property="nrsRcordWrter" column="NRS_RCORD_WRTER"/>
+		<result property="nrsRcordCn" column="NRS_RCORD_CN"/>
+		<result property="nrsRcordMemo" column="NRS_RCORD_MEMO"/>
+	</resultMap>
+	
+	
+	
+	<!-- 입원 환자정보 조회 -->
+	<select id="selectHsptlzList" parameterType="String" resultType="patientVO">
+		select
+		    PATNT_NO, PATNT_NM, PATNT_RRNO1, PATNT_RRNO2, PATNT_TELNO, PATNT_ZIP, PATNT_ADRES1, PATNT_ADRES2,
+		    PATNT_AGE, PATNT_SEXDSTN, PRTCTOR_NM, PRTCTOR_TELNO, PATNT_AGRE, PATNT_HEIGHT, PATNT_BDWGH,
+		    PATNT_BDP, PATNT_HLTHINS_AT, PATNT_MEMO, PATNT_HSPTLZ_AT
+		from patient
+		where PATNT_HSPTLZ_AT = 'Y'
+	</select>
+	
+	<!-- 간호기록내역조회 -->
+	<select id="selectRecordList" parameterType="Map" resultMap="NurseRecordVO">
+		select 
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN,NRS_RCORD_MEMO,CLNIC_NO,RCEPT_NO,PATNT_NO
+		from nurse_record 
+		where nrs_rcord_cd = #{nrsRcordCd}
+	</select>
+	
+	<select id="selectTakeOverList" parameterType="Map" resultMap="NurseRecordVO">
+		select 
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN,PATNT_NO 
+		from nurse_record 
+		where PATNT_NO = #{patntNo}
+	</select>
+	
+	<select id="selectTakeOverCount" parameterType="int" resultMap="NurseRecordVO">
+		SELECT COUNT(NRS_RCORD_CN) 
+		FROM nurse_record
+		where PATNT_NO = #{patntNo}
+	</select>
+	
+	
+	<insert id="insertTakeOver" parameterType="NurseRecordVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="nrsRcordCd" resultType="String" order="BEFORE">
+	        SELECT 'NRC' || SEQ_RECORD.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO NURSE_RECORD
+		(
+			NRS_RCORD_CD, NRS_RCORD_DE, NRS_RCORD_WRTER, NRS_RCORD_CN, PATNT_NO
+		)VALUES(
+			#{nrsRcordCd}, SYSDATE, #{nrsRcordWrter}, #{nrsRcordCn}, #{patntNo}
+		)
+	</insert>
+	
+	
+	
+</mapper>

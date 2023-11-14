@@ -1,0 +1,11 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface IRoomservice {
+
+	public List<PatientVO> selectHsptlzList();
+
+}

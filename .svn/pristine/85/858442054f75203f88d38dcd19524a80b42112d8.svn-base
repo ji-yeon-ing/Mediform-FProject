@@ -1,0 +1,43 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.administration.vo.ReceiptVO;
+import kr.or.ddit.administration.vo.ReceiveVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.mapper.administration.ReceiveMapper;
+
+@Service
+public class ReceiveServiceImpl implements IReceiveService {
+
+	@Inject
+	private ReceiveMapper receiveMapper;
+	
+	@Override
+	public int selectReceiveCount(PaginationInfoVO<ReceiveVO> pagingVO) {
+		
+		
+		return receiveMapper.selectReceiveCount(pagingVO);
+	}
+
+	@Override
+	public List<ReceiveVO> receiveList(PaginationInfoVO<ReceiveVO> pagingVO) {
+		return receiveMapper.receiveList(pagingVO);
+	}
+
+	@Override
+	public ReceiveVO receiveSelect(Map<String, String> map) {
+		return receiveMapper.receiveSelect(map);
+	}
+
+	@Override
+	public List<ReceiptVO> receiptList(Map<String, String> map) {
+		return receiveMapper.receiptList(map);
+	}
+
+}

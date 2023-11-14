@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.nurse.ActingMapper">
+	
+	
+	<!-- 바이탈 조회 -->
+	<select id="selectVitalList" parameterType="Map" resultType="VitalVO">
+		SELECT VITAL_CD, HGHRK_HHPRS, LWTRK_HHPRS, BDHEAT, EMP_NO, PATNT_NO, VITAL_DATE
+		FROM VITALS
+		where PATNT_NO = #{patntNo}
+	</select>
+	
+	
+	<!-- 바이탈 등록 -->
+	<insert id="mealInsert" parameterType="MealVO" useGeneratedKeys="true" >
+	<selectKey keyProperty="mealCd" resultType="String" order="BEFORE">
+	        SELECT 'VI' || SEQ_MEAL.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO VITALS
+		(
+			VITAL_CD, HGHRK_HHPRS, LWTRK_HHPRS, BDHEAT, EMP_NO, PATNT_NO, VITAL_DATE
+		)VALUES(
+			#{vitalCd}, #{hghrkHhhprs}, #{lwtrkHhprs}, #{bdheat}, #{empNo}, #{patntNo}, SYSDATE
+		)
+	</insert>
+	
+	
+	
+</mapper>

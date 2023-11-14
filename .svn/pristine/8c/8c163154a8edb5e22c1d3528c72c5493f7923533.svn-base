@@ -1,0 +1,20 @@
+package kr.or.ddit.mapper.manager;
+
+import java.util.List;
+
+import kr.or.ddit.manager.vo.StatisticsVO;
+
+// 매니저 통계 매퍼
+public interface ManagerStatisticsMapper {
+
+	public List<StatisticsVO> dayAuditList();
+
+	public List<StatisticsVO> weekAuditList();
+
+	public List<StatisticsVO> monthAuditList();
+
+	public List<StatisticsVO> yearAuditList();
+
+	public List<StatisticsVO> accessAuditList();
+
+}

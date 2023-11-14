@@ -1,0 +1,44 @@
+package kr.or.ddit.common.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.service.ISchedulerService;
+import kr.or.ddit.common.vo.SchedulerVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/scheduler")
+public class SchedulerController {
+
+	 @Inject 
+	 private ISchedulerService scheduleservice;
+	
+	
+	// 스케줄러  컨트롤러
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public String scheduler() {
+		log.info("scheduler() 시작");	
+		return "nurse/scheduler";
+	}
+	
+	
+	 //일정 추가
+	 @PostMapping(value = "/addEventForm") 
+	 @ResponseBody
+	 public String schedulerForm(@RequestBody SchedulerVO scheduler) {
+		 log.info("schedulerForm() 시작");
+		 scheduleservice.schedulerinsert(scheduler);
+		 log.info("scheduler:" + scheduler);
+		 return "nurse/scheduler";
+	 
+	  }
+	
+}

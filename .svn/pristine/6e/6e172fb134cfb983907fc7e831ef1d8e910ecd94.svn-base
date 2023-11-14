@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerEmployeeMapper">
+	
+	<sql id="empSearch">
+		<if test='searchVO.etcType != null and searchVO.etcType == "employee"'>
+			<if test='searchType != null and searchType == "default"'>
+				and EMP_HFFC_AT = 'Y' 
+				and EMP_CONFM = 'Y'
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if>
+			</if>
+			<if test='searchType != null and searchType == "r"'>
+				and EMP_HFFC_AT = 'N'  
+				and EMP_CONFM = 'Y'
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if>
+			</if>
+			<if test='searchType != null and searchType != "default" and searchType != "r"'>
+ 				and EMP_HFFC_AT = 'Y' 
+ 				and EMP_CONFM = 'Y'
+ 				and EMP_SE = #{searchType} 
+ 				<if test='searchWord != null'>
+ 					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if> 
+ 			</if>
+		</if>
+		<if test='searchVO.etcType != null and searchVO.etcType == "confirm"'>
+			and EMP_CONFM IS NULL
+			<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+			</if>
+		</if>
+		<if test='searchVO.etcType != null and searchVO.etcType == "complete"'>
+			and EMP_CONFM IS NOT NULL
+			<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+			</if>
+			<if test='searchType != null and searchType != "default" and searchType == "yes"'>
+				and EMP_CONFM = 'Y'
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if>
+			</if>
+			<if test='searchType != null and searchType != "default" and searchType == "no"'>
+				and EMP_CONFM = 'N'
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if>
+			</if>
+		</if>
+	</sql>
+	
+	<select id="selectEmpCount" parameterType="pagingVO" resultType="int">
+		select count(emp_no) 
+		from employee 
+		where 1=1 
+		<include refid="empSearch"/>
+	</select>
+	
+	<select id="selectEmpList" parameterType="pagingVO" resultType="employeeVO">
+		select
+		 	b.*
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.EMP_RGSDE desc) rnum
+			 from (	
+			 	select * from employee
+			 	where 1=1
+			 	<include refid="empSearch"/>
+			 	order by EMP_RGSDE desc
+			 ) a
+		) b
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="getEmployee" parameterType="string" resultType="employeeVO">
+		select * from employee 
+		where emp_no = #{empNo}
+	</select>
+	
+	<update id="rejectUpdate" parameterType="employeeVO">
+		update employee 
+		set 
+			rjct_resn = #{RjctResn}, 
+			emp_confm = 'N' 
+		where emp_no = #{empNo}
+	</update>
+	
+	<update id="agreeEmployee" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_confm = 'Y', 
+			emp_pw = #{empPw}
+		where emp_no = #{empNo}
+	</update>
+	
+	<insert id="insertAuth" parameterType="authorityVO">
+		insert into authority(
+			emp_no, author_nm
+		) values (
+			#{empNo}, #{authorNm} 
+		) 
+	</insert>
+	
+	<delete id="deleteAuth" parameterType="employeeVO">
+		delete from authority 
+		where emp_no = #{empNo}
+	</delete>
+	
+	<update id="retireEmp" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_retire = sysdate, 
+			emp_hffc_at = #{empHffcAt} 
+		where emp_no = #{empNo}
+	</update>
+	
+	<update id="updateEmp" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_updde = sysdate, 
+			emp_clsf = #{empClsf}
+		where emp_no = #{empNo}
+	</update>
+	
+	<select id="ogzChart" resultType="employeeVO">
+		select * from employee 
+		where EMP_HFFC_AT = 'Y' and EMP_CONFM = 'Y'
+	</select>
+	
+	<select id="clsfCheck" parameterType="employeeVO" resultType="int">
+		select count(*) from employee
+		where EMP_HFFC_AT = 'Y' and EMP_CONFM = 'Y' and EMP_SE = #{empSe} and emp_clsf = '0'
+	</select>
+	
+	
+	
+</mapper>

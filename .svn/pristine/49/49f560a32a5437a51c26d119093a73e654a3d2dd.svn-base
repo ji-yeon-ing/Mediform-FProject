@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.doctor.DoctorClinicMapper">
+	
+	<resultMap type="ClinicVO" id="ClinicVO">
+	
+		<id property="clnicNo" column="CLNIC_NO"/>
+		<id property="rceptNo" column="RCEPT_NO"/>
+		<id property="patntNo" column="PATNT_NO"/>
+		<result property="empNo" column="EMP_NO"/>
+		<result property="clnicTime" column="CLNIC_TIME"/>
+		<result property="clnicCn" column="CLNIC_CN"/>
+		<result property="clnicAt" column="CLNIC_AT"/>
+		<result property="beforeClnicNo" column="BEFORE_CLNIC_NO"/>
+		<result property="hsptlzAt" column="HSPTLZ_AT"/>
+		<result property="clnicMemo" column="CLNIC_MEMO"/>
+		
+		<association property="rceptVO" javaType="RceptVO">
+			<id property="rceptNo" column="RCEPT_NO"/>	
+			<id property="patntNo" column="PATNT_NO"/>	
+			<result property="rceptDt" column="RCEPT_DT"/>
+			<result property="rceptReason" column="RCEPT_REASON"/>
+			<result property="rceptSttus" column="RCEPT_STTUS"/>
+			<result property="rceptPriort" column="RCEPT_PRIORT"/>
+			<result property="rceptClnc" column="RCEPT_CLNC"/>
+			<result property="rceptClnicAt" column="RCEPT_CLNIC_AT"/>
+		</association>
+		
+		<association property="patientVO" javaType="PatientVO">
+			<id property="patntNo" column="PATNT_NO"/>
+			<result property="patntNm" column="PATNT_NM"/>
+			<result property="patntRrno1" column="PATNT_RRNO1"/>
+			<result property="patntRrno2" column="PATNT_RRNO2"/>
+			<result property="patntTelno" column="PATNT_TELNO"/>
+			<result property="patntZip" column="PATNT_ZIP"/>
+			<result property="patntAdres1" column="PATNT_ADRES1"/>
+			<result property="patntAdres2" column="PATNT_ADRES2"/>
+			<result property="patntAge" column="PATNT_AGE"/>
+			<result property="patntSexdstn" column="PATNT_SEXDSTN"/>
+			<result property="prtctorNm" column="PRTCTOR_NM"/>
+			<result property="prtctorTelno" column="PRTCTOR_TELNO"/>
+			<result property="patntAgre" column="PATNT_AGRE"/>
+			<result property="patntHeight" column="PATNT_HEIGHT"/>
+			<result property="patntBdwgh" column="PATNT_BDWGH"/>
+			<result property="patntBdp" column="PATNT_BDP"/>
+			<result property="patntHlthinsAt" column="PATNT_HLTHINS_AT"/>
+			<result property="patntMemo" column="PATNT_MEMO"/>
+			<result property="patntHsptlzAt" column="PATNT_HSPTLZ_AT"/>
+		</association>
+		
+	</resultMap>
+	
+	<!-- 진료실 배정 -->
+	<select id="selectclinicAssigment" parameterType="String" resultType="clinicAssignmentVO">
+		select
+			EMP_NO, CLNIC_NO, ASIGN_BGNDE, ASIGN_ENDDE
+		from CLINIC_ASSIGNMENT
+		where EMP_NO = #{doctorNo}
+	</select>
+	
+	<!-- 대기환자 리스트(전체) -->
+	<select id="selectwaitingAllList"  parameterType="String" resultMap="ClinicVO">
+	 <![CDATA[
+		SELECT p.*, r.*
+		FROM EMPLOYEE e
+		JOIN CLINIC_ASSIGNMENT ca ON e.EMP_NO = ca.EMP_NO
+		JOIN RCEPT r ON ca.CLNIC_NO = r.RCEPT_CLNC
+		JOIN PATIENT p ON r.PATNT_NO = p.PATNT_NO
+		WHERE r.RCEPT_DT >= TRUNC(SYSDATE) AND r.RCEPT_DT < TRUNC(SYSDATE + 1)
+		ORDER BY RCEPT_DT DESC
+	 ]]>
+	</select>
+	
+	
+	
+	
+	
+	<!-- 대기환자 리스트 -->
+	<select id="selectwaitingList" resultMap="ClinicVO">
+		SELECT p.*, r.*
+		FROM EMPLOYEE e
+		JOIN CLINIC_ASSIGNMENT ca ON e.EMP_NO = ca.EMP_NO
+		JOIN RCEPT r ON ca.CLNIC_NO = r.RCEPT_CLNC
+		JOIN PATIENT p ON r.PATNT_NO = p.PATNT_NO
+		WHERE e.EMP_NO = #{doctorNo} AND TRUNC(r.RCEPT_DT) = TRUNC(SYSDATE)
+		ORDER BY RCEPT_DT DESC
+	</select>
+	
+	<!-- 환자 상태 업데이트 -->
+	<update id="updateStatus" parameterType="map">
+		UPDATE RCEPT
+		SET 
+			RCEPT_STTUS = #{rceptSttus}
+		WHERE RCEPT_NO = #{rceptNo}
+	</update>
+	
+	<select id="selectclinicPatient" parameterType="String" resultMap="ClinicVO">
+		SELECT *
+		FROM PATIENT
+		WHERE PATNT_NO = #{patntNo}
+	</select>
+	
+	<sql id="groupOrderMap">
+		
+	</sql>
+	
+	<!-- 그룹오더 -->
+	<select id="getgroupOrder" parameterType="String" resultType="doctorGroupOrderVO">
+		SELECT *
+		FROM GROUP_ORDER
+		WHERE EMP_NO = #{doctorNo}
+	</select>
+	
+	<!-- 그룹오더 내용 -->
+	<select id="getgroupOrderContent" parameterType="String" resultType="DoctorGroupOrderContentVO">
+		SELECT G.*, M.MEDCIN_NM AS contentNm
+		FROM GROUP_CONTENT G
+		JOIN MEDICINE M ON G.CONTENT_CD = M.MEDCIN_CD
+		WHERE G.GRO_CD = #{groCd}
+	</select>
+	
+	
+</mapper>

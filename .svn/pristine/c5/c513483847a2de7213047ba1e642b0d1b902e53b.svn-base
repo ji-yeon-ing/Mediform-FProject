@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper.doctor;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.patient.vo.PatientVO;
+
+public interface DoctorMapper {
+	
+	// 이전 진료 기록 조회
+	public List<ClinicVO> selectClinicList(Map<String, String> map);
+	
+}

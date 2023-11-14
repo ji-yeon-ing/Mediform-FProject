@@ -1,0 +1,19 @@
+package kr.or.ddit.common.vo;
+
+import lombok.Data;
+
+@Data
+public class ReservationVO {
+
+	
+	private String patntNo; // 환자번호
+	private String patntNm; // 환자 이름
+	private String rpatntDttm; // 예약일시
+	private String recptClnc; // 진료실
+	private String empNo; // 담당의
+	private String empNm; // 담당의 이름
+	private String rsvtResn; // 예약 사유
+	
+	
+	
+}

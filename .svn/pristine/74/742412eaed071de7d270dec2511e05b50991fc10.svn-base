@@ -1,0 +1,26 @@
+package kr.or.ddit.doctor.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.doctor.service.IDoctorService;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.mapper.doctor.DoctorMapper;
+
+@Service
+public class DoctorServiceImpl implements IDoctorService {
+
+	@Inject
+	private DoctorMapper doctorMapper;
+	
+	// 이전 진료 기록 조회
+	@Override
+	public List<ClinicVO> selectClinicList(Map<String, String> map) {
+		return doctorMapper.selectClinicList(map);
+	}
+
+}

@@ -1,0 +1,55 @@
+package kr.or.ddit.doctor.controller;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.doctor.service.IDoctorService;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.patient.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/mediform/doctor")
+public class DoctorHomeController {
+
+	@Inject
+	private IDoctorService doctorService;
+	
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public String home() {
+		
+		log.info("오호!");		
+		
+		return "doctor/home";
+	}
+	
+	@GetMapping("/clinic")
+	public String clinicForm() {
+		return "doctor/clinic";
+	}
+	
+	// 환자 치전 진료 기록 전체 조회(ajax)
+	@ResponseBody
+	@PostMapping("/allClinic")
+	public List<ClinicVO> allClinic(@RequestBody Map<String, String> map) {
+		
+		List<ClinicVO> allClinicList = doctorService.selectClinicList(map);
+			
+		log.info("allClinicList : "+ allClinicList);
+		
+		return allClinicList;
+	}
+}

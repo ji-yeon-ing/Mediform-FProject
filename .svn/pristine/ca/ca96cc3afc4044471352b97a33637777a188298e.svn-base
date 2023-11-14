@@ -1,0 +1,40 @@
+package kr.or.ddit.nurse.service.Impl;
+
+
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.HospitalizationVO;
+import kr.or.ddit.mapper.nurse.RoomMapper;
+import kr.or.ddit.nurse.service.IRoomservice;
+import kr.or.ddit.nurse.vo.NurseRecordVO;
+
+
+@Service
+public class RoomServiceImpl implements IRoomservice{
+
+	@Inject
+	private RoomMapper roomMapper;
+
+	@Override
+	public HospitalizationVO patientHospitaldetail(String patntNo) {
+		return roomMapper.patientHospitaldetail(patntNo);
+	}
+
+	@Override
+	public List<NurseRecordVO> selectTakeOverList(Map<String, String> map) {
+		return roomMapper.selectTakeOverList(map);
+	}
+
+	@Override
+	public int takeOverinsert(NurseRecordVO nurseRecord) {
+		return roomMapper.takeOverinsert(nurseRecord);
+	} 
+
+	
+}

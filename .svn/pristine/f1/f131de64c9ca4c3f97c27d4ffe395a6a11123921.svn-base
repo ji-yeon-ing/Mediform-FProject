@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.common.AlarmMapper">
+
+	<insert id="insertAlarm" parameterType="alarmVO">
+		insert into alarm(
+			ALARM_NO, EMP_NO, ALARM_WRITER, ALARM_CN, ALARM_DTTM, ALARM_CNFIRM, ALARM_DELETE, ALARM_CNT
+		)
+		select
+			seq_alarm.nextval
+			, a.emp_no
+			, #{alarmWriter}
+			, #{alarmCn}
+			, sysdate
+			, 'N'
+			, 'N'
+			, 0
+        from EMPLOYEE a
+	</insert>
+	
+	<select id="selectAlarmList" parameterType="string" resultType="alarmVO">
+		select ALARM_NO, EMP_NO, ALARM_WRITER, ALARM_CN, ALARM_DTTM, ALARM_CNFIRM, ALARM_DELETE, ALARM_CNT
+		from   alarm
+		where  EMP_NO = #{emp_no}
+		and    ALARM_CNFIRM = 'N'
+		order by ALARM_DTTM DESC
+	</select>
+	
+	<update id="updateAlarmRead" parameterType="String" >
+	
+		update alarm
+		set ALARM_CNFIRM = 'Y'
+		where EMP_NO = #{emp_no}
+	
+	</update>
+
+
+</mapper>

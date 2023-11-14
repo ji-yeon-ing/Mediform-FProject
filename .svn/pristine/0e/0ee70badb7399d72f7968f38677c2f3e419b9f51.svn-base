@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+.pagination{
+	--falcon-pagination-active-bg: midnightblue;
+    --falcon-pagination-active-border-color: midnightblue;
+    --falcon-pagination-hover-bg: midnightblue;
+    --falcon-pagination-hover-border-color: midnightblue;
+    border-color: midnightblue;
+}
+
+.nav {
+	--falcon-nav-link-color: midnightblue;
+	--falcon-nav-link-hover-color: midnightblue;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+	color: midnightblue;
+	border-bottom: 2px solid midnightblue;
+
+}

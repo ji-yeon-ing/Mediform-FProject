@@ -1,0 +1,25 @@
+package kr.or.ddit.nurse.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.nurse.RoomMapper;
+import kr.or.ddit.nurse.service.IRoomservice;
+import kr.or.ddit.patient.vo.PatientVO;
+
+@Service
+public class RoomServiceImpl implements IRoomservice{
+
+	@Inject
+	private RoomMapper roomMapper; 
+	
+	@Override
+	public List<PatientVO> selectHsptlzList() {
+		return roomMapper.selectHsptlzList();
+	}
+
+	
+}

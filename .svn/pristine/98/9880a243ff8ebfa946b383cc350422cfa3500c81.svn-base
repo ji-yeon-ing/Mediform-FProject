@@ -1,0 +1,200 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>PatientList</title>
+</head>
+<body>
+
+<div class="card shadow-none">
+	<div class="card-header">
+		<div class="row flex-between-center">
+			<div class="col-6 col-sm-auto d-flex align-items-center pe-0">
+				<h5 class="fs-0 mb-0 text-nowrap py-2 py-xl-0">환자목록 </h5>
+			</div>
+			<div class="col-6 col-sm-auto ms-auto text-end ps-0">
+				<div class="d-none" id="table-simple-pagination-actions">
+					<div class="d-flex">
+						<select class="form-select form-select-sm" aria-label="Bulk actions">
+							<option value="Delete">Delete</option>
+						</select>
+						<button class="btn btn-falcon-default btn-sm ms-2" type="button">Apply</button>
+					</div>
+				</div>
+				<div id="table-simple-pagination-replace-element">
+					<button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1" id="newPatientBtn">신규환자등록</span></button>
+					<button class="btn btn-falcon-default btn-sm mx-2" type="button"><span class="fas fa-filter" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">필터</span></button>
+					<button class="btn btn-falcon-default btn-sm" type="button"><span class="fas fa-external-link-alt" data-fa-transform="shrink-3 down-2"></span><span class="d-none d-sm-inline-block ms-1">execel저장</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="card-body px-0 pt-0">
+		<table class="table table-sm mb-0 overflow-hidden data-table fs--1" data-datatables='{"responsive":false,"pagingType":"simple","lengthChange":false,"searching":false,"pageLength":8,"language":{"info":"_START_ to _END_ Items of _TOTAL_"}}'>
+			<thead class="bg-200">
+				<tr>
+					<th class="text-900 no-sort white-space-nowrap">
+						<div class="form-check mb-0 d-flex align-items-center">
+							<input class="form-check-input" id="checkbox-bulk-item-select" type="checkbox" data-bulk-select='{"body":"table-simple-pagination-body","actions":"table-simple-pagination-actions","replacedElement":"table-simple-pagination-replace-element"}' />
+						</div>
+					</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">환자번호</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">이름</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">주민번호</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">연락처</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">우편번호</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">주소</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">나이</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">성별</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">보호자이름</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">보호자연락처</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">개인정보동의여부</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">키(cm)</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">몸무게(kg)</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">혈액형</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">보험여부</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">메모사항</th>
+					<th class="text-900 sort pe-1 align-middle white-space-nowrap text-center">입원여부</th>
+					<th class="text-900 no-sort pe-1 align-middle data-table-row-action"></th>
+				</tr>
+			</thead>
+			<tbody class="list" id="table-simple-pagination-body">
+				<c:set value="${patientList }" var="patientList"/>
+				<c:choose>
+					<c:when test="${empty patientList }">
+						<tr>
+							<td colspan="17" align="center">환자정보가 존재하지 않습니다.</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<c:forEach items="${patientList }" var="patient">
+							<tr class="btn-reveal-trigger">
+								<td class="align-middle" style="width: 28px;">
+									<div class="form-check mb-0">
+										<input class="form-check-input" type="checkbox" id="simple-pagination-item-13" data-bulk-select-row="data-bulk-select-row" />
+									</div>
+								</td>
+								<td class="align-middle white-space-nowrap fw-semi-bold name">${patient.patntNo }</td>
+								<td class="align-middle white-space-nowrap fw-semi-bold name"><a href="../../app/e-commerce/customer-details.html">${patient.patntNm }</a></td>
+								<td class="align-middle white-space-nowrap product">${patient.patntRrno1 } - ${patient.patntRrno2 }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntTelno }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntZip }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntAdres1 } ${patient.patntAdres2 }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntAge }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntSexdstn }</td>
+								<td class="align-middle white-space-nowrap product">${patient.prtctorNm }</td>
+								<td class="align-middle white-space-nowrap product">${patient.prtctorTelno }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntAgre }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntHeight }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntBdwgh }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntBdp }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntHlthinsAt }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patntMemo }</td>
+								<td class="align-middle white-space-nowrap product">${patient.patientHsptlzAt }</td>
+								<td class="align-middle white-space-nowrap text-end">
+									<div class="dropstart font-sans-serif position-static d-inline-block">
+										<button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal float-end" type="button" id="dropdown-simple-pagination-table-item-13" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+											<span class="fas fa-ellipsis-h fs--1"></span>
+										</button>
+										<div class="dropdown-menu dropdown-menu-end border py-2" aria-labelledby="dropdown-simple-pagination-table-item-13">
+											<a class="dropdown-item" href="#!">상세보기</a>
+											<a class="dropdown-item" href="#!">수정</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item text-danger" href="#!">삭제</a>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+			</tbody>
+		</table>
+	</div>
+</div>
+	
+
+<!-- 신규 환자 등록 modal(정적) 시작 -->
+<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Launch static backdrop modal</button>
+<div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg mt-6" role="document">
+    <div class="modal-content border-0">
+      <div class="position-absolute top-0 end-0 mt-3 me-3 z-1">
+        <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="rounded-top-3 bg-body-tertiary py-3 ps-4 pe-6">
+          <h4 class="mb-1" id="staticBackdropLabel">Add a new illustration to the landing page</h4>
+          <p class="fs--2 mb-0">Added by <a class="link-600 fw-semi-bold" href="#!">Antony</a></p>
+        </div>
+        <div class="p-4">
+          <div class="row">
+            <div class="col-lg-9">
+              <div class="d-flex"><span class="fa-stack ms-n1 me-3"><i class="fas fa-circle fa-stack-2x text-200"></i><i class="fa-inverse fa-stack-1x text-primary fas fa-tag" data-fa-transform="shrink-2"></i></span>
+                <div class="flex-1">
+                  <h5 class="mb-2 fs-0">Labels</h5>
+                  <div class="d-flex"><span class="badge me-1 py-2 badge-subtle-success">New</span><span class="badge me-1 py-2 badge-subtle-primary">Goal</span><span class="badge me-1 py-2 badge-subtle-info">Enhancement</span>
+                    <div class="dropdown dropend">
+                      <button class="btn btn-sm btn-secondary px-2 fsp-75 bg-400 border-400 dropdown-toggle dropdown-caret-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-plus"></span></button>
+                      <div class="dropdown-menu">
+                        <h6 class="dropdown-header py-0 px-3 mb-0">Select Label</h6>
+                        <div class="dropdown-divider"></div>
+                        <div class="px-3">
+                          <button class="badge-subtle-danger dropdown-item rounded-1 mb-2" type="button">New</button>
+                          <button class="badge-subtle-primary dropdown-item rounded-1 mb-2" type="button">Goal</button>
+                          <button class="badge-subtle-info dropdown-item rounded-1 mb-2" type="button">Enhancement</button>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="px-3">
+                          <button class="btn btn-sm d-block w-100 btn-outline-secondary border-400">Create Label</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr class="my-4" />
+                </div>
+              </div>
+              <div class="d-flex"><span class="fa-stack ms-n1 me-3"><i class="fas fa-circle fa-stack-2x text-200"></i><i class="fa-inverse fa-stack-1x text-primary fas fa-align-left" data-fa-transform="shrink-2"></i></span>
+                <div class="flex-1">
+                  <h5 class="mb-2 fs-0">Description</h5>
+                  <p class="text-break fs--1">The illustration must match to the contrast of the theme. The illustraion must described the concept of the design. To know more about the theme visit the page. </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <h6 class="mt-5 mt-lg-0">Add To Card</h6>
+              <ul class="nav flex-lg-column fs--1">
+                <li class="nav-item me-2 me-lg-0"><a class="nav-link nav-link-card-details" href="#!"><span class="fas fa-user me-2"></span>Members</a></li>
+                <li class="nav-item me-2 me-lg-0"><a class="nav-link nav-link-card-details" href="#!"><span class="fas fa-tag me-2"></span>Label</a></li>
+                <li class="nav-item me-2 me-lg-0"><a class="nav-link nav-link-card-details" href="#!"><span class="fas fa-paperclip me-2"></span>Attachments</a></li>
+                <li class="nav-item me-2 me-lg-0"><a class="nav-link nav-link-card-details" href="#!"><span class="fa fa-align-left me-2"></span>Description </a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 신규 환자 등록 modal(정적) 끝 -->
+
+<script type="text/javascript">
+// 신규환자등록(Modal창)
+$(function(){
+	var newPatientBtn = $("#newPatientBtn");
+	
+	newPatientBtn.on("click",function(){
+		
+	});
+});
+</script>
+
+</body>
+</html>
+
+
+
+

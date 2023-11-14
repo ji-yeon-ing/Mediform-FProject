@@ -1,0 +1,28 @@
+package kr.or.ddit.mapper.manager;
+
+import java.util.List;
+
+import kr.or.ddit.common.vo.AuthorityVO;
+import kr.or.ddit.common.vo.EmployeeVO;
+
+public interface ManagerEmployeeMapper {
+
+	public List<EmployeeVO> ApplicationList();
+
+	public EmployeeVO getEmployee(String empNo);
+
+	public int rejectUpdate(EmployeeVO empVO);
+
+	public int agreeEmployee(EmployeeVO empVO);
+
+	public List<EmployeeVO> EmployeeList();
+
+	public int insertAuth(AuthorityVO auth);
+
+	public int deleteAuth(EmployeeVO empVO);
+
+	public int updateEmp(EmployeeVO empVO);
+
+	public int retireEmp(EmployeeVO empVO);
+
+}

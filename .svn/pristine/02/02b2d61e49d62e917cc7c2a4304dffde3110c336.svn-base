@@ -1,0 +1,62 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.administration.vo.NoticeBoardVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.mapper.administration.BoardMapper;
+
+@Service
+public class BoardServiceImpl implements IBoardService{
+
+	@Inject
+	private BoardMapper boardMapper;
+	
+	@Override
+	public int selectBoardCount(PaginationInfoVO<NoticeBoardVO> pagingVO) {
+		
+		return boardMapper.selectBoardCount(pagingVO);
+	}
+
+	@Override
+	public List<NoticeBoardVO> selectBoardList(PaginationInfoVO<NoticeBoardVO> pagingVO) {
+		
+		return boardMapper.selectBoardList(pagingVO);
+	}
+
+	@Override
+	public ServiceResult insertBoard(HttpServletRequest req, NoticeBoardVO noticeBoardVO) {
+		
+		ServiceResult result = null;
+		
+		int status = boardMapper.insertBoard(noticeBoardVO);
+		if(status > 0) {
+
+			// 파일 업로드 추가
+			
+			result = ServiceResult.OK;
+			
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public NoticeBoardVO selectBoard(int ntbdNo) {
+		
+		boardMapper.incrementHit(ntbdNo);
+		
+		return boardMapper.selectBoard(ntbdNo);
+	}
+
+	
+	
+}

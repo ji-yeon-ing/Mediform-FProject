@@ -1,0 +1,96 @@
+@charset "UTF-8";
+
+
+.user-wrap {
+	width: 100%;
+	margin: 10px auto;
+	position: relative;
+}
+
+.user-wrap img {
+	width: 100%;
+	vertical-align: middle;
+}
+.user-time {
+	position: absolute;
+	left: 5%;
+	width: 100%;
+	text-align: center;
+}
+
+.welcome {
+	position: absolute;
+	left: 5%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+.weather {
+	position: absolute;
+	left: 80%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+.weather2 {
+	position: absolute;
+	left: 33%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+
+.city {
+	position: absolute;
+	left: 85%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+.condition {
+	position: absolute;
+	left: 85%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+.ctemp {
+	position: absolute;
+	left: 42%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+.chightemp {
+	position: absolute;
+	left: 87%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+.clowtemp {
+	position: absolute;
+	left: 87%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+.cicon {
+	position: absolute;
+	left: 80%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+#date {
+	position: absolute;
+	left: 5%;
+	width: 100%;
+	text-align: center;
+}

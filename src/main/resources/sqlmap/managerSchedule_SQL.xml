@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerScheduleMapper">
+	<select id="getNurseList" resultType="employeeVO">
+		select 				
+				emp_no, 
+				emp_pw, 
+				EMP_NM, 
+				EMP_RRNO1, 
+				EMP_RRNO2, 
+				EMP_TELNO, 
+				EMP_ZIP, 
+				EMP_ADRES1, 
+				EMP_ADRES2,
+				EMP_EMAIL, 
+				EMP_SEXDSTN, 
+				EMP_BRTHDY,
+				EMP_DEP, 
+				EMP_ENCPN, 
+				EMP_RETIRE, 
+				EMP_EXP, 
+				EMP_RGSDE,
+				EMP_UPDDE, 
+				EMP_HFFC_AT, 
+				EMP_PROFILE, 
+				EMP_SIGN, 
+				EMP_LCNS, 
+				EMP_DOCTR_LCNS, 
+				EMP_SE, 
+				EMP_AUTHOR,
+				EMP_CLSF, 
+				EMP_YRYC_USE, 
+				EMP_YRYC_REMNDR, 
+				EMP_OFFHOD_USE, 
+				EMP_OFFHOD_REMNDR, 
+				EMP_CONFM, 
+				RJCT_RESN, 
+				EMP_RQSTR 
+		from employee 
+		where EMP_HFFC_AT = 'Y' and EMP_CONFM = 'Y' and EMP_SE = 'n' 
+		order by EMP_ENCPN desc
+	</select>
+	
+	<select id="scheduleInsertCheck" parameterType="string" resultType="int">
+		SELECT COUNT(*)
+		FROM work_schedule
+		WHERE TO_CHAR(work_de, 'YYYY-MM') = #{thisYm, jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteSchedule" parameterType="string">
+		delete from work_schedule 
+		WHERE TO_CHAR(work_de, 'YYYY-MM') = #{thisYm, jdbcType=VARCHAR}
+	</delete>
+	
+<!-- 	<insert id="insertWorkSchedule" parameterType="list"> -->
+<!-- 	    INSERT INTO work_schedule ( -->
+<!-- 	        emp_no -->
+<!-- 	        , emp_nm -->
+<!-- 	        , work_cd -->
+<!-- 	        , work_de -->
+<!-- 	    ) VALUES -->
+<!-- 	    <foreach collection="list" item="item" separator="," > -->
+<!-- 	        (#{item.empNo}, #{item.empNm}, #{item.workCd}, #{item.workDe}) -->
+<!-- 	    </foreach> -->
+<!-- 	</insert> -->
+
+	<insert id="insertWorkSchedule" parameterType="java.util.List">
+	    <foreach collection="list" item="item" index="index"  open="INSERT ALL" separator=" " close="SELECT * FROM DUAL">
+	    INTO WORK_SCHEDULE
+	        (EMP_NO, EMP_NM, WORK_CD, WORK_DE)
+	    VALUES
+	        (
+	         #{item.empNo}
+	        , #{item.empNm}
+	        , #{item.workCd}
+	        , #{item.workDe}
+	        )
+	    </foreach>
+	</insert>
+	
+	<select id="empScheduleCnt" parameterType="string" resultType="scheduleDataVO">
+		select
+		    emp_no
+		    , COUNT(CASE WHEN WORK_CD='D' THEN 1 END) as empD
+		    , COUNT(CASE WHEN WORK_CD='E' THEN 1 END) as empE
+		    , COUNT(CASE WHEN WORK_CD='N' THEN 1 END) as empN
+		    , COUNT(CASE WHEN WORK_CD='OFF' THEN 1 END) as empOFF
+		FROM WORK_SCHEDULE
+		WHERE TO_CHAR(work_de, 'YYYY-MM') = #{tempDate} 
+		group by emp_no  
+		order by emp_no asc
+	</select>
+	
+	<select id="dateScheduleCnt" parameterType="string" resultType="scheduleDataVO">
+		SELECT WORK_DE,
+	       SUM(CASE WHEN WORK_CD = 'D' THEN 1 ELSE 0 END) AS allD,
+	       SUM(CASE WHEN WORK_CD = 'E' THEN 1 ELSE 0 END) AS allE,
+	       SUM(CASE WHEN WORK_CD = 'N' THEN 1 ELSE 0 END) AS allN,
+	       SUM(CASE WHEN WORK_CD = 'OFF' THEN 1 ELSE 0 END) AS allOFF
+		FROM WORK_SCHEDULE
+		WHERE TO_CHAR(work_de, 'YYYY-MM') = #{tempDate}  
+		GROUP BY WORK_DE
+		ORDER BY WORK_DE
+	</select>
+	
+	<select id="workScheduleList" parameterType="string" resultType="workScheduleVO">
+		SELECT emp_no,
+		       MAX(emp_nm) AS empNm,
+		       LISTAGG(work_cd, ',') WITHIN GROUP (ORDER BY work_de) AS workCd
+		FROM WORK_SCHEDULE
+		WHERE TO_CHAR(work_de, 'YYYY-MM') = #{tempDate} 
+		GROUP BY emp_no 
+		ORDER BY emp_no ASC
+	</select>
+	
+	
+</mapper>

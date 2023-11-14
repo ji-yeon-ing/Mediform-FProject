@@ -1,0 +1,75 @@
+package kr.or.ddit.administration.service;
+
+import java.io.File;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.EmployeeVO;
+import kr.or.ddit.mapper.administration.EmployeeInsertMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class EmployeeServiceImpl implements IEmployeeService {
+
+	@Inject
+	private EmployeeInsertMapper employeeInsertMapper;
+	
+
+	
+	@Override
+	public ServiceResult employeeInsert(HttpServletRequest req, EmployeeVO employeeVO) {
+		
+		ServiceResult result = null;
+		
+		String uploadPath =  req.getServletContext().getRealPath("/resources/profile");
+		
+		File file = new File(uploadPath);
+		
+		if(!file.exists()) {
+			file.mkdirs();
+		}
+		
+		String proFileImg = ""; // 회원정보에 추가될 프로필 이미지 경로
+		try {
+			MultipartFile profileImgFile = employeeVO.getImgFile();
+			
+			if(profileImgFile.getOriginalFilename() != null &&
+					!profileImgFile.getOriginalFilename().equals("")) {
+				String fileName = UUID.randomUUID().toString(); // UUID 파일명 생성
+				fileName += "_" + profileImgFile.getOriginalFilename(); // UUID_원본파일명
+				uploadPath += "/" + fileName; // 최종 업로드하기 위한 파일 경로
+				profileImgFile.transferTo(new File(uploadPath)); // 해당 위치 경로에 파일 복사
+				proFileImg = "/resources/profile/" + fileName; // 파일 복사가 일어난 파일의 위치로 접근하기 위한 URI 설정
+				System.out.println("fileName : " +  fileName);
+			}
+			System.out.println("uploadPath : " + uploadPath);
+			System.out.println("profileImgFile : " + profileImgFile);
+			System.out.println("proFileImg : " + proFileImg);
+			
+			employeeVO.setEmpProfile(proFileImg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		int status = employeeInsertMapper.employeeInsert(employeeVO);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+}

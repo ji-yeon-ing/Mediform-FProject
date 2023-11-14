@@ -1,0 +1,14 @@
+package kr.or.ddit.manager.vo;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class EmpJsonVO {
+	String name;
+	String title;
+	String className;
+	String id;
+	List<EmpJsonVO> children;
+}

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.ReceiveMapper">
+
+	<sql id="receiveSearch">
+		<if test="searchType != null and searchType =='all'">
+			<if test="searchWord != null">
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+		<if test="searchType != null and searchType='com'">
+			 and R.RCIV_AT = 1
+			 <if test="searchWord != null">
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+		<if test="searchType != null and searchType='part'">
+			and R.RCIV_AT = 2
+			<if test="searchWord != null">
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+		<if test="searchType != null and searchType='no'">
+			and R.RCIV_AT = 0
+			<if test="searchWord != null">
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+	
+	</sql>
+	
+	<sql id="dateSearch">
+		<if test="startDate != null and endDate == null">
+			and c.clinic_time >= to_date(#{startDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="startDate == null and endDate != null">
+			and c.clinic_time &lt;= to_date(#{endDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="startDate != null and endDate != null">
+			and c.clnic_time between to_date(#{startDate}, 'YYYY-MM-DD') and to_date(#{endDate}, 'YYYY-MM-DD')
+		</if>
+	</sql>
+
+
+	<select id="selectReceiveCount" parameterType="pagingVO" resultType="int">
+	
+		select count(rciv_no)
+		from patient p, clinic c, receive r
+		where 1 = 1
+		and p.patnt_no = c.patnt_no
+		and r.patnt_no = p.patnt_no
+		and r.patnt_no = c.patnt_no
+		and r.rcept_no = c.rcept_no
+		and r.clnic_no = c.clnic_no
+		<include refid="receiveSearch"/>
+		<include refid="dateSearch"/> 
+	
+	</select>
+
+
+	<select id="receiveList" parameterType="pagingVO" resultType="receiveVO">
+	
+		select
+			b.*
+		from(
+			select
+				a.*, row_number() over (order by a.rciv_no desc) rnum
+			from(
+				select 
+					r.rciv_no
+					, r.rciv_at
+					, r.rciv_dttm
+					, r.rciv_amount
+					, r.prearnge_amount
+					, r.reciv_totamt
+					, r.reciv_memo
+				
+					, p.patnt_no
+					, p.patnt_nm
+					, p.patnt_rrno1
+					, p.patnt_telno
+					, p.patnt_zip
+					, p.patnt_adres1
+					, p.patnt_adres2
+					, p.patnt_age
+					, p.prtctor_nm
+					, p.prtctor_telno
+					, p.patnt_height
+					, p.patnt_bdwgh
+					, p.patnt_bdp
+					, p.patnt_hlthins_at
+					
+					, rc.rcept_no
+					, rc.rcept_sttus
+					, c.clnic_no
+					, c.emp_no
+					
+					, e.emp_nm
+					
+					, c.clnic_time
+					, c.clnic_cn
+					, c.clnic_at
+					, c.hsptlz_at
+					, c.clnic_memo
+					, c.atfss_dt
+					, c.clnic_fe
+					
+					, h.hsptlz_cd
+					, h.hsptlz_sckrm
+					, h.hsptlz_sckbd
+					, h.hsptlz_de
+					, h.real_lhstl
+				from patient p, rcept rc, clinic c, employee e, receive r
+				LEFT JOIN hospitalization h ON r.clnic_no = h.clnic_no
+                                    AND r.rcept_no = h.rcept_no
+                                    AND r.patnt_no = h.patnt_no
+				where r.clnic_no = h.clnic_no
+					and r.clnic_no = c.clnic_no
+					and r.rcept_no = h.rcept_no
+					and r.rcept_no = c.rcept_no
+					and r.rcept_no = rc.rcept_no
+					and r.patnt_no = h.patnt_no
+					and r.patnt_no = c.patnt_no
+					and r.patnt_no = rc.patnt_no
+					and r.patnt_no = p.patnt_no
+					and h.clnic_no = c.clnic_no
+					and h.rcept_no = c.rcept_no
+					and h.rcept_no = rc.rcept_no
+					and h.patnt_no = c.patnt_no
+					and h.patnt_no = rc.patnt_no
+					and h.patnt_no = p.patnt_no
+					and c.rcept_no = rc.rcept_no
+					and c.patnt_no = p.patnt_no
+					and c.emp_no = e.emp_no
+					and rc.patnt_no = p.patnt_no
+				<include refid="receiveSearch"/>
+				<include refid="dateSearch"/> 
+				order by r.rciv_no desc
+				) a
+			) b
+			<![CDATA[
+				where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	
+	
+	</select>	
+
+
+
+
+
+
+
+
+
+
+</mapper>

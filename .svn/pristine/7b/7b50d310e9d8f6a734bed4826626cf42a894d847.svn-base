@@ -1,0 +1,30 @@
+package kr.or.ddit.manager.controller;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+// 수납내역 관리 컨트롤러
+
+@Slf4j
+@Controller
+@PreAuthorize("hasRole('ROLE_MANAGER')")
+@RequestMapping(value="/mediform/manager/receive")
+public class ManagerReceiveController {
+	
+	@RequestMapping(value="/list/select")
+	public String receiveMainHome(Model model) {
+		
+		return "manager/receiveList";
+	}
+	
+	@RequestMapping(value="/unpaidList/list/select")
+	public String unpaidList(Model model) {
+		
+		return "manager/unpaidList";
+	}
+	
+}

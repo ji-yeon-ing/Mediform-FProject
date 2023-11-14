@@ -1,0 +1,754 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Care</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css" />
+
+    <style>
+
+    .card { 
+            border: 1px solid #b3b3cc; /* 카드 테두리 스타일 */ */
+            border-radius: 10px; /* 카드 모서리 라운딩 */ */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */ */
+         } 
+         
+    .card img {
+	        max-height: 200px; /* 이미지의 최대 높이를 200px로 설정 */
+	        max-width: 100%; /* 이미지의 최대 너비를 부모 요소에 맞춤 */
+	        object-fit: contain; /* 이미지가 비율을 유지하면서 부모 요소에 맞게 맞춥니다. */
+   		 }
+	#soap tr{
+		height: 60px;
+		}
+		
+		.selected {
+   		 border: 10px red;
+		}
+    </style>
+</head>
+<body>
+	<div class="container-fulid">
+		<div class="row">
+			<div class="col-5 text-center"> 
+				<div class="card border border-secondary" style="height: 825px;">
+					<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+						<div class="row">
+							<div class="col-12 align-self-center">
+								<h5 class="text-center text-white mb-0 fw-semi-bold" id="111">대기 환자</h5>
+							</div>
+						</div>
+					</div>
+					<div class="row card-body pt-0">
+						<div class="tab-content">
+							<div class="tab-pane preview-tab-pane active" role="tabpanel"
+								aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+								id="dom-1123d529-5101-4101-b597-dac496b93923">
+								<br>
+								<div class="table-container" style= "max-height: 742px; overflow-y: auto;">
+									<table class="table table-sm table-striped" style="height: 180px;">
+										<thead> <!-- <thead> 태그는 HTML 테이블에서 헤더 콘텐츠(header content)들을 하나의 그룹으로 묶을 때 사용합니다.  -->
+											<tr id="" class="bg-light">
+												<th class="col-2" scope="col">No.</th>
+												<th class="col-4" scope="col">환자명</th>
+												<th class="col-6 text-center" scope="col">생년월일</th>
+											</tr>
+										</thead>
+										<tbody style="overflow-y: auto; max-height: 180px;">
+
+
+											<c:set value="1" var="count1" />
+											<c:choose>
+												<c:when test="">
+
+												</c:when>
+												<c:otherwise>
+													<c:forEach items="${waitingList }" var="waiting"
+														varStatus="loop">
+														<c:if test="${waiting.rceptSttus == '5' }">
+															<tr class="oneBoard" id="${waiting.patntNo }">
+																<td class="" style="vertical-align: middle">${count1}</td>
+																<td class="" style="vertical-align: middle">${waiting.patntNm }</td>
+																<td class="text-center" style="vertical-align: middle">
+																	${waiting.patntRrno1 }</td>
+															</tr>
+															<c:set value="${count1+1 }" var="count1" />
+														</c:if>
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				</div> 
+			</div>
+			<div class="col-7">
+				<div class="card">
+					<div>
+						<ul class="nav nav-tabs" id="myTab" role="tablist">
+							<li class="nav-item text-center col-6">
+								<a class="nav-link active fw-semi-bold" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true">물리치료실</a></li>
+							<li class="nav-item text-center col-6">
+							<a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#tab-contact" role="tab" aria-controls="tab-contact" aria-selected="false">작업치료실</a>
+							</li>
+						</ul>
+					</div>
+					<!-- 물리치료실 탭 -->
+					<div class="tab-pane fade show active" id="tab-home" role="tabpanel" aria-labelledby="home-tab">
+					
+					<!-- 물리치료실 큰 바디  -->
+					<div class="card-body text-center">
+						<table>
+							<tr>
+								<td width="20%">
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer" id="card">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.1</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="">
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;">
+													<img class="p-0 m-0" alt="" src="/resources/image/therapist/bed.png" width="200px" id="image1">
+													</div>
+													<p class="fw-semi-bold"><a class="icon-link icon-link-hover" href="#!">환자배정<span class="bi fas fa-sign-in-alt"></span></a></p>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td width="20%">
+									<div class="card border border-success m-3" style="height: 200px; cursor : pointer;">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px;background-color: #3e9500;">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">치료중</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 --> 
+										<!-- 카드 바디 시작 --> 
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active" role="tabpanel" aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923" id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container fw-semi-bold" style="max-height: 200px; padding:0;">오재순 환자<br/>2023.10.11<br/></div>
+<!-- 													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image1"> -->
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+										<div class="card-footer">
+											<p class="fw-semi-bold">치료사 임찬빈</p>
+										</div>
+									</div>
+								</td>
+								<td width="20%">
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.3</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image3">	
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td width="20%">
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer;">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.4</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;">
+														<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image4">
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td width="20%">
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.5</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image5">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.6</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image6">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.7</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image7">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td width="20%">
+									<div class="card border border-success m-3" style="height: 200px; cursor : pointer; ">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px;background-color: #3e9500;">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">치료중</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 --> 
+										<!-- 카드 바디 시작 --> 
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active" role="tabpanel" aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923" id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container fw-semi-bold" style="max-height: 200px; padding:0;">노시환 환자<br/>2023.10.11<br/></div>
+<!-- 													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image1"> -->
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+										<div class="card-footer">
+											<p class="fw-semi-bold">치료사 임찬빈</p>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.9</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image9">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td width="20%">
+									<div class="card border border-success m-3" style="height: 200px; cursor : pointer;">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: #3e9500;">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">치료중</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 --> 
+										<!-- 카드 바디 시작 --> 
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active" role="tabpanel" aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923" id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container fw-semi-bold" style="max-height: 200px; padding:0;">환자 정은원<br/>2023.10.11<br/></div>
+<!-- 													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image1"> -->
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+										<div class="card-footer">
+											<p class="fw-semi-bold">치료사 임찬빈</p>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+                    <!-- 카드 헤더 시작 -->
+                    <div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+                        <div class="row">
+                            <div class="col-12 align-self-center">
+                                <h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.11</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 카드 헤더 끝 -->
+                    <!-- 카드 바디 시작 -->
+                    <div class="row card-body pt-0">
+                        <div class="tab-content">
+                            <div class="tab-pane preview-tab-pane active"
+                                role="tabpanel"
+                                aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+                                id="dom-1123d529-5101-4101-b597-dac496b93923">
+                                <br>
+                                <div class="table-container" style="overflow-y: auto; max-height: 200px;">
+                                    <!-- 이미지와 텍스트를 추가하고 클릭 이벤트를 처리합니다 -->
+                                    <img alt="환자를 선택해주세요" src="/resources/image/therapist/bed.png" width="200px" id="image11">
+                                    <p class="text-center" id="textArea" style="display: none">환자를 선택해주세요</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.12</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image12">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.13</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image13">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.14</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image14">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+								<td>
+									<div class="card border border-secondary m-3" style="height: 200px; cursor : pointer">
+										<!-- 카드 헤더 시작 -->
+										<div class="card-header border-bottom p-2" style="height: 35px; background-color: midnightblue">
+											<div class="row">
+												<div class="col-12 align-self-center">
+													<h5 class="text-center text-white mb-0 fw-semi-bold" id="header">No.15</h5>
+												</div>
+											</div>
+										</div>
+										<!-- 카드 헤더 끝 -->
+										<!-- 카드 바디 시작 -->
+										<div class="row card-body pt-0">
+											<div class="tab-content">
+												<div class="tab-pane preview-tab-pane active"
+													role="tabpanel"
+													aria-labelledby="tab-dom-1123d529-5101-4101-b597-dac496b93923"
+													id="dom-1123d529-5101-4101-b597-dac496b93923">
+													<br>
+													<div class="table-container" style="overflow-y: auto; max-height: 200px;"></div>
+													<img alt="" src="/resources/image/therapist/bed.png" width="200px" id="image15">
+												</div>
+											</div>
+										</div>
+										<!-- 카드 바디 끝 -->
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					</div>
+					<!-- 작업치료실 탭 -->
+					<div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="contact-tab"> <h3>작업치료</h3> </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 환자 모달  -->
+	<div class="modal fade modal-lg" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: midnightblue;">
+                    <h5 class="modal-title" id="imageModalLabel" style="color: white;">환자 정보</h5>
+                    <button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close" ></button>
+                </div>
+                <div class="modal-body">
+                	<div class="row">
+	                	<div class="col-3">
+		                    <div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">이름</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+	                	<div class="col">
+		                    <div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">성별</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+	                	<div class="col-6">
+		                    <div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">생년월일</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+                	</div>
+                	<div class="row">
+	                	<div class="col">
+		                    <div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">전화번호</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+	                	<div class="col-3">
+		                    <div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">나이</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+	                	<div class="col-3">
+		                    <div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">건강보험</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+                	</div>
+                	<div class="row">
+                		<div class="col">
+		                    <div class="input-group mb-2"><span class="input-group-text" id="inputGroup-sizing-default">주소</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+                	</div>
+                	<div class="row">
+                		<div class="col">
+	  						<input class="form-control mb-3" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+	                	</div>
+                	</div>
+                	<div class="row">
+                		<div class="col">
+	  						<div class="input-group mb-3"><span class="input-group-text" id="inputGroup-sizing-default">메모</span>
+		  						<input class="form-control" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+							</div>
+	                	</div>
+                	</div>
+                	<div class="row">
+                		<div class="col-9"></div>
+                		<div class="col-3 text-end">
+   							<button class="btn btn-primary me-1 mb-1 " type="button">환자배정</button>
+						</div>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SOAP 모달  -->
+    <div class="modal fade modal-xl" id="imageModal2" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: midnightblue; text-align: center;">
+                <h5 class="modal-title" id="imageModalLabel" style="color: white; margin: 0 auto; width: 100%;">SOAP</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div class="row">
+            		<div class="col-md-12">
+		            	<table class="table table-outline text-center" border="1" style="width:100%;" id="soap">
+		            		<tr>
+		            			<th>No.</th>
+		            			<td colspan="2">12340123</td>
+		            			<td>Room No.</td>
+		            			<td colspan="2"></td>
+		            		</tr>
+		            		<tr>
+		            			<th>Name</th>
+		            			<td>김OO</td>
+		            			<td>Gender</td>
+		            			<td>F / M</td>
+		            			<td>Age</td>
+		            			<td>65</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Dx</th>
+		            			<td colspan="5">Rt. Hemiplegia d/t Lt MCA infaraction</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Onset</th>
+		            			<td colspan="5">2017.5.1</td>
+		            		</tr>
+		            		<tr>
+		            			<th>C.C</th>
+		            			<td colspan="5">오른손을 잘 못쓰겠고, 힘이 없다. 다리가 너무 아프다. 걸을 때 넘어질 것 같다.</td>
+		            		</tr>
+		            		<tr>
+		            			<th>PHx</th>
+		            			<td colspan="5">
+		            				2017.5.1 아침에 일어났는데 심한 두통을 동반함. 오른쪽 상하지 마비로 30분 안에 본원 응급실 내원함.<br/>
+		            				혈전 응해제 투여 받고 증상 호전 중.(환자가 과거에, 혹은 과거부터 현재까지 가지고 있는 병력을 간단히 적음)<br/>
+		            			</td>
+		            		</tr>
+		            		<tr>
+		            			<th rowspan="4">Cognitive Function</th>
+		            			<td rowspan="2">Orientation</td>
+		            			<td>T</td>
+		            			<td>P</td>
+		            			<td>P</td>
+		            		</tr>
+		            		<tr>
+		            			<td>-</td>
+		            			<td>+</td>
+		            			<td>+</td>
+		            		</tr>
+		            		<tr>
+		            			<td rowspan="2">Memory</td>
+		            			<td colspan="2">STM (Short Term Memory)</td>
+		            			<td colspan="2">LTM (Long Term Memory)</td>
+		            		</tr>
+		            		<tr>
+		            			<td colspan="2">-</td>
+		            			<td colspan="2">+</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Speech</th>
+		            			<td colspan="5">Broca aphasia (융통성 싫어증)</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Swalowing</th>
+		            			<td colspan="5">Dysphasia</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Ambulation</th>
+		            			<td colspan="5">W/C, Waking, Walking with came</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Other</th>
+		            			<td colspan="5">낙상주의, 상기 환자 폭력적이므로 주의, 환자 와파린(혈전항응고제) 복용 중이므로 상체주의</td>
+		            		</tr>
+		            		<tr>
+		            			<th rowspan="4">Muscle Tons (MAS)</th>
+		            			<td>U/E</td> 
+		            			<td colspan="2">Rt</td>
+		            			<td colspan="2">Lt</td>
+		            		</tr>
+		            		<tr>
+		            			<td></td>
+		            			<td colspan="2">G1+</td>
+		            			<td colspan="2">G0</td>
+		            		</tr>
+		            		<tr>
+		            			<td>L/E</td>
+		            			<td colspan="2">Rt</td>
+		            			<td colspan="2">Lt</td>
+		            		</tr>
+		            		<tr>
+		            			<td></td>
+		            			<td colspan="2">G1+</td>
+		            			<td colspan="2">G0</td>
+		            		</tr>
+		            		<tr>
+		            			<th rowspan="3">Assessment</th>
+		            			<td>Problem List</td>
+		            			<td colspan="4">평가를 통해 확인한 환자의 주요 문제점들을 기록</td>
+		            		</tr>
+		            		<tr>
+		            			<td>LTG</td>
+		            			<td colspan="4">주요 문제점을 고려하여 환자의 장기계획을 작성</td>
+		            		</tr>
+		            		<tr>
+		            			<td>STG</td>
+		            			<td colspan="4">주요 문제점을 고려하고 장기목표를 이루기 위해 조금 더 구체적인 단기목표를 작성</td>
+		            		</tr>
+		            		<tr>
+		            			<th>Plan</th>
+		            			<td colspan="5">장/단기목표를 위해 치료에 적용할 치료방법들을 작성</td>
+		            		</tr>
+		            		<tr>
+		            			<td colspan="6">
+		            				<button type="button" class="btn btn-primary" style="width:120px;">저장</button>
+		            			</td>
+		            		</tr>
+		            	</table>
+            		</div>
+            	</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var card = document.getElementById('card');
+
+    card.addEventListener('click', function () {
+        card.classList.toggle('selected');
+    });
+});
+</script>
+   
+</body>
+</html>

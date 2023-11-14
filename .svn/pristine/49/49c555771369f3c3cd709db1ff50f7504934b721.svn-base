@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+
+.user-wrap {
+	width: 100%;
+	margin: 10px auto;
+	position: relative;
+}
+
+.user-wrap img {
+	width: 100%;
+	vertical-align: middle;
+}
+.user-time {
+	position: absolute;
+	left: 5%;
+	width: 100%;
+	text-align: center;
+}
+
+.welcome {
+	position: absolute;
+	left: 5%;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+
+#date {
+	position: absolute;
+	left: 5%;
+	width: 100%;
+	text-align: center;
+}

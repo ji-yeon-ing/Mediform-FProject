@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.manager.ManagerEmployeeMapper">
+	
+	<sql id="empSearch">
+		<if test='searchType != null and searchType == "default"'>
+			and EMP_HFFC_AT = 'Y' 
+			and EMP_CONFM = 'Y'
+			<if test='searchWord != null'>
+				and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+				or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+			</if>
+		</if>
+		<if test='searchType != null and searchType == "r"'>
+			and EMP_HFFC_AT = 'N'  
+			and EMP_CONFM = 'Y'
+			<if test='searchWord != null'>
+				and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+				or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+			</if>
+		</if>
+		<if test='searchType != null and searchType != "default" and searchType != "r"'>
+				and EMP_HFFC_AT = 'Y' 
+				and EMP_CONFM = 'Y'
+				and EMP_SE = #{searchType} 
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+				or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+			</if> 
+		</if>
+	</sql>
+	
+	<select id="selectEmpCount" parameterType="pagingVO" resultType="int">
+		select count(emp_no) 
+		from employee 
+		where 1=1 
+		<include refid="empSearch"/>
+	</select>
+	
+	<select id="selectEmpList" parameterType="pagingVO" resultType="employeeVO">
+		select
+		 	b.*
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.EMP_RGSDE desc) rnum
+			 from (	
+			 	select * from employee
+			 	where 1=1
+			 	<include refid="empSearch"/>
+			 	order by EMP_RGSDE desc
+			 ) a
+		) b
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="getEmployee" parameterType="string" resultType="employeeVO">
+		select 
+				emp_no, 
+				emp_pw, 
+				EMP_NM, 
+				EMP_RRNO1, 
+				EMP_RRNO2, 
+				EMP_TELNO, 
+				EMP_ZIP, 
+				EMP_ADRES1, 
+				EMP_ADRES2,
+				EMP_EMAIL, 
+				EMP_SEXDSTN, 
+				EMP_BRTHDY,
+				EMP_DEP, 
+				EMP_ENCPN, 
+				EMP_RETIRE, 
+				EMP_EXP, 
+				EMP_RGSDE,
+				EMP_UPDDE, 
+				EMP_HFFC_AT, 
+				EMP_PROFILE, 
+				EMP_SIGN, 
+				EMP_LCNS, 
+				EMP_DOCTR_LCNS, 
+				EMP_SE, 
+				EMP_AUTHOR,
+				EMP_CLSF, 
+				EMP_YRYC_USE, 
+				EMP_YRYC_REMNDR, 
+				EMP_OFFHOD_USE, 
+				EMP_OFFHOD_REMNDR,
+				EMP_SICKNS_USE,
+				EMP_SICKNS_REMNDR,
+				EMP_CONFM, 
+				RJCT_RESN, 
+				EMP_RQSTR 
+		from employee 
+		where emp_no = #{empNo}
+	</select>
+	
+	<update id="rejectUpdate" parameterType="employeeVO">
+		update employee 
+		set 
+			rjct_resn = #{RjctResn}, 
+			emp_confm = 'N' 
+		where emp_no = #{empNo}
+	</update>
+	
+	<update id="agreeEmployee" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_confm = 'Y', 
+			emp_pw = #{empPw}
+		where emp_no = #{empNo}
+	</update>
+	
+	<insert id="insertAuth" parameterType="authorityVO">
+		insert into authority(
+			emp_no, author_nm
+		) values (
+			#{empNo}, #{authorNm} 
+		) 
+	</insert>
+	
+	<delete id="deleteAuth" parameterType="employeeVO">
+		delete from authority 
+		where emp_no = #{empNo}
+	</delete>
+	
+	<update id="retireEmp" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_retire = sysdate, 
+			emp_hffc_at = #{empHffcAt} 
+		where emp_no = #{empNo}
+	</update>
+	
+	<update id="updateEmp" parameterType="employeeVO">
+		update employee 
+		set 
+			emp_updde = sysdate, 
+			emp_clsf = #{empClsf}
+		where emp_no = #{empNo}
+	</update>
+	
+	<select id="ogzChart" resultType="employeeVO">
+		select 				
+				emp_no, 
+				emp_pw, 
+				EMP_NM, 
+				EMP_RRNO1, 
+				EMP_RRNO2, 
+				EMP_TELNO, 
+				EMP_ZIP, 
+				EMP_ADRES1, 
+				EMP_ADRES2,
+				EMP_EMAIL, 
+				EMP_SEXDSTN, 
+				EMP_BRTHDY,
+				EMP_DEP, 
+				EMP_ENCPN, 
+				EMP_RETIRE, 
+				EMP_EXP, 
+				EMP_RGSDE,
+				EMP_UPDDE, 
+				EMP_HFFC_AT, 
+				EMP_PROFILE, 
+				EMP_SIGN, 
+				EMP_LCNS, 
+				EMP_DOCTR_LCNS, 
+				EMP_SE, 
+				EMP_AUTHOR,
+				EMP_CLSF, 
+				EMP_YRYC_USE, 
+				EMP_YRYC_REMNDR, 
+				EMP_OFFHOD_USE, 
+				EMP_OFFHOD_REMNDR, 
+				EMP_CONFM, 
+				RJCT_RESN, 
+				EMP_RQSTR 
+		from employee 
+		where EMP_HFFC_AT = 'Y' and EMP_CONFM = 'Y'
+	</select>
+	
+	<select id="clsfCheck" parameterType="employeeVO" resultType="int">
+		select count(*) from employee
+		where EMP_HFFC_AT = 'Y' and EMP_CONFM = 'Y' and EMP_SE = #{empSe} and emp_clsf = '0'
+	</select>
+	
+	<resultMap type="map" id="allCntMap">
+		<result property="allCnt" column="allCnt"/>
+		<result property="dCnt" column="dCnt"/>
+		<result property="aCnt" column="aCnt"/>
+		<result property="nCnt" column="nCnt"/>
+		<result property="tCnt" column="tCnt"/>
+		<result property="mCnt" column="mCnt"/>
+	</resultMap>
+	
+	<select id="allCnt" resultMap="allCntMap">
+		select 
+			count(case when EMP_HFFC_AT='Y' and EMP_CONFM ='Y' THEN 1 END) allCnt,
+		    count(case when emp_se='d' and EMP_HFFC_AT='Y' and EMP_CONFM ='Y' THEN 1 END) as dCnt, 
+		    count(case when emp_se='n' and EMP_HFFC_AT='Y' and EMP_CONFM ='Y' THEN 1 END) as nCnt, 
+		    count(case when (emp_se='m' or emp_se='k') and EMP_HFFC_AT='Y' and EMP_CONFM ='Y' THEN 1 END) as mCnt, 
+		    count(case when emp_se='t' and EMP_HFFC_AT='Y' and EMP_CONFM ='Y' THEN 1 END) as tCnt, 
+		    count(case when emp_se='a' and EMP_HFFC_AT='Y' and EMP_CONFM ='Y' THEN 1 END) as aCnt
+		from employee
+	</select>
+	
+	
+	<sql id="completeSearch">
+		<if test='searchType != null and searchType == "default" '>
+			<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+			</if>
+		</if>
+			<if test='searchType != null and searchType == "yes"'>
+				and EMP_CONFM = 'Y'
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if>
+			</if>
+			<if test='searchType != null and searchType == "no"'>
+				and EMP_CONFM = 'N'
+				<if test='searchWord != null'>
+					and (emp_no like '%' || #{searchWord, jdbcType=VARCHAR} || '%' 
+					or emp_nm like '%' || #{searchWord, jdbcType=VARCHAR} || '%')
+				</if>
+			</if>
+	</sql>
+	
+	<select id="completeCount" parameterType="pagingVO" resultType="int">
+		select count(emp_no) 
+		from employee 
+		where 1=1 
+		<include refid="completeSearch"/>
+	</select>
+	
+	<select id="completeList" parameterType="pagingVO" resultType="employeeVO">
+		select
+		 	b.*
+		 from(
+			 select 
+			 	a.*, row_number() over (order by a.EMP_RGSDE desc) rnum
+			 from (	
+			 	select 
+					emp_no, 
+					emp_pw, 
+					EMP_NM, 
+					EMP_RRNO1, 
+					EMP_RRNO2, 
+					EMP_TELNO, 
+					EMP_ZIP, 
+					EMP_ADRES1, 
+					EMP_ADRES2,
+					EMP_EMAIL, 
+					EMP_SEXDSTN, 
+					EMP_BRTHDY,
+					EMP_DEP, 
+					EMP_ENCPN, 
+					EMP_RETIRE, 
+					EMP_EXP, 
+					EMP_RGSDE,
+					EMP_UPDDE, 
+					EMP_HFFC_AT, 
+					EMP_PROFILE, 
+					EMP_SIGN, 
+					EMP_LCNS, 
+					EMP_DOCTR_LCNS, 
+					EMP_SE, 
+					EMP_AUTHOR,
+					EMP_CLSF, 
+					EMP_YRYC_USE, 
+					EMP_YRYC_REMNDR, 
+					EMP_OFFHOD_USE, 
+					EMP_OFFHOD_REMNDR, 
+					EMP_CONFM, 
+					RJCT_RESN, 
+					EMP_RQSTR
+				from employee
+			 	where 1=1
+			 	and EMP_CONFM IS NOT NULL 
+			 	<include refid="completeSearch"/>
+			 	order by EMP_RGSDE desc
+			 ) a
+		) b
+		 <![CDATA[
+		 	where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="confirmList" resultType="employeeVO">
+		select 
+				emp_no, 
+				emp_pw, 
+				EMP_NM, 
+				EMP_RRNO1, 
+				EMP_RRNO2, 
+				EMP_TELNO, 
+				EMP_ZIP, 
+				EMP_ADRES1, 
+				EMP_ADRES2,
+				EMP_EMAIL, 
+				EMP_SEXDSTN, 
+				EMP_BRTHDY,
+				EMP_DEP, 
+				EMP_ENCPN, 
+				EMP_RETIRE, 
+				EMP_EXP, 
+				EMP_RGSDE,
+				EMP_UPDDE, 
+				EMP_HFFC_AT, 
+				EMP_PROFILE, 
+				EMP_SIGN, 
+				EMP_LCNS, 
+				EMP_DOCTR_LCNS, 
+				EMP_SE, 
+				EMP_AUTHOR,
+				EMP_CLSF, 
+				EMP_YRYC_USE, 
+				EMP_YRYC_REMNDR, 
+				EMP_OFFHOD_USE, 
+				EMP_OFFHOD_REMNDR, 
+				EMP_CONFM, 
+				RJCT_RESN, 
+				EMP_RQSTR 
+		from employee
+		where 1=1
+		and EMP_CONFM IS NULL
+		order by EMP_RGSDE desc
+	</select>
+	
+	
+	
+	
+</mapper>

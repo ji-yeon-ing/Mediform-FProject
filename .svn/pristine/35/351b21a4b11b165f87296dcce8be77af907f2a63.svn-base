@@ -1,0 +1,15 @@
+package kr.or.ddit.nurse.vo;
+
+import lombok.Data;
+
+//바이탈
+@Data
+public class VitalVO {
+	
+	private String vitalCd;
+	private int hghrkHhhprs;
+	private int lwtrkHhprs;
+	private int vitalPlus;
+	private int mntbyRsprtn;
+	private int bdheat;
+}

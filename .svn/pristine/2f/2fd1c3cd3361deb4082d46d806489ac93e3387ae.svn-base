@@ -1,0 +1,382 @@
+package kr.or.ddit.doctor.service.Impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.FileVO;
+import kr.or.ddit.common.vo.HealthCheckupVO;
+import kr.or.ddit.common.vo.MedicalTreatmentVO;
+import kr.or.ddit.common.vo.RceptVO;
+import kr.or.ddit.doctor.service.IDoctorService;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.doctor.vo.MedicalExaminationOrderVO;
+import kr.or.ddit.doctor.vo.MedicalTreatmentRecordVO;
+import kr.or.ddit.doctor.vo.PrescriptionOrderVO;
+import kr.or.ddit.doctor.vo.SelectAllMedicalTreatmentRecordVO;
+import kr.or.ddit.doctor.vo.SickAndWoundedListVO;
+import kr.or.ddit.doctor.vo.SickAndWoundedVO;
+import kr.or.ddit.mapper.doctor.DoctorMapper;
+import kr.or.ddit.nurse.vo.MedicineVO;
+import kr.or.ddit.nurse.vo.VitalVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class DoctorServiceImpl implements IDoctorService {
+
+	@Inject
+	private DoctorMapper doctorMapper;
+	
+	// 이전 진료 기록 조회
+	@Override
+	public List<ClinicVO> selectClinicList(Map<String, String> map) {
+		return doctorMapper.selectClinicList(map);
+	}
+	// 이전 진료 기록 조회 의사용
+	@Override
+	public List<ClinicVO> selectClnicTime(Map<String, String> map) {
+		return doctorMapper.selectClnicTime(map);
+	}
+	// 상병 전체 조회 ajax
+	@Override
+	public List<SickAndWoundedListVO> selectSAWList() {
+		return doctorMapper.selectSAWList();
+	}
+
+	// 상병 검색 조회 ajax
+	@Override
+	public List<SickAndWoundedListVO> selectSAW(Map<String, String> map) {
+		return doctorMapper.selectSAW(map);
+	}
+
+	// 검사 전체 조회 ajax
+	@Override
+	public List<HealthCheckupVO> selectHCList() {
+		return doctorMapper.selectHCList();
+	}
+
+	// 검사 검색 조회 ajax
+	@Override
+	public List<HealthCheckupVO> selectHC(Map<String, String> map) {
+		return doctorMapper.selectHC(map);
+	}
+	
+	// 진료 등록 ajax
+	@Override
+	public ServiceResult insertClinic(ClinicVO clinicVO) {
+		ServiceResult result = null;
+		
+		// 진료 등록이 되어 있는 지 확인
+		int check = doctorMapper.checkClinic(clinicVO);
+		
+		// 상병, 검사 오더, 치료 오더, 처방 오더 VO 생성
+		SickAndWoundedVO sickAndWoundedVO = new SickAndWoundedVO();
+		MedicalExaminationOrderVO medicalExaminationOrderVO = new MedicalExaminationOrderVO();
+		MedicalTreatmentRecordVO medicalTreatmentRecordVO = new MedicalTreatmentRecordVO();
+		PrescriptionOrderVO prescriptionOrderVO = new PrescriptionOrderVO();
+		
+		// 생성한 VO에 clinicVO에 들어있는 값 옮기기
+		sickAndWoundedVO = clinicVO.getSickAndWoundedVO();
+		medicalExaminationOrderVO = clinicVO.getMedicalExaminationOrderVO();
+		medicalTreatmentRecordVO = clinicVO.getMedicalTreatmentRecordVO();
+		prescriptionOrderVO = clinicVO.getPrescriptionOrderVO();
+		
+		String clnicNo = "";
+		String rceptNo = clinicVO.getRceptNo();
+		String patntNo = clinicVO.getPatntNo();
+		
+		// 각 VO의 대표 변수 배열 길이 (그냥 코드 좀 더 편하게 쓰려고 만듦) 
+		int sawLength = sickAndWoundedVO.getKcdList().size();
+		int meoLength = medicalExaminationOrderVO.getHlthchkpCdList().size();
+		int mtrLength = medicalTreatmentRecordVO.getMdlrtCdList().size();
+		int poLength = prescriptionOrderVO.getMedcinCdList().size();
+		
+		// 각각의 성공 실패여부를 위한 변수
+		int clinicStatus = 0;
+		int sawStatus = 0;
+		int meoStatus = 0;
+		int mtrStatus = 0;
+		int poStatus = 0;
+		
+		String rceptClnicAt = clinicVO.getRceptClnicAt();
+		
+		// 이미 진료가 존재할 경우
+		if(check == 1) {
+			
+			
+			// 진료는 업데이트
+			clinicStatus = doctorMapper.updateClinic(clinicVO);
+			
+			clnicNo = doctorMapper.selectClnicNo(clinicVO);
+			
+			// 상병이 있으면 실행
+			if(sawLength > 0) {
+				// 이미 진료가 생성된게 있고 새로운 값이 있을 시 진료번호랑 같은 상병 삭제
+				doctorMapper.deleteSAW(clnicNo);
+				// 상병에 진료 번호 세팅
+				sickAndWoundedVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < sawLength; i++) {
+					sickAndWoundedVO.setKcd(sickAndWoundedVO.getKcdList().get(i));
+					sickAndWoundedVO.setSckwndKr(sickAndWoundedVO.getSckwndKrList().get(i));
+					sickAndWoundedVO.setSckwndEn(sickAndWoundedVO.getSckwndEnList().get(i));
+					sickAndWoundedVO.setSckwndSe(Integer.parseInt(sickAndWoundedVO.getSckwndSeList().get(i)));
+					
+					sawStatus += doctorMapper.insertSAW(sickAndWoundedVO);
+				}
+			}
+			// 검사가 있으면 실행
+			if(meoLength > 0) {
+				// 검사는 재호출 시 값이 검사 테이블이 아니라 검사 결과에 뿌려지기 때문에 만약 검사가 있다면 그냥 추가
+				// 검사에 진료 번호 세팅
+				medicalExaminationOrderVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < meoLength; i++) {
+					medicalExaminationOrderVO.setHlthchkpCd(medicalExaminationOrderVO.getHlthchkpCdList().get(i));
+					
+					meoStatus += doctorMapper.insertMEO(medicalExaminationOrderVO);
+				}
+			}
+			// 치료가 있으면 실행
+			if(mtrLength > 0) {
+				// 이미 진료가 생성된게 있고 새로운 값이 있을 시 진료번호랑 같은 치료 오더 삭제
+				doctorMapper.deleteMTR(clnicNo);
+				// 치료에 진료 번호 세팅
+				medicalTreatmentRecordVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < mtrLength; i++) {
+					medicalTreatmentRecordVO.setMdlrtCd(medicalTreatmentRecordVO.getMdlrtCdList().get(i));
+					
+					mtrStatus += doctorMapper.insertMTR(medicalTreatmentRecordVO);
+				}
+			}
+			// 처방이 있으면 실행
+			if(poLength > 0) {
+				// 이미 진료가 생성된게 있을 시 진료번호랑 같은 처방 오더 삭제
+				doctorMapper.deletePO(clnicNo);
+				// 처방에 진료 번호 세팅
+				prescriptionOrderVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < poLength; i++) {
+					prescriptionOrderVO.setMedcinCd(prescriptionOrderVO.getMedcinCdList().get(i));
+					prescriptionOrderVO.setPrscrptnNm(prescriptionOrderVO.getPrscrptnNmList().get(i));
+					prescriptionOrderVO.setMdctnCpcty(Double.parseDouble(prescriptionOrderVO.getMdctnCpctyList().get(i)));
+					prescriptionOrderVO.setMdctnUnit(prescriptionOrderVO.getMdctnUnitList().get(i));
+					prescriptionOrderVO.setMdctnCo(Integer.parseInt(prescriptionOrderVO.getMdctnCoList().get(i)));
+					prescriptionOrderVO.setMdctnPd(prescriptionOrderVO.getMdctnPdList().get(i));
+					prescriptionOrderVO.setMdctnCoursUsage(prescriptionOrderVO.getMdctnCoursUsageList().get(i));
+					
+					poStatus += doctorMapper.insertPO(prescriptionOrderVO);
+				}
+			}
+			
+			int updateCount = doctorMapper.updateRceptClnicAt(rceptClnicAt);
+			if(updateCount < 1 ) {
+				return ServiceResult.NOTUPDATE;
+			}
+		}else if(check == 0){
+			// 진료 등록된 게 없을 시 등록 진행
+			
+			// 진료 등록
+			clinicStatus = doctorMapper.insertClinic(clinicVO);
+			// 생성된 진료 번호 조회 후 진료 번호 변수에 세팅
+			clnicNo = doctorMapper.selectClnicNo(clinicVO);
+			
+			// 상병이 있으면 실행
+			if(sawLength > 0) {
+				// 상병에 진료 번호 세팅
+				sickAndWoundedVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < sawLength; i++) {
+					sickAndWoundedVO.setKcd(sickAndWoundedVO.getKcdList().get(i));
+					sickAndWoundedVO.setSckwndKr(sickAndWoundedVO.getSckwndKrList().get(i));
+					sickAndWoundedVO.setSckwndEn(sickAndWoundedVO.getSckwndEnList().get(i));
+					sickAndWoundedVO.setSckwndSe(Integer.parseInt(sickAndWoundedVO.getSckwndSeList().get(i)));
+					
+					sawStatus += doctorMapper.insertSAW(sickAndWoundedVO);
+				}
+			}
+			// 검사가 있으면 실행
+			if(meoLength > 0) {
+				// 검사에 진료 번호 세팅
+				medicalExaminationOrderVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < meoLength; i++) {
+					medicalExaminationOrderVO.setHlthchkpCd(medicalExaminationOrderVO.getHlthchkpCdList().get(i));
+					
+					meoStatus += doctorMapper.insertMEO(medicalExaminationOrderVO);
+				}
+			}
+			// 치료이 있으면 실행
+			if(mtrLength > 0) {
+				// 치료에 진료 번호 세팅
+				medicalTreatmentRecordVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < mtrLength; i++) {
+					medicalTreatmentRecordVO.setMdlrtCd(medicalTreatmentRecordVO.getMdlrtCdList().get(i));
+					
+					mtrStatus += doctorMapper.insertMTR(medicalTreatmentRecordVO);
+				}
+			}
+			// 처방이 있으면 실행
+			if(poLength > 0) {
+				// 처방에 진료 번호 세팅
+				prescriptionOrderVO.setClnicNo(clnicNo);
+				// 반복문 돌면서 List에 있는 값 세팅 및 등록
+				for (int i = 0; i < poLength; i++) {
+					prescriptionOrderVO.setMedcinCd(prescriptionOrderVO.getMedcinCdList().get(i));
+					prescriptionOrderVO.setPrscrptnNm(prescriptionOrderVO.getPrscrptnNmList().get(i));
+					prescriptionOrderVO.setMdctnCpcty(Double.parseDouble(prescriptionOrderVO.getMdctnCpctyList().get(i)));
+					prescriptionOrderVO.setMdctnUnit(prescriptionOrderVO.getMdctnUnitList().get(i));
+					prescriptionOrderVO.setMdctnCo(Integer.parseInt(prescriptionOrderVO.getMdctnCoList().get(i)));
+					prescriptionOrderVO.setMdctnPd(prescriptionOrderVO.getMdctnPdList().get(i));
+					prescriptionOrderVO.setMdctnCoursUsage(prescriptionOrderVO.getMdctnCoursUsageList().get(i));
+					
+					poStatus += doctorMapper.insertPO(prescriptionOrderVO);
+				}
+			}
+		}else {
+			result = ServiceResult.MANYRESULTFAILED;
+			return result;
+		}
+		if(clinicStatus > 0) {
+			if(sawStatus == sawLength) {
+				if(meoStatus == meoLength) {
+					if(mtrStatus == mtrLength) {
+						if(poStatus == poLength) {
+							
+							if(clinicVO.getClnicAt().equals("Y")) {
+								
+								Map<String, Object> insertReceive = new HashMap<String, Object>();
+								
+								// 수납 상세 테이블에 넣을 키 Map에 담아주기
+								insertReceive.put("clnicNo", clnicNo);
+								insertReceive.put("patntNo", patntNo);
+								
+								// 중복 오류 방지를 위한 수납 테이블 키 몇개인지 조회 
+								int receiveCount = doctorMapper.checkReceive(clnicNo);
+								
+								// 1개는 원래 있어야 하는 값 2개 이상이 되면 안된다.
+								if(receiveCount > 1) {
+									return result = ServiceResult.MANYRECEIVEKEYFAILED;
+								}
+								
+								// 방금 생성한 수납 테이블 키 가져오기
+								String rcivNo = doctorMapper.selectRcivNo(insertReceive);
+								
+								// 수납 코드
+								insertReceive.put("rcivNo", rcivNo);
+								// 진찰료
+								insertReceive.put("rcivdMdcxm", clinicVO.getClnicFe());
+								// 일반 검사비(검사료)(총액)
+								insertReceive.put("rcivdHlthchkp", clinicVO.getMedicalExaminationOrderVO().getHcTotalPrice()); 
+								// 엑스레이 검사비(영상진단료)(총액)
+								insertReceive.put("rcivdDgnss", clinicVO.getMedicalExaminationOrderVO().getXcTotalPrice());
+								// 물리 치료비(재활 및 물리 치료료)(총액)
+								insertReceive.put("rcivdReh", clinicVO.getMedicalTreatmentRecordVO().getMmTotalPrice());
+								// 도수 치료비(도수치료)(총액)
+								insertReceive.put("rcivdTh", clinicVO.getMedicalTreatmentRecordVO().getZzTotalPrice());
+								// 약품비(투약료)(총액)
+								insertReceive.put("rcivdMdct", clinicVO.getPrescriptionOrderVO().getPoTotalPrice());
+								// 주사료(주사료)(총액)
+								insertReceive.put("rcivdInjctn", clinicVO.getPrescriptionOrderVO().getInjectionTotalPrice());
+								
+								int recDetailStatus = doctorMapper.insertReceiveDetail(insertReceive);
+								
+								int updateCount = doctorMapper.updateRceptClnicAt(rceptClnicAt);
+								
+								if(updateCount < 1 ) {
+									return ServiceResult.NOTUPDATE;
+								}
+								
+								if(recDetailStatus > 0) {
+									result = ServiceResult.OK;
+								}else {
+									result = ServiceResult.FAILED;
+								}
+								
+							}else {
+								result = ServiceResult.OK;
+							}
+							
+						}else {
+							result = ServiceResult.POFAILED;
+						}
+					}else {
+						result = ServiceResult.MTRFAILED;
+					}
+				}else {
+					result = ServiceResult.MEOFAILED;
+				}
+			}else {
+				result = ServiceResult.SAWFAILED;
+			}
+		}else {
+			result = ServiceResult.CLINICFAILED;
+		}
+		
+		return result;
+	}
+	// 치료 전체 조회 ajax
+	@Override
+	public List<MedicalTreatmentVO> selectMTList() {
+		return doctorMapper.selectMTList();
+	}
+	// 치료 검색 조회 ajax
+	@Override
+	public List<MedicalTreatmentVO> selectMT(Map<String, String> map) {
+		return doctorMapper.selectMT(map);
+	}
+	// 처방 전체 조회 ajax
+	@Override
+	public List<MedicineVO> selectMedList() {
+		return doctorMapper.selectMedList();
+	}
+	// 처방 검색 조회 ajax
+	@Override
+	public List<MedicineVO> selectMed(Map<String, String> map) {
+		return doctorMapper.selectMed(map);
+	}
+	// 검사 결과 조회
+	@Override
+	public List<MedicalExaminationOrderVO> selectMEOResult(Map<String, String> map) {
+		return doctorMapper.selectMEOResult(map);
+	}
+	// 검사 xray 조회
+	@Override
+	public List<FileVO> selectXrayResult(Map<String, String> map) {
+		return doctorMapper.selectXrayResult(map);
+	}
+	// 환자 검사오더 등록한 진료 조회(ajax)
+	@Override
+	public ClinicVO selectClinic(Map<String, String> map) {
+		ClinicVO clinicVO = new ClinicVO();
+		
+		clinicVO = doctorMapper.selectClinic(map);
+
+		List<SelectAllMedicalTreatmentRecordVO> selectAllMedicalTreatmentRecordVOList = doctorMapper.selectPatientMTR(map);
+		clinicVO.setSelectMedicalTreatmentRecordVOList(selectAllMedicalTreatmentRecordVOList);
+		
+		List<PrescriptionOrderVO> prescriptionOrderVOList = doctorMapper.selectPatientPO(map);
+		clinicVO.setPrescriptionOrderVOList(prescriptionOrderVOList);
+		
+		List<SickAndWoundedVO> sickAndWoundedVOList = doctorMapper.selectPatientSAW(map);
+		clinicVO.setSickAndWoundedVOList(sickAndWoundedVOList);
+		
+		List<MedicalExaminationOrderVO> medicalExaminationOrderVOList = doctorMapper.selectMEOResult(map);
+		clinicVO.setMedicalExaminationOrderVOList(medicalExaminationOrderVOList);
+		
+		return clinicVO;
+	}
+	@Override
+	public VitalVO selectVital(String patntNo) {
+		return doctorMapper.selectVital(patntNo);
+	}
+}

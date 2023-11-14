@@ -1,0 +1,378 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type="text/css">
+a {
+	text-decoration-line: none !important;
+}
+
+body {
+	background-image:
+		url('../../../resources/image/login/backgroundIMG1.jpg');
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+</style>
+
+
+<!-- ===============================================-->
+<!--    Document Title-->
+<!-- ===============================================-->
+<title>메디폼 │ 비밀번호 찾기</title>
+
+
+<!-- ===============================================-->
+<!--    Favicons-->
+<!-- ===============================================-->
+<link rel="apple-touch-icon" sizes="180x180"
+	href="../../../resources/assets/img/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32"
+	href="../../../resources/assets/img/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16"
+	href="../../../resources/assets/img/favicons/favicon-16x16.png">
+<link rel="shortcut icon" type="image/x-icon"
+	href="../../../resources/assets/img/favicons/favicon.ico">
+<link rel="manifest"
+	href="../../../resources/assets/img/favicons/manifest.json">
+<meta name="msapplication-TileImage"
+	content="../../../resources/assets/img/favicons/mstile-150x150.png">
+<meta name="theme-color" content="#ffffff">
+<script src="../../../resources/assets/js/config.js"></script>
+<script src="../../../resources/vendors/simplebar/simplebar.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+
+<!-- ===============================================-->
+<!--    Stylesheets-->
+<!-- ===============================================-->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap"
+	rel="stylesheet">
+<link href="../../../resources/vendors/simplebar/simplebar.min.css"
+	rel="stylesheet">
+<link href="../../../resources/assets/css/theme-rtl.min.css"
+	rel="stylesheet" id="style-rtl">
+<link href="../../../resources/assets/css/theme.min.css"
+	rel="stylesheet" id="style-default">
+<link href="../../../resources/assets/css/user-rtl.min.css"
+	rel="stylesheet" id="user-style-rtl">
+<link href="../../../resources/assets/css/user.min.css" rel="stylesheet"
+	id="user-style-default">
+<script>
+	var isRTL = JSON.parse(localStorage.getItem('isRTL'));
+	if (isRTL) {
+		var linkDefault = document.getElementById('style-default');
+		var userLinkDefault = document.getElementById('user-style-default');
+		linkDefault.setAttribute('disabled', true);
+		userLinkDefault.setAttribute('disabled', true);
+		document.querySelector('html').setAttribute('dir', 'rtl');
+	} else {
+		var linkRTL = document.getElementById('style-rtl');
+		var userLinkRTL = document.getElementById('user-style-rtl');
+		linkRTL.setAttribute('disabled', true);
+		userLinkRTL.setAttribute('disabled', true);
+	}
+</script>
+</head>
+
+
+<body>
+
+	<!-- ===============================================-->
+	<!--    Main Content-->
+	<!-- ===============================================-->
+	<main class="main" id="top">
+		<div class="container" data-layout="container">
+			<script>
+				var isFluid = JSON.parse(localStorage.getItem('isFluid'));
+				if (isFluid) {
+					var container = document.querySelector('[data-layout]');
+					container.classList.remove('container');
+					container.classList.add('container-fluid');
+				}
+			</script>
+			<div class="row flex-center min-vh-100 py-6">
+				<div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+					<div class="card">
+						<div class="card-body p-4 p-sm-5">
+							<a class="d-flex flex-center mb-4" href="/mediform/loginForm"><span
+								class="font-sans-serif fw-bolder fs-5 d-inline-block">MediForm</span></a>
+							<div class="row flex-between-center mb-2">
+								<div class="col-auto">
+									<h5>비밀번호 찾기</h5>
+								</div>
+							</div>
+							<div id="formDiv">
+									<!-- 1차 정보 입력 -->
+									<div class="mb-3">
+										<label class="form-control-label mb-0" for="empNo">사번</label>
+										<input class="form-control" type="text" id="empNo"
+											name="empNo" placeholder="" />
+									</div>
+									<div class="mb-3">
+										<label class="form-control-label mb-0" for="empNm">이름</label>
+										<input class="form-control" type="text" id="empNm"
+											name="empNm" placeholder="" />
+									</div>
+									<div class="mb-3">
+										<label class="form-control-label mb-0" for="empRrno">주민등록번호</label>
+										<div class="d-flex">
+											<input class="form-control" type="text" id="empRrno1"
+												name="empRrno1" placeholder="" style="width: 232px;" maxlength="6"/> <span
+												class="d-flex align-items-center">&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</span>
+											<input class="form-control" type="password" id="empRrno2"
+												name="empRrno2" placeholder="" maxlength="7" />
+										</div>
+									</div>
+									<div class="mb-3">
+										<label class="form-control-label mb-0" for="empEmail">이메일</label>
+										<div class="d-flex">
+											<input class="form-control" type="text" id="empEmail1"
+												name="empEmail1" placeholder="" /> <span
+												class="d-flex align-items-center">&nbsp;&nbsp;@&nbsp;&nbsp;</span>
+											<select class="form-select"
+												aria-label="Default select example" id="empEmail2"
+												name="empEmail2">
+												<option selected="selected" value="0">주소</option>
+												<option value="@naver.com">naver.com</option>
+												<option value="@gmail.com">gmail.com</option>
+												<option value="@daum.net">daum.net</option>
+												<option value="@hanmail.com">hanmail.com</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="mb-3">
+										<button type="button"
+											class="btn btn-primary d-block w-100 mt-3" id="findPwBtn">비밀번호
+											찾기</button>
+									</div>
+									<!-- 1차 정보 입력 -->
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<!-- ===============================================-->
+	<!--    End of Main Content-->
+	<!-- ===============================================-->
+
+
+	<input type="hidden" name="_csrf" value="${_csrf.token}" />
+   	<input type="hidden" name="_csrf_header" value="${_csrf.headerName}" />
+	<input type="hidden" id="rndCd">
+	<input type="hidden" id="tempEmpEmail">
+	<input type="hidden" id="tempEmpNo">
+
+	<!-- ===============================================-->
+	<!--    JavaScripts-->
+	<!-- ===============================================-->
+	<script src="../../../resources/vendors/popper/popper.min.js"></script>
+	<script src="../../../resources/vendors/bootstrap/bootstrap.min.js"></script>
+	<script src="../../../resources/vendors/anchorjs/anchor.min.js"></script>
+	<script src="../../../resources/vendors/is/is.min.js"></script>
+	<script src="../../../resources/vendors/fontawesome/all.min.js"></script>
+	<script src="../../../resources/vendors/lodash/lodash.min.js"></script>
+	<script
+		src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+	<script src="../../../resources/vendors/list.js/list.min.js"></script>
+	<script src="../../../resources/assets/js/theme.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+</body>
+<script type="text/javascript">
+	$(function() {
+		
+		var token = $("input[name='_csrf']").val();
+		var header = $("input[name='_csrf_header']").val();
+		var rndCd = $('#rndCd');
+		
+		var step2HTML = "<div class='mb-3'>";
+			step2HTML += "<label class='form-control-label mb-0' for='enNo'>인증번호</label>";
+			step2HTML += "<input class='form-control' type='text' id='enNo' name='enNo' placeholder='인증번호를 입력해 주세요.' />";
+			step2HTML += "</div>";
+			step2HTML += "<div class='mb-3'>";
+			step2HTML += "<button type='button' class='btn btn-primary d-block w-100 mt-3' id='inNoBtn'>인증</button>";
+			step2HTML += "</div>";
+		
+		var findPwBtn = $('#findPwBtn');
+		findPwBtn.on('click', function() {
+			var empNo = $('#empNo').val();
+			var empNm = $('#empNm').val();
+			var empRrno1 = $('#empRrno1').val();
+			var empRrno2 = $('#empRrno2').val();
+			var empEmail1 = $('#empEmail1').val();
+			var empEmail2 = $('#empEmail2').val();
+			var empEmail = empEmail1 + empEmail2;
+			var isValidRrno = /^[0-9]{6}$/.test(empRrno1)
+					&& /^[0-9]{7}$/.test(empRrno2);
+
+			if (empNo === '') {
+				Swal.fire({
+					icon : 'warning',
+					title : '알림',
+					text : '사번을 입력해 주세요.',
+					confirmButtonColor : 'blue'
+				});
+				$('#empNo').focus(); // 해당 필드에 포커스를 맞춥니다.
+				return;
+			}
+
+			if (empNm === '') {
+				Swal.fire({
+					icon : 'warning',
+					title : '알림',
+					text : '이름을 입력해 주세요.',
+					confirmButtonColor : 'blue'
+				});
+				$('#empNm').focus();
+				return;
+			}
+
+			if (!isValidRrno) {
+				Swal.fire({
+					icon : 'warning',
+					title : '알림',
+					text : '주민등록번호를 형식에 맞게 입력해 주세요.',
+					confirmButtonColor : 'blue'
+				});
+				$('#empRrno1').focus();
+				return;
+			}
+
+			if (empEmail1 === '' || empEmail2 === '0') {
+				Swal.fire({
+					icon : 'warning',
+					title : '알림',
+					text : '이메일 주소를 입력해 주세요.',
+					confirmButtonColor : 'blue'
+				});
+				$('#empEmail1').focus();
+				return;
+			}
+
+			var data = {
+				empNo : empNo,
+				empNm : empNm,
+				empRrno1 : empRrno1,
+				empRrno2 : empRrno2,
+				empEmail : empEmail
+			};
+
+			$.ajax({
+				type : "post",
+				url : "/mediform/password/find",
+				data : JSON.stringify(data),
+				contentType : "application/json; charset=utf-8",
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				success : function(rst) {
+					$("#formDiv").empty();
+					$("#formDiv").append(step2HTML);
+					$('#tempEmpEmail').val(empEmail);
+					$('#tempEmpNo').val(empNo);
+					
+					Swal.fire({
+						icon : 'info',
+						title : '알림',
+						html : '등록하신 이메일 주소로 인증번호를 발송 했습니다. <br/> 확인 후 해당 창에 입력해 주세요.',
+						confirmButtonColor : 'blue'
+					});
+					
+					console.log("rndCd : " + rndCd);
+					console.log(rst);
+					rndCd.val(rst.rndCd);
+				}
+			});
+
+		});
+		
+		// 2차 인증
+		var inNoBtn = $('#inNoBtn');
+		$('#formDiv').on('click', '#inNoBtn', function(){
+			var enNo = $('#enNo').val();
+			var rndCd = $('#rndCd').val();
+// 			console.log("enNo : " + enNo);
+// 			console.log("rndCd : " + rndCd);
+			if(enNo == null || enNo == ""){
+				Swal.fire({
+					icon : 'warning',
+					title : '알림',
+					text : '인증번호를 입력해 주세요.',
+					confirmButtonColor : 'blue'
+				});
+				$('#enNo').focus(); 
+				return;
+			}
+			
+			
+			if(enNo == null || rndCd == null || enNo != rndCd){
+				Swal.fire({
+					icon : 'warning',
+					title : '알림',
+					html : '인증 번호가 일치하지 않습니다. <br/> 다시 입력해 주세요.',
+					confirmButtonColor : 'blue'
+				});
+			}else if(enNo == rndCd){
+				var tempEmpEmail = $('#tempEmpEmail').val();
+				var tempEmpNo = $('#tempEmpNo').val();
+				var data = {
+						empEmail : tempEmpEmail, 
+						empNo : tempEmpNo
+					};
+				
+				$.ajax({
+					type : "post",
+					url : "/mediform/password/find/complete",
+					data : JSON.stringify(data),
+					contentType : "application/json; charset=utf-8",
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					success : function(rst) {
+						console.log("rst : " + rst);
+						Swal.fire({
+							icon : 'success',
+							title : '알림',
+							html : '인증에 성공했습니다. <br/> 이메일 주소로 변경된 비밀번호를 발송 했습니다.',
+							confirmButtonColor : 'blue'
+						}).then(function(){
+							location.href="/mediform/login";                   
+						});
+						
+					}
+				});
+			}
+		});
+	});
+</script>
+
+
+
+
+
+</html>
+
+
+
+

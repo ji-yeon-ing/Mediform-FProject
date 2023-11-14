@@ -1,0 +1,66 @@
+package kr.or.ddit.administration.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.administration.ServiceResult;
+import kr.or.ddit.common.vo.RceptVO;
+import kr.or.ddit.mapper.administration.ReceiptMapper;
+
+@Service
+public class RceptServiceImpl implements IRceptService {
+
+	@Inject
+	private ReceiptMapper receiptMapper;
+	
+	
+	@Override
+	public ServiceResult receiptInsert(Map<String, Object> map) {
+		
+		
+		ServiceResult result = null;
+		
+		int status = receiptMapper.receiptInsert(map);
+		
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+
+	@Override
+	public List<RceptVO> watingList() {
+		
+		List<RceptVO> waitingList = receiptMapper.watingList();
+		
+		return waitingList;
+	}
+
+
+	@Override
+	public List<RceptVO> watingAllList() {
+		List<RceptVO> waitingList = receiptMapper.watingAllList();
+		
+		return waitingList;
+	}
+
+
+	@Override
+	public int receiptSelect(Map<String, Object> map) {
+		
+		return receiptMapper.receiptSelect(map);
+	}
+
+	
+	
+	
+	
+}

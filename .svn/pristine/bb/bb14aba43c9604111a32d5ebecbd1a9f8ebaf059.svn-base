@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.administration.ReceiveMapper">
+
+	<select id="receiptSelect" parameterType="Map" resultType="receiptVO">
+	
+		select
+			RCIPT_NO, RCIV_NO, IPOCD_DTTM, IPOCD_AMOUNT, PAYMTHD, IPOCD_AMOUNT_BEFORE
+		from receipt
+		where rcipt_no = #{rciptNo}
+	
+	</select>
+
+
+	<update id="updateRcivAt2" parameterType="Map">
+		update receive
+		set
+			rciv_at = 2
+		where rciv_no = #{rcivNo}
+			and (rciv_at is null or rciv_at is not null)
+	</update>
+	
+	<update id="updateRcivAt1" parameterType="Map">
+		update receive
+		set
+			rciv_at = 1
+		where rciv_no = #{rcivNo}
+			and (rciv_at is null or rciv_at is not null)
+	</update>
+
+	<update id="updateRcivAt" parameterType="Map">
+		update receive
+		set
+			rciv_at = 0
+		where rciv_no = #{rcivNo}
+			and (rciv_at is null or rciv_at is not null)
+	</update>
+
+
+	<select id="selectAmount" parameterType="Map" resultType="receiveVO">
+	
+		select rciv_amount, prearnge_amount
+		from receive
+		where rciv_no = #{rcivNo}
+	
+	</select>
+
+
+	<update id="updateRceptStatus" parameterType="Map">
+		update rcept a
+		set
+			rcept_sttus = '10'
+		where a.rcept_no = (select r.rcept_no from receive r where rciv_no = #{rcivNo})
+	</update>
+
+
+	<update id="updateAmount" parameterType="Map">
+		update receive
+		set
+			RCIV_AMOUNT = (SELECT SUM(IPOCD_AMOUNT)
+							FROM RECEIPT
+							WHERE RCIV_NO = #{rcivNo})
+		where rciv_no = #{rcivNo}
+	</update>
+
+
+	<insert id="pay" parameterType="Map">
+	
+		insert into receipt(
+			RCIPT_NO, RCIV_NO, IPOCD_DTTM, IPOCD_AMOUNT, PAYMTHD, IPOCD_AMOUNT_BEFORE
+		)values(
+			seq_scipt_no.nextval, #{rcivNo}, sysdate, #{ipocdAmount}, '1', 
+			(SELECT SUM(IPOCD_AMOUNT)FROM RECEIPT WHERE RCIV_NO = #{rcivNo})
+		)
+	
+	</insert>
+	
+	
+	
+	<select id="pOList" parameterType="Map" resultType="pOAdminVO">
+		
+		select 
+			prscrptn_cd, po.medcin_cd, prscrptn_nm, medcin_pc, mdctn_cpcty, mdctn_unit, mdctn_co, mdctn_pd, medcin_standard, medcin_unit
+		from prescription_order po, medicine m
+		where po.medcin_cd = m.medcin_cd
+			and clnic_no = (select clnic_no from receive where rciv_no = #{rcivNo})
+	
+	
+	</select>
+
+
+
+	<select id="mTRList" parameterType="Map" resultType="mTRAdminVO">
+		
+		select 
+			mdlrtrd_cd, mtr.mdlrt_cd, mdlrt_nm, mdlrt_amount
+		from medical_treatment_record mtr, medical_treatment mt
+		where mtr.mdlrt_cd = mt.mdlrt_cd
+			and clnic_no = (select clnic_no from receive where rciv_no = #{rcivNo})
+	
+	</select>
+
+
+
+	<select id="mEOList" parameterType="Map" resultType="mEOAdminVO">
+		
+		select
+			mec_cd, meo.hlthchkp_cd, hlthchkp_nm, hlthchkp_amount 
+		from medical_examination_order meo, health_checkup hc
+		where meo.hlthchkp_cd = hc.hlthchkp_cd
+			and clnic_no = (select clnic_no from receive where rciv_no = #{rcivNo})
+	
+	</select>
+
+
+	<select id="receiveDetaiList" parameterType="Map" resultType="receiveDetailVO">
+	
+		select
+			PATNT_NO, RCIVD_TRT, RCIV_NO, CLNIC_NO
+			, RCIVD_MDCXM, RCIVD_INJCTN, RCIVD_CGFFD
+			, RCIVD_HSPTLZ, RCIVD_MDCT, RCIVD__HLTHCHKP
+			, RCIVD_DGNSS, RCIVD_EQP, RCIVD_REH, RCIVD_TH, RCIVD_TOTAMT
+		from receive_detail
+		where rciv_no = #{rcivNo}
+	
+	</select>
+
+	<select id="receiptList" parameterType="Map" resultType="receiptVO">
+	
+		select 
+			RCIPT_NO, RCIV_NO, IPOCD_DTTM, IPOCD_AMOUNT, PAYMTHD
+		from receipt
+		where rciv_no = #{rcivNo}
+	
+	</select>
+
+	<sql id="receiveSearch">
+		<if test='searchType != null and searchType == "all"' >
+			<if test='searchWord != null'>
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+		<if test='searchType != null and searchType == "com"' >
+			 and R.RCIV_AT = 1
+			 <if test="searchWord != null">
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+		<if test='searchType != null and searchType == "part"' >
+			and R.RCIV_AT = 2
+			<if test='searchWord != null'>
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+		<if test='searchType != null and searchType =="unpaid"'>
+			and R.RCIV_AT = 0
+			<if test='searchWord != null'>
+				and P.PATNT_NM like '%' || #{searchWord, jdbcType=VARCHAR} || '%'
+			</if>
+		</if>
+	
+	</sql>
+	
+	<sql id="dateSearch">
+		<if test='startDate != null and endDate == null'>
+			and c.clinic_time >= to_date(#{startDate}, 'yyyy-MM-dd')
+		</if>
+		<if test='startDate == null and endDate != null'>
+			and c.clinic_time &lt;= to_date(#{endDate}, 'yyyy-MM-dd')
+		</if>
+		<if test='startDate != null and endDate != null'>
+			and c.clnic_time between to_date(#{startDate}, 'yyyy-MM-dd') and to_date(#{endDate}, 'yyyy-MM-dd')
+		</if>
+	</sql>
+
+
+	<select id="selectReceiveCount" parameterType="pagingVO" resultType="int">
+	
+		select count(rciv_no)
+		from patient p, clinic c, receive r, rcept rc
+		where 1 = 1
+		and p.patnt_no = c.patnt_no
+		and r.patnt_no = p.patnt_no
+		and r.patnt_no = c.patnt_no
+		and r.rcept_no = c.rcept_no
+		and r.clnic_no = c.clnic_no
+		and rc.patnt_no = p.patnt_no
+		and rc.rcept_no = c.rcept_no
+		and c.clnic_time between #{startDate} and #{endDate}+1
+		and (rc.rcept_sttus = '9'or rc.rcept_sttus = '10')
+		<include refid="receiveSearch"/>
+	
+	</select>
+
+
+	<select id="receiveList" parameterType="pagingVO" resultType="receiveVO">
+	
+		SELECT b.*
+		FROM (
+		    SELECT a.*, ROW_NUMBER() OVER (ORDER BY a.rciv_no DESC) rnum
+		    FROM (
+		        SELECT
+		            r.rciv_no,
+		            r.rciv_at,
+		            r.rciv_dttm,
+		            r.rciv_amount,
+		            r.prearnge_amount,
+		            r.reciv_totamt,
+		            r.reciv_memo,
+		            p.patnt_no,
+		            p.patnt_nm,
+		            p.patnt_rrno1,
+		            p.patnt_telno,
+		            p.patnt_zip,
+		            p.patnt_adres1,
+		            p.patnt_adres2,
+		            p.patnt_age,
+		            p.prtctor_nm,
+		            p.prtctor_telno,
+		            p.patnt_height,
+		            p.patnt_bdwgh,
+		            p.patnt_bdp,
+		            p.patnt_hlthins_at,
+		            rc.rcept_no,
+		            rc.rcept_sttus,
+		            c.clnic_no,
+		            c.emp_no,
+		            e.emp_nm,
+		            c.clnic_time,
+		            c.clnic_cn,
+		            c.clnic_at,
+		            c.hsptlz_at,
+		            c.clnic_memo,
+		            c.atfss_dt,
+		            c.clnic_fe,
+		            h.hsptlz_cd,
+		            h.hsptlz_sckrm,
+		            h.hsptlz_sckbd,
+		            h.hsptlz_de,
+		            h.prarnde_lhstl,
+		            h.real_lhstl
+		        FROM patient p
+		        JOIN rcept rc ON rc.patnt_no = p.patnt_no
+		        JOIN clinic c ON rc.rcept_no = c.rcept_no AND rc.patnt_no = c.patnt_no AND p.patnt_no = c.patnt_no
+		        JOIN employee e ON c.emp_no = e.emp_no
+		        JOIN receive r ON r.clnic_no = c.clnic_no AND r.rcept_no = c.rcept_no AND r.patnt_no = c.patnt_no AND r.patnt_no = p.patnt_no
+		        LEFT JOIN hospitalization h ON r.clnic_no = h.clnic_no AND r.rcept_no = h.rcept_no AND r.patnt_no = h.patnt_no
+				where 1=1
+					and (rc.rcept_sttus = '9'or rc.rcept_sttus = '10')
+				 	and c.clnic_time between #{startDate} and #{endDate}+1
+					<include refid="receiveSearch"/>
+				order by r.rciv_no desc
+				) a
+			) b
+			<![CDATA[
+				where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+			]]>
+	
+	
+	</select>	
+
+
+	<select id="receiveSelect" parameterType="Map" resultType="receiveVO">
+	
+		SELECT
+		            r.rciv_no,
+		            r.rciv_at,
+		            r.rciv_dttm,
+		            r.rciv_amount,
+		            r.prearnge_amount,
+		            r.reciv_totamt,
+		            r.reciv_memo,
+		            p.patnt_no,
+		            p.patnt_nm,
+		            p.patnt_sexdstn,
+		            p.patnt_rrno1,
+		            p.patnt_telno,
+		            p.patnt_zip,
+		            p.patnt_adres1,
+		            p.patnt_adres2,
+		            p.patnt_age,
+		            p.prtctor_nm,
+		            p.prtctor_telno,
+		            p.patnt_height,
+		            p.patnt_bdwgh,
+		            p.patnt_bdp,
+		            p.patnt_hlthins_at,
+		            rc.rcept_no,
+		            rc.rcept_sttus,
+		            c.clnic_no,
+		            c.emp_no,
+		            e.emp_nm,
+		            c.clnic_time,
+		            c.clnic_cn,
+		            c.clnic_at,
+		            c.hsptlz_at,
+		            c.clnic_memo,
+		            c.atfss_dt,
+		            c.clnic_fe,
+		            h.hsptlz_cd,
+		            h.hsptlz_sckrm,
+		            h.hsptlz_sckbd,
+		            h.hsptlz_de,
+		            h.prarnde_lhstl,
+		            h.real_lhstl
+		        FROM patient p
+		        JOIN rcept rc ON rc.patnt_no = p.patnt_no
+		        JOIN clinic c ON rc.rcept_no = c.rcept_no AND rc.patnt_no = c.patnt_no AND p.patnt_no = c.patnt_no
+		        JOIN employee e ON c.emp_no = e.emp_no
+		        JOIN receive r ON r.clnic_no = c.clnic_no AND r.rcept_no = c.rcept_no AND r.patnt_no = c.patnt_no AND r.patnt_no = p.patnt_no
+		        LEFT JOIN hospitalization h ON r.clnic_no = h.clnic_no AND r.rcept_no = h.rcept_no AND r.patnt_no = h.patnt_no
+				where rciv_no = #{rcivNo}
+	
+	</select>
+
+
+
+
+
+
+
+</mapper>

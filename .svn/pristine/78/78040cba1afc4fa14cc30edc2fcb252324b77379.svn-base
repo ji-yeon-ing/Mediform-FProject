@@ -1,0 +1,103 @@
+package kr.or.ddit.nurse.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.doctor.service.IDoctorClinicService;
+import kr.or.ddit.doctor.vo.ClinicAssignmentVO;
+import kr.or.ddit.doctor.vo.ClinicVO;
+import kr.or.ddit.nurse.service.IActingService;
+import kr.or.ddit.nurse.vo.VitalVO;
+import kr.or.ddit.patient.service.IPatientService;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping(value="/mediform/nurse/acting")
+public class NurseActingController {
+
+	@Inject
+	private IDoctorClinicService doctorClinicService;
+	
+	@Inject
+	private IPatientService patientService;
+	
+	@Inject
+	private IActingService actingService;
+	
+	
+	// 진료 메인 페이지
+	@RequestMapping("/main")
+	public String clinicMain(Model model) {
+		log.info("clinicMain() 실행중...!");
+		
+		// 로그인 정보
+		String doctorNo = "d20230085";
+		ClinicAssignmentVO clinicAssignmentVO = doctorClinicService.selectclinicAssigment(doctorNo);
+		String clinicNo = clinicAssignmentVO.getClnicNo().substring(1,2);
+		
+		model.addAttribute("clinicNo", clinicNo);
+		return "nurse/acting";
+	}
+	
+	// 대기환자 리스트 (의사 번호)
+	@ResponseBody
+	@RequestMapping("/list")
+	public List<ClinicVO> selectwaitingList() {
+		log.info("receiptList() 실행중...!");
+		
+		// 로그인 정보
+		String doctorNo = "d20230085";
+		List<ClinicVO> waitingList = doctorClinicService.selectwaitingList(doctorNo);	// 대기환자정보
+		
+		return waitingList;
+	}
+	
+	
+	// 바이탈 insert
+//	@ResponseBody
+//	@RequestMapping(value = "/vital/insert", method = RequestMethod.POST)
+//	public ServiceResult saveOrderDetails(@RequestBody List<OrderDetailVO> orderDetails) {
+//		VitalVO VO = new PurchaseOrderVO();
+//		CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		purVO.setPorderEmpNo(user.getEmployee().getEmpNm());
+//		
+//		int total = 0;
+//		for(OrderDetailVO odVO : orderDetails) {
+//			total += odVO.getPodetailTotal();
+//		}
+//		purVO.setPorderTotal(total);
+//		
+//		ServiceResult result = orderService.insertPurchaseOrder(purVO);
+//		if(result.equals(ServiceResult.OK)) {
+//			for (OrderDetailVO detail : orderDetails) {
+//				detail.setPorderCd(purVO.getPorderCd());
+//				orderService.insertOrderDetail(detail);
+//			}
+//		}
+//		return result;
+//	}
+//	
+	
+	// 환자 바이탈 조회 (ajax)
+	@ResponseBody
+	@PostMapping("/vital")
+	public List<VitalVO> vital(@RequestBody Map<String, String> map ){
+		
+		List<VitalVO> vitalList = actingService.selectVitalList(map);
+		
+		return vitalList;
+	}
+	
+
+	
+}
