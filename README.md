@@ -2,6 +2,12 @@
 I take pleasure in technical challenges and strive to continuously grow and evolve.✍  
 I look forward to working together 😀 to take on new projects and create innovative solutions!!!
 
+  
+I enjoy cooking, go on a trip, Sing.👩‍🍳🗺️🎤  
+I hope to develop and find satisfaction in every beautiful creation💖  
+
+
+
 
 
 
