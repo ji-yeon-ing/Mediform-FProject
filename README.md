@@ -1,4 +1,11 @@
-### Hi there 👋
+### Hello there! 👋 I'm Ji Yeon Kim ✨Trendy and Creative Developer✨
+I take pleasure in technical challenges and strive to continuously grow and evolve.✍  
+I look forward to working together 😀 to take on new projects and create innovative solutions!!!
+
+
+
+
+
 
 <!--
 **ji-yeon-ing/ji-yeon-ing** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
