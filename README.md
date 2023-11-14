@@ -1,5 +1,6 @@
+![header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&text=Welcome%20to%20JiYeon's%20GitHub%20👋&animation=twinkling&fontSize=35&fontAlignY=40&fontAlign=65&height=250)
 
-### Hello there! 👋 I'm Ji Yeon Kim ✨Trendy and Creative Developer✨
+###I'm Ji Yeon Kim ✨Trendy and Creative Developer✨
 <br/>
 I take pleasure in technical challenges and strive to continuously grow and evolve.✍  
 I look forward to working together😀 to take on new projects and create innovative solutions!!!
