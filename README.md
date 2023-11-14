@@ -8,12 +8,16 @@ I look forward to working together 😀 to take on new projects and create innov
   
 I enjoy cooking, go on a trip, Sing.👩‍🍳🗺️🎤  
 I hope to develop and find satisfaction in every beautiful creation💖  
-
-
+  #
 ### 💪Skills  
    Languages   
-   
-   
+  
+<img src="https://img.shields.io/badge/java-FA501A?style=flat-square&logo=OpenJDK&logoColor=white"/>
+
+
+
+
+   <img src="https://img.shields.io/badge/Apache Tomcat-F8DC75?style=flat-square&logo=apachetomcat&logoColor=black"/>
 
 
 
