@@ -1,11 +1,13 @@
 
 ### Hello there! 👋 I'm Ji Yeon Kim ✨Trendy and Creative Developer✨
+<br/>
 I take pleasure in technical challenges and strive to continuously grow and evolve.✍  
-I look forward to working together 😀 to take on new projects and create innovative solutions!!!
+I look forward to working together😀 to take on new projects and create innovative solutions!!!
 
   
-I enjoy cooking, go on a trip, Sing.👩‍🍳🗺️🎤  
-I hope to develop and find satisfaction in every beautiful creation💖  
+I enjoy cooking, go on a trip, Sing. 👩‍🍳 🗺️ 🎤  
+I hope to develop and find satisfaction in every beautiful creation 💖  
+ 
 #### 📬 Contacts
   
 <a href="https://www.notion.so/181bd8ee22f94bd08b9c04d5e9f4d2a5?v=76e4ec8ca39d47bcbe627bc6c2634bf9" target="_blank"><img src="https://img.shields.io/badge/notion-black?style=flat-square&logo=notion&logoColor=white"/></a>
@@ -33,7 +35,7 @@ I hope to develop and find satisfaction in every beautiful creation💖
 
 #
 ### 📚Studying
-
+<br/>
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariaDB&logoColor=white"/>
 <img src="https://img.shields.io/badge/Anaconda-44A833?style=flat-square&logo=Anaconda&logoColor=white"/>
 <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/>
