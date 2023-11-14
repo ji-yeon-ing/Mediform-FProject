@@ -15,7 +15,7 @@ I hope to develop and find satisfaction in every beautiful creation 💖
 <img src="https://img.shields.io/badge/hee_ring_ing-FC33FF?style=flat-square&logo=instagram&logoColor=white"/>
   #
 ### 💪Skills  
-   Languages   
+   [ Languages ]   
   
 <img src="https://img.shields.io/badge/java-FA501A?style=flat-square&logo=OpenJDK&logoColor=white"/> <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/>
 <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white"/>
@@ -26,7 +26,7 @@ I hope to develop and find satisfaction in every beautiful creation 💖
 <img src="https://img.shields.io/badge/ORACLE-F80000?style=flat-square&logo=oracle&logoColor=white"/>
 <img src="https://img.shields.io/badge/Apache Tomcat-F8DC75?style=flat-square&logo=apachetomcat&logoColor=black"/> 
 
-  Tools  
+  [ Tools ]  
     
 <img src="https://img.shields.io/badge/Bootstrapap-7952B3?style=flat-square&logo=bootstrap&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white"/>
 <img src="https://img.shields.io/badge/Eclipse IDE-2C2255?style=flat-square&logo=eclipseide&logoColor=white"/>
@@ -35,7 +35,7 @@ I hope to develop and find satisfaction in every beautiful creation 💖
 
 #
 ### 📚Studying
-<br/>
+
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariaDB&logoColor=white"/>
 <img src="https://img.shields.io/badge/Anaconda-44A833?style=flat-square&logo=Anaconda&logoColor=white"/>
 <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/>
