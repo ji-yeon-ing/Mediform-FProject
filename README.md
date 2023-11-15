@@ -1,4 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&text=Welcome%20to%20Mediform%20Project%20🏥&animation=twinkling&fontSize=35&fontAlignY=40&fontAlign=65&height=250)
+![header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&text=Welcome%20to%20Mediform%20Project%20🏥&animation=twinkling&fontSize=35&fontAlignY=40&fontAlign=65&height=200)
 
 ### 대덕인재개발원 최종 프로젝트 ✨메디폼 재활병원 EMR✨
 <br/>
@@ -8,7 +8,17 @@
 <br><br>
 이번 프로젝트에서는 사용자의 만족감, 효율성 증가, 간편함, 접근성, 고객 회전률을 실시간으로 빠르게 처리함을 기대합니다.  
 
-팀원은 총 7명이며, 프로젝트에서 저는 DA역할을 맡았고, 테이블 정의서 및 논리/물리 ERD 용어와 테이블의 연관관계를 설계하였습니다.
+팀원은 총 7명이며, 프로젝트에서 저는 DA역할을 맡았고, <br>
+테이블 정의서 및 논리/물리 ERD 용어와 테이블의 연관관계를 설계하였습니다.
+<br><br>
+<img src="MediformERD.png" width="800" height="500"/>
+<br>
+-메디폼 재활병원 ERD-
+<br><br>
+위와 같이 50여개 테이블로 설계하였고, 프로세스 흐름은 환자의 접수를 통해 진료 후 처방, 치료, 투약을 할 수 있고, <br>
+입원이 필요한 경우 입원을 할 수 있으며, 그에 관련 기록을 작성하는 테이블이 존재합니다. <br>
+모든 처리가 끝난 후 수납과 영수증을 출력할 수 있는 테이블로 구성하였습니다. <br>
+마지막으로 공통기능에서는 메디폼 재활병원의 게시판, 알람, 채팅 테이블을 설계하였습니다.
 <br><br>
 개발 진행일정 입니다.
 #### 2023.09.20 프로젝트 팀 구성  
@@ -16,9 +26,12 @@
 #### 2023.11.15 UI구현 및 개발 로직 구현 
 #### 2023.11.16 프로젝트 발표
 <br>
-이번 프로젝트에서 간호사 시스템과 공통기능인 환자관리를 맡았으며,  <br>
-API 기술로는 Echarts, 풀켈린더, 소켓을 이용한 알람 기능 진행하였습니다.
- 
+
+##### 이번 프로젝트에서 간호사 시스템과 공통기능인 환자관리를 맡았으며,
+##### API 기술로는 Echarts, 풀켈린더, 소켓을 이용한 알람 기능 진행하였습니다.
+
+<br>
+
 #### 📬 Contacts
   
 <a href="https://www.notion.so/181bd8ee22f94bd08b9c04d5e9f4d2a5?v=76e4ec8ca39d47bcbe627bc6c2634bf9" target="_blank"><img src="https://img.shields.io/badge/notion-black?style=flat-square&logo=notion&logoColor=white"/></a>
@@ -47,8 +60,13 @@ API 기술로는 Echarts, 풀켈린더, 소켓을 이용한 알람 기능 진행
 <!--
 **ji-yeon-ing/ji-yeon-ing** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
-
+로고 쓸때
 <a href="버튼을 눌렀을 때 이동할 링크" target="_blank"><img src="https://img.shields.io/badge/뱃지레이블-배경색?style=뱃지모양&logo=로고&logoColor=로고색상"/></a>
+이미지 사진 조절이 필요업는 경우
+![캡처](MediformERD.png)
+
+이미지 사이즈 조절해서 올리는 경우
+<img src="이미지주소.png" width="200" height="400"/>
 
 Here are some ideas to get you started:
 
