@@ -38,7 +38,7 @@
 <img src="https://img.shields.io/badge/itworld2304@naver.com-19B724?style=flat-square&logo=naver&logoColor=white"/>
 <img src="https://img.shields.io/badge/hee_ring_ing-FC33FF?style=flat-square&logo=instagram&logoColor=white"/>
   #
-### 💪Skills  
+### 💪Project Skills  
    #### [ Languages ]   
   
 <img src="https://img.shields.io/badge/java-FA501A?style=flat-square&logo=OpenJDK&logoColor=white"/> <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/>
