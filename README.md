@@ -56,6 +56,8 @@
 <img src="https://img.shields.io/badge/Eclipse IDE-2C2255?style=flat-square&logo=eclipseide&logoColor=white"/>
 <img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=flat-square&logo=Visual Studio Code&logoColor=white"/>
 
+![footer](https://capsule-render.vercel.app/api?section=footer&type=waving&color=timeGradient)
+
 
 <!--
 **ji-yeon-ing/ji-yeon-ing** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
@@ -64,6 +66,13 @@
 <a href="버튼을 눌렀을 때 이동할 링크" target="_blank"><img src="https://img.shields.io/badge/뱃지레이블-배경색?style=뱃지모양&logo=로고&logoColor=로고색상"/></a>
 이미지 사진 조절이 필요업는 경우
 ![캡처](MediformERD.png)
+
+
+// 편의에 따라 바꾸는 코드 -- text문구, 색상코드, height, fontSize 등
+// header
+![header](https://capsule-render.vercel.app/api?type='타입 입력'&color='원하는 색상 코드'&text='입력할 TEXT'&height=200&fontSize=90&fontColor='원하는 색상 코드')
+// footer
+![footer](https://capsule-render.vercel.app/api?section=footer&type='타입 입력'&color='원하는 색상 코드')
 
 이미지 사이즈 조절해서 올리는 경우
 <img src="이미지주소.png" width="200" height="400"/>
